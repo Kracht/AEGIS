@@ -1,14 +1,22 @@
-# AEGIS
+<p align="center">
+  <img src="logo.png" alt="AEGIS — Active Earth Geomagnetic Imaging System" width="600">
+</p>
 
-### **A**ctive **E**arth **G**eomagnetic **I**maging **S**ystem
+<h1 align="center">AEGIS</h1>
 
-A real-time, browser-based 3D visualization of Earth's magnetosphere, driven by
-live space-weather data from NOAA.
+<p align="center">
+  <b>A</b>ctive <b>E</b>arth <b>G</b>eomagnetic <b>I</b>maging <b>S</b>ystem<br>
+  <sub>A real-time, browser-based 3D visualization of Earth's magnetosphere, driven by live space-weather data from NOAA.</sub>
+</p>
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![WebGL2](https://img.shields.io/badge/WebGL2-required-orange.svg)
-![Build](https://img.shields.io/badge/build-none%20(vanilla%20ES%20modules)-brightgreen.svg)
-![Data](https://img.shields.io/badge/data-NOAA%20SWPC%20live-9cf.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/badge/WebGL2-required-orange.svg" alt="WebGL2">
+  <img src="https://img.shields.io/badge/build-none%20(vanilla%20ES%20modules)-brightgreen.svg" alt="Build">
+  <img src="https://img.shields.io/badge/data-NOAA%20SWPC%20live-9cf.svg" alt="Data: NOAA SWPC live">
+</p>
+
+---
 
 AEGIS ray-marches the magnetosphere in a single WebGL2 fragment shader. The
 magnetopause, bow shock, plasmasphere, ring current, magnetotail current sheet,
@@ -16,10 +24,6 @@ auroral ovals and substorm reconnection are all recomputed every frame from the
 solar wind, IMF, Kp and GOES X-ray feeds that NOAA publishes right now. Nothing
 is pre-baked — the shape you see is the shape of near-Earth space at the moment
 you load the page.
-
-<!-- Add a hero image at docs/preview.jpg and uncomment:
-![AEGIS](docs/preview.jpg)
--->
 
 ---
 
