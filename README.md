@@ -53,7 +53,7 @@ It does need to be served over HTTP (ES module imports and `fetch()` do not work
 from `file://`), and it needs network access to reach the NOAA endpoints.
 
 ```bash
-git clone <your-repo-url> aegis
+git clone https://github.com/Kracht/AEGIS.git aegis
 cd aegis
 
 # any static file server works; e.g. Python:
