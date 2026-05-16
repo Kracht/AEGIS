@@ -25,6 +25,8 @@ solar wind, IMF, Kp and GOES X-ray feeds that NOAA publishes right now. Nothing
 is pre-baked — the shape you see is the shape of near-Earth space at the moment
 you load the page.
 
+**Demo:** https://aegis.sponde.de/
+
 ---
 
 ## What you're looking at
