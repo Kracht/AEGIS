@@ -14,9 +14,9 @@ Die Szene zeigt die Erde und die unsichtbare Blase aus Magnetkraft, die sie sch�
 |---|---|
 | Blaue/weiße Tropfenform | Die Magnetosphäre — sonnenseitig komprimiert, auf der Nachtseite zu einem langen Schweif ausgezogen |
 | Warm getönte äußere Kuppel (Tagseite) | **Bugstoßwelle und Magnetosheath** — der Überschall-Sonnenwind schockt, erhitzt und legt sich um das magnetische Hindernis der Erde |
-| Diskrete bogenförmige Röhren nahe der Erde | Geomagnetische **Feldlinienschalen** (McIlwain L = 2…6) — geschlossene Dipolfeldlinien zwischen den magnetischen Polen |
+| Bogenförmige Stränge in „Quallen"-Form | Geomagnetische **Feldlinienschalen** (McIlwain L = 2…6) — geschlossene Feldlinien, sonnenseitig zu einer Glocke komprimiert und in nachlaufende Schweiffilamente ausgezogen (die echte Tropfenform der Magnetosphäre) |
 | Innerer Plasmaschimmer | Die **Plasmaphäre** — ein Ring aus kühlem, dichtem Plasma nahe der Erde; schrumpft bei Stürmen nach innen |
-| Karmesinroter Ring (nur bei Sturm) | **Ringstrom** — westwärts driftende energiereiche Ionen; das magnetische Signal der Hauptphase eines geomagnetischen Sturms |
+| Karmesinrotes Leuchten dicht um die Erde (nur bei Sturm) | **Partieller Ringstrom** — westwärts driftende energiereiche Ionen auf den geschlossenen Feldlinien; asymmetrisch (eng am Mittag, ausgebeult zur Mitternacht); das magnetische Signal einer geomagnetischen Hauptphase |
 | Horizontales Band im Schweif | **Plasmaschicht** (Harris-Stromschicht) — dünne Lage dichten Plasmas in der magnetischen Äquatorebene des Schweifs, in Echtzeit flatternd |
 | Heller orangener Fleck hinter der Erde (Bz südwärts) | **Substurm-Rekonnexionslinie** — wo gestreckte Schweif-Feldlinien aufreißen und gespeicherte Energie explosiv freisetzen |
 | Leuchtende Polringe | **Auroren-Ovale** — wo energiereiche Teilchen in die Atmosphäre regnen |
@@ -58,7 +58,7 @@ Alle Daten werden live vom **Space Weather Prediction Center (SWPC) der NOAA** a
 - **Bz + Druck → Magnetopause-Form**: Das Shue-Modell (1997) wird jeden Frame neu berechnet. Ein stark südwärts gerichtetes Bz lässt die Magnetosphäre sichtbar schrumpfen und verformen.
 - **Bz südwärts → Sturm-Anatomie**:
   - Die Plasmapause schrumpft von L ≈ 4,2 auf L ≈ 2,6 (Carpenter & Anderson 1992)
-  - Der Ringstrom verlagert sich von L ≈ 4 nach L ≈ 3 nach innen und verstärkt sich — die Dst-Signatur der Sturm-Hauptphase
+  - Der Ringstrom verlagert sich von L ≈ 4 nach L ≈ 3 nach innen, verstärkt sich und wird zu einem mittag–mitternacht-asymmetrischen *partiellen* Ringstrom, der auf den geschlossenen Feldlinien sitzt — die Dst-Signatur der Sturm-Hauptphase
   - Die Stromschicht im Magnetschweif wird dünner (Substurm-Wachstumsphase), Farbe verschiebt sich von kühlem Blau zu warmem Orange-Violett
   - Eine erdnahe Rekonnexionslinie zündet bei ca. 17 R_E hinter der Erde und pulsiert auf Substurm-Zeitskalen
 - **Sonnenwindgeschwindigkeit → Helligkeit von Bugstoßwelle und Magnetosheath**: Die Aufheizung skaliert mit ρv², schnellerer Wind erzeugt eine heißere, sichtbarere Schockfront.

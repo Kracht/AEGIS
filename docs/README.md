@@ -14,9 +14,9 @@ The scene shows Earth and the invisible bubble of magnetic force that protects i
 |---|---|
 | Blue/white teardrop shape | The magnetosphere — compressed on the Sun-facing side, stretched into a long tail on the night side |
 | Warm-tinted outer dome (dayside) | **Bow shock + magnetosheath** — where the supersonic solar wind shocks, heats, and drapes around Earth's magnetic obstacle |
-| Discrete arcing tubes near Earth | Geomagnetic **field-line shells** (McIlwain L = 2…6) — closed dipole field lines connecting the magnetic poles |
+| Arcing strands forming a "jellyfish" | Geomagnetic **field-line shells** (McIlwain L = 2…6) — closed field lines, compressed into a bell on the Sun side and swept into trailing tail filaments (the magnetosphere's real teardrop shape) |
 | Inner plasma glow | The **plasmasphere** — a torus of cold, dense plasma trapped close to Earth; shrinks inward during storms |
-| Crimson torus (storm only) | **Ring current** — westward-drifting energetic ions; the magnetic signature of a geomagnetic main phase |
+| Crimson glow hugging Earth (storm only) | **Partial ring current** — westward-drifting energetic ions on the closed field lines; asymmetric (tight near noon, bulged toward midnight); the magnetic signature of a geomagnetic main phase |
 | Horizontal band across the tail | **Plasma sheet** (Harris current sheet) — thin layer of dense plasma at the magnetic equator inside the tail, flapping in real time |
 | Bright orange spot behind Earth (Bz southward) | **Substorm reconnection X-line** — where stretched tail field lines snap and explosively release stored energy |
 | Glowing polar rings | **Aurora ovals** — where energetic particles rain into the atmosphere |
@@ -58,7 +58,7 @@ All data is fetched live from **NOAA's Space Weather Prediction Center (SWPC)**.
 - **Bz + pressure → magnetopause shape**: The Shue et al. (1997) model is computed each frame. A strong southward Bz shrinks and deforms the magnetosphere visibly.
 - **Bz southward → storm anatomy**:
   - Plasmapause shrinks from L ≈ 4.2 to L ≈ 2.6 (Carpenter & Anderson 1992)
-  - Ring current moves inward from L ≈ 4 to L ≈ 3 and intensifies — the Dst signature of the storm main phase
+  - Ring current moves inward from L ≈ 4 to L ≈ 3, intensifies, and becomes a noon–midnight asymmetric *partial* ring current frozen onto the closed field lines — the Dst signature of the storm main phase
   - Magnetotail current sheet thins (substorm growth phase), color shifts from cool blue to warm orange-purple
   - Near-Earth reconnection X-line ignites at ~17 R_E downstream, pulsing on substorm timescales
 - **Solar wind speed → bow shock + magnetosheath brightness**: Heating scales with ρv², so faster wind produces a hotter, more visible shock.

@@ -29,9 +29,9 @@ you load the page.
 |---|---|
 | Blue/white teardrop | The magnetosphere — Sun-compressed, drawn into a long night-side tail |
 | Warm dayside dome | Bow shock + magnetosheath — shocked, heated, draped solar wind |
-| Arcing tubes near Earth | Geomagnetic field-line shells (McIlwain L = 2…6) |
+| Arcing strands ("jellyfish") | Geomagnetic field-line shells (McIlwain L = 2…6) — Sun-compressed bell, tail-swept filaments |
 | Inner glow | Plasmasphere — cold dense plasma; shrinks inward during storms |
-| Crimson torus (storms) | Ring current — the Dst signature of a geomagnetic main phase |
+| Crimson glow hugging Earth (storms) | Partial ring current — noon-tight / midnight-bulged, frozen onto the closed field lines; the Dst signature of a main phase |
 | Tail band | Plasma sheet (Harris current sheet), flapping in real time |
 | Orange spot behind Earth | Near-Earth reconnection X-line (Bz southward) |
 | Polar rings | Aurora ovals from the NOAA OVATION nowcast |

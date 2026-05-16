@@ -113,18 +113,56 @@ float sdMp(vec3 p) {
 }
 
 // ================================================================
+// SUN-ANGLE SHELL DEFORMATION  (shared)
+// ================================================================
+// Pure dipole shells are symmetric (rings). The real magnetosphere is a
+// teardrop: Sun-compressed dayside, antisunward-stretched tail. This warp
+// is shared by the field-line shells AND the ring current frozen onto them,
+// so the two stay coupled — and the ring current inherits the real
+// noon-compressed / midnight-bulged partial-ring-current asymmetry.
+//   w < 1 → compressed (dayside)   w > 1 → stretched (tail)
+float shellWarp(vec3 p) {
+    float r    = length(p);
+    float cosS = dot(p, SUN) / max(r, 1e-4);
+    float day  = max( cosS, 0.0);
+    float ngt  = max(-cosS, 0.0);
+    float w = 1.0 - 0.16 * day
+                  + 0.60 * ngt * (0.30 + 0.70 * smoothstep(1.0, 7.0, r));
+    return clamp(w, 0.55, 3.0);
+}
+
+// ================================================================
 // DIPOLE FIELD-LINE SHELLS — the hero structure
 // ================================================================
 
 // Field lines as DISCRETE bright strands, not continuous tubes.
 // Sparse azimuthal sampling → bundles separated by gaps so they don't
 // project as continuous rings from any viewing angle.
+//
+// Jellyfish deformation: a pure dipole gives symmetric L-shells (rings).
+// The real magnetosphere is a teardrop — Sun-compressed on the dayside and
+// drawn out antisunward into a long tail. We warp the shell coordinate by
+// Sun angle (Shue-like, the same asymmetry the magnetopause carries): shells
+// pinch inward sunward (the "bell") and balloon/elongate tailward, growing
+// with distance (the trailing "tentacles").
 float fieldLines(vec3 p) {
-    float r = length(p);
-    if (r < 1.04 || r > 7.5) return 0.0;
+    float r   = length(p);
     float rho = length(p.xz);
     if (rho < 0.05) return 0.0;
-    float L = r * r * r / (rho * rho);
+
+    float cosS = dot(p, SUN) / max(r, 1e-4);          // +1 sunward, −1 tailward
+    float ngt  = max(-cosS, 0.0);
+
+    // Shared day/night deformation (also drives the ring current so the two
+    // stay locked): <1 compresses the dayside bell, >1 stretches the tail.
+    float warp = shellWarp(p);
+
+    // Sun-dependent reach: tentacles trail far tailward, dayside stays tight.
+    float rMax = mix(7.0, 15.0, ngt);
+    if (r < 1.04 || r > rMax) return 0.0;
+
+    float rEff = r / warp;                             // deformed dipole radius
+    float L    = rEff * rEff * rEff / (rho * rho);
     if (L < 1.8 || L > 6.5) return 0.0;
     // All shells k=2..6 contribute (full magnetosphere "fill"), but each
     // (shell, azimuth-bin) cell gets its own independent gate so individual
@@ -157,7 +195,9 @@ float fieldLines(vec3 p) {
 
     g *= smoothstep(0.04, 0.22, rho / r);
     g *= smoothstep(1.04, 1.45, r);
-    g /= (r * r * 0.16 + 0.03);
+    // Inner bell stays crisp (∝1/r²); tailward the falloff flattens (∝1/r)
+    // so the swept tentacles don't fade out before they trail back.
+    g /= mix(r * r * 0.16 + 0.03, r * 0.11 + 0.05, ngt);
 
     // Wider azimuthal feather (with 14 bins each is narrower, but the
     // feather kept proportionally wide so cell boundaries stay soft)
@@ -236,15 +276,23 @@ vec4 volDensity(vec3 p) {
         // storms (Daglis 1999; matches the Dst signature of the main phase).
         // Sits between the (shrinking) plasmasphere and the inner edge of
         // the outer Van Allen belt.
-        if (r > 2.0 && r < 5.5 && bzStorm > 0.08) {
-            float rcL  = 4.0 - bzStorm * 1.2;                 // 4.0 → 2.8 storm
-            float rcW  = 0.55 + 0.40 * bzStorm;               // tighter when intense
-            float eq   = 1.0 - sinLat;
-            float rcN  = 0.6 + 0.4 * vn(p * 5.0 + vec3(0, u_time * 0.04, 0));
-            float rc   = eq * eq * eq
-                       * exp(-(r - rcL) * (r - rcL) * rcW)
-                       * 0.20 * bzStorm * (1.0 + bzStorm * 1.4) * rcN;
-            sg += rc; em += rc * vec3(0.95, 0.10, 0.42);
+        // Parameterized by the SAME deformed shell coordinate as the field
+        // lines (rD = r / shellWarp) so the ring current stays frozen onto
+        // those drift shells instead of detaching from the compressed dayside
+        // strands. Falls out as the real noon-compressed / midnight-bulged
+        // partial ring current.
+        if (bzStorm > 0.08) {
+            float rD = r / shellWarp(p);
+            if (rD > 2.0 && rD < 5.5) {
+                float rcL  = 4.0 - bzStorm * 1.2;                 // 4.0 → 2.8 storm
+                float rcW  = 0.55 + 0.40 * bzStorm;               // tighter when intense
+                float eq   = 1.0 - sinLat;
+                float rcN  = 0.6 + 0.4 * vn(p * 5.0 + vec3(0, u_time * 0.04, 0));
+                float rc   = eq * eq * eq
+                           * exp(-(rD - rcL) * (rD - rcL) * rcW)
+                           * 0.20 * bzStorm * (1.0 + bzStorm * 1.4) * rcN;
+                sg += rc; em += rc * vec3(0.95, 0.10, 0.42);
+            }
         }
 
         // AURORA — thin glowing band hugging the polar regions, ISS-style.
