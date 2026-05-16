@@ -1,0 +1,127 @@
+// AEGIS — application entry point.
+// Boots the WebGL2 renderer, starts the live NOAA data + OVATION aurora
+// pollers, runs the per-frame render loop, and feeds the HUD / dev panel.
+
+import { Renderer }      from './renderer.js';
+import { DataFetcher }   from './data-fetcher.js';
+import { AuroraTexture } from './aurora-texture.js';
+import { UI }            from './ui.js';
+import { DevPanel }      from './dev-panel.js';
+
+let rafId    = null;
+let renderer = null;
+let fetcher  = null;
+let aurora   = null;
+let ui       = null;
+let devPanel = null;
+
+const startTime = performance.now();
+
+// FPS / frametime tracking
+const _frameTimes    = new Float32Array(60);
+let   _frameIdx      = 0;
+let   _frameCount    = 0;
+let   _prevFrameMs   = performance.now();
+let   _lastPerfMs    = 0;
+
+// Compute Earth's longitude offset and solar declination so the rendered
+// terminator matches the real Sun position right now.
+function orbitalParams() {
+    const now = new Date();
+    const utcH = now.getUTCHours() + now.getUTCMinutes()/60 + now.getUTCSeconds()/3600;
+    // Subsolar longitude (degrees east) — at 12:00 UTC it's 0° (Greenwich)
+    let subsolarLonE = (12 - utcH) * 15;
+    while (subsolarLonE < 0)    subsolarLonE += 360;
+    while (subsolarLonE >= 360) subsolarLonE -= 360;
+    // Day of year for Cooper's solar declination equation
+    const start = new Date(Date.UTC(now.getUTCFullYear(), 0, 0));
+    const dayOfYear = Math.floor((now - start) / 86400000);
+    const declRad = 23.45 * Math.PI / 180 *
+                    Math.sin(2 * Math.PI * (dayOfYear - 81) / 365);
+    return {
+        earthRot:  subsolarLonE / 360,           // 0..1 texture U offset
+        sunDir:    [Math.cos(declRad), Math.sin(declRad), 0.0],
+    };
+}
+
+function resize(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = Math.round(window.innerWidth  * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    canvas.style.width  = window.innerWidth  + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+}
+
+function showError(msg) {
+    const el = document.getElementById('error');
+    if (el) el.textContent = msg;
+    console.error(msg);
+}
+
+async function main() {
+    const canvas = document.getElementById('canvas');
+    resize(canvas);
+    window.addEventListener('resize', () => resize(canvas));
+
+    try {
+        renderer = new Renderer(canvas);
+        await renderer.init();
+    } catch (err) {
+        showError(err.message);
+        return;
+    }
+
+    fetcher = new DataFetcher();
+    fetcher.start();
+
+    aurora = new AuroraTexture(renderer.gl);
+    renderer.setAurora(aurora);
+    aurora.start();
+
+    ui       = new UI();
+    devPanel = new DevPanel();
+
+    let lastUiTime = -Infinity;
+
+    function frame() {
+        // FPS / frametime bookkeeping
+        const nowMs = performance.now();
+        const dtMs  = nowMs - _prevFrameMs;
+        _prevFrameMs = nowMs;
+        _frameTimes[_frameIdx++ % 60] = dtMs;
+        _frameCount++;
+
+        if (nowMs - _lastPerfMs > 250) {
+            const n   = Math.min(_frameCount, 60);
+            let   sum = 0;
+            for (let i = 0; i < n; i++) sum += _frameTimes[i];
+            const avgDt = sum / n;
+            devPanel.updatePerf(1000 / avgDt, avgDt);
+            _lastPerfMs = nowMs;
+        }
+
+        const timeSecs = (nowMs - startTime) / 1000;
+        const uniforms = { ...fetcher.toUniforms(), ...orbitalParams(), ...devPanel.getParams() };
+
+        renderer.draw(timeSecs, uniforms);
+
+        // UI rerenders at 1 Hz — data changes slowly, no need for 60 fps DOM updates
+        if (timeSecs - lastUiTime >= 1.0) {
+            ui.update(uniforms);
+            lastUiTime = timeSecs;
+        }
+
+        rafId = requestAnimationFrame(frame);
+    }
+
+    rafId = requestAnimationFrame(frame);
+}
+
+window.addEventListener('unload', () => {
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId    = null; }
+    if (aurora)   { aurora.destroy();   aurora   = null; }
+    if (fetcher)  { fetcher.stop();     fetcher  = null; }
+    if (renderer) { renderer.destroy(); renderer = null; }
+});
+
+main();
