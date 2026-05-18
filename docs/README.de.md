@@ -51,6 +51,8 @@ Alle Daten werden live vom **Space Weather Prediction Center (SWPC) der NOAA** a
 | **P** | Berechnet aus Dichte + Geschwindigkeit | Dynamischer Druck auf die Magnetopause [nPa] | 1 min |
 | **Kp** | Globales Magnetometernetznetz | Planetarischer geomagnetischer Störungsindex (0–9) | 3 min |
 | **Flare** | GOES-Satelliten (Röntgensensoren) | Solarflare-Klasse (A → B → C → M → X) | 1 min |
+| **Dst** | Modelliert — Burton/O'Brien-Kopplung (2000) | Ringstromstärke [nT], aus dem Sonnenwind-Input integriert. Eine Schätzung, *nicht* der offizielle Kyoto-Dst. | 1 min |
+| **Phase** | Abgeleitet aus dDst/dt | Sturmphase — Injektion überwiegt = Hauptphase (↓), Ringstromzerfall überwiegt = Erholung (↑) | 1 min |
 | **Auroren-Ovale** | NOAA OVATION-Modell | Vorhergesagte Auroraleistung pro Grad Breite/Länge | 5 min |
 
 ### Wie die Daten die Darstellung beeinflussen
@@ -65,6 +67,7 @@ Alle Daten werden live vom **Space Weather Prediction Center (SWPC) der NOAA** a
 - **Kp → Größe der Auroren-Ovale**: Ein höherer Kp-Wert dehnt die leuchtenden Ringe in Richtung niedrigerer Breitengrade aus.
 - **Flare → Lichtimpuls**: Ein M- oder X-Flare erzeugt einen sichtbaren Lichtblitz aus Sonnenrichtung.
 - **Geschwindigkeit + Dichte → Helligkeit des inneren Plasmascheins**: Erhöhter Sonnenwind komprimiert und erhitzt die innere Magnetosphäre.
+- **Dst → Ringstrom-Anzeige**: Die Dst-Anzeige integriert bei jeder Abfrage die Burton- (1975) / O'Brien-&-McPherron-Gleichung (2000) `dDst*/dt = Q − Dst*/τ` — eine explizite Rückkopplung aus Injektion und Zerfall, druckkorrigiert. Sie fällt während der Sturm-Hauptphase und erholt sich über Stunden.
 
 ---
 

@@ -20,6 +20,7 @@ const DEFAULTS = {
     bz: -2.0, bt: 5.0, bx: 0.0, by: 0.0,
     density: 5.0, speed: 450.0, pressure: 1.7,
     kp: 2.0, flare: 0.0, r0: 10.5, alpha: 0.58,
+    dst: -15.0, dstInject: 0.0, dstDecay: 0.0, dstTau: 10.0,
 };
 
 function safeGet(v, fb) {
@@ -46,6 +47,30 @@ function computeAlpha(bz, pressure) {
 // Map GOES flux [W/m²] to a 0-5+ scale (A=0, B=1, C=2, M=3, X=4, X10=5)
 function computeFlare(flux) {
     return Math.max(0, Math.log10(Math.max(flux, 1e-9)) + 9);
+}
+
+// ── Ring-current / Dst model ──────────────────────────────────────────────────
+// Burton et al. (1975) ring-current equation, parameterised by O'Brien &
+// McPherron (2000):  dDst*/dt = Q(VBs) − Dst*/τ(VBs),  then pressure-corrected
+//   Dst = Dst* + b·√Pdyn − c.
+// This is the storm feedback loop made explicit: an injection term Q (driven by
+// the rectified solar-wind electric field) fighting a decay term Dst*/τ.
+
+const DST_EC = 0.49;   // VBs injection threshold [mV/m]
+const DST_B  = 7.26;   // pressure-correction coefficient [nT / √nPa]
+const DST_C  = 11.0;   // pressure-correction offset [nT]
+
+// Rectified solar-wind electric field [mV/m]: 1e-3 · V[km/s] · max(−Bz,0)[nT]
+function vbs(speedKms, bz) {
+    return 1e-3 * speedKms * Math.max(-bz, 0);
+}
+// Ring-current injection rate Q [nT/h] (≤ 0 — drives Dst* downward)
+function dstInjectionRate(vbsE) {
+    return vbsE > DST_EC ? -4.4 * (vbsE - DST_EC) : 0.0;
+}
+// Ring-current decay time τ [h]
+function dstDecayTime(vbsE) {
+    return 2.40 * Math.exp(9.74 / (4.69 + vbsE));
 }
 
 function lerp(a, b, t) {
@@ -121,6 +146,8 @@ export class DataFetcher {
         this._hasData  = false; // true after first real fetch
         this._active   = false;
         this._timers   = [];
+        this._dstStar  = null;  // pressure-uncorrected ring-current term [nT]
+        this._dstTime  = 0;     // Date.now() of last Dst integration step
     }
 
     start() {
@@ -176,7 +203,24 @@ export class DataFetcher {
         const alpha    = computeAlpha(bz, pressure);
         const flare    = computeFlare(flux);
 
-        const next = { bz, bt, bx, by, density, speed, pressure, kp, flare, r0, alpha };
+        // Ring-current Dst — integrate dDst*/dt = Q − Dst*/τ in real time.
+        const E   = vbs(speed, bz);
+        const Q   = dstInjectionRate(E);
+        const tau = dstDecayTime(E);
+        const tNow = Date.now();
+        if (this._dstStar === null) {
+            this._dstStar = Q * tau;          // snap to equilibrium — no startup transient
+        } else {
+            // clamp dt to ≤ 15 min so a slept/stale tab can't take a giant Euler step
+            const dtH = Math.min(Math.max((tNow - this._dstTime) / 3.6e6, 0), 0.25);
+            this._dstStar += (Q - this._dstStar / tau) * dtH;
+        }
+        this._dstTime  = tNow;
+        const dstDecay = -this._dstStar / tau;                                  // recovery rate [nT/h]
+        const dst      = this._dstStar + DST_B * Math.sqrt(Math.max(pressure, 0)) - DST_C;
+
+        const next = { bz, bt, bx, by, density, speed, pressure, kp, flare, r0, alpha,
+                       dst, dstInject: Q, dstDecay, dstTau: tau };
 
         // On first real fetch: snap immediately (no lerp from defaults)
         this._prev = this._hasData ? { ...this._curr } : { ...next };
@@ -214,6 +258,10 @@ export class DataFetcher {
             density:  l(this._prev.density,   this._curr.density),
             pressure: l(this._prev.pressure,  this._curr.pressure),
             flare:    l(this._prev.flare,     this._curr.flare),
+            dst:       l(this._prev.dst,       this._curr.dst),
+            dstInject: l(this._prev.dstInject, this._curr.dstInject),
+            dstDecay:  l(this._prev.dstDecay,  this._curr.dstDecay),
+            dstTau:    this._curr.dstTau,
             dataAge:  isFinite(age) ? age / 1000 : 0,
             isStale:  this.isStale,
         };

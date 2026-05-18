@@ -1,843 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" data-lcars-era="tng">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
 <title>AEGIS — Handbuch</title>
-
-
-
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-/* ══════════════════════════════════════════════════════════════════════════════
-   LCARS COLOR SYSTEM — THREE ERAS
-   ══════════════════════════════════════════════════════════════════════════════ */
-
-/* ── TNG STANDARD (Seasons 3-7, default) ───────────────────────────────────── */
-:root,
-[data-lcars-era="tng"] {
-  --lcars-bg:          #000000;
-  --lcars-black:       #000000;
-  --lcars-text:        #FF9966;
-  --lcars-text-bright: #FFCC99;
-  --lcars-peach:       #FF9966;
-  --lcars-tan:         #FFCC99;
-  --lcars-gold:        #F1DF6F;
-  --lcars-orange:      #FF9900;
-  --lcars-mauve:       #CC99CC;
-  --lcars-lavender:    #9999CC;
-  --lcars-periwinkle:  #9999FF;
-  --lcars-blue:        #7799CC;
-  --lcars-sky:         #AAAAFF;
-  --lcars-rose:        #CC6699;
-  --lcars-red:         #CC6666;
-  --lcars-violet:      #664466;
-  --lcars-sidebar:     var(--lcars-mauve);
-  --lcars-topbar:      var(--lcars-peach);
-  --lcars-elbow:       var(--lcars-mauve);
-  --lcars-divider:     var(--lcars-lavender);
-  --lcars-highlight:   var(--lcars-gold);
-  --lcars-alert:       var(--lcars-red);
-  --sidebar-width:     160px;
-  --topbar-height:     32px;
-  --elbow-radius:      40px;
-  --gap:               6px;
-  --display-font:      'Antonio', sans-serif;
-  --mono-font:         'Share Tech Mono', monospace;
-  --alert-vignette:    transparent;
-  --alert-bg:          transparent;
+:root{
+  --bg:#00040e;
+  --txt:rgba(198,218,255,.84);
+  --bright:rgba(220,233,255,.96);
+  --muted:rgba(120,158,205,.62);
+  --line:rgba(60,120,200,.20);
+  --accent:rgba(122,170,228,.92);
+  --mono:'JetBrains Mono','Fira Code','Courier New',monospace;
 }
-
-/* ── SEASONS 1+2 (cooler, more blue/teal palette) ──────────────────────────── */
-[data-lcars-era="s12"] {
-  --lcars-text:        #88BBDD;
-  --lcars-text-bright: #BBDDEE;
-  --lcars-peach:       #6699BB;
-  --lcars-tan:         #88BBCC;
-  --lcars-gold:        #99CCAA;
-  --lcars-orange:      #5599AA;
-  --lcars-mauve:       #8888BB;
-  --lcars-lavender:    #7788AA;
-  --lcars-periwinkle:  #6677CC;
-  --lcars-blue:        #5588AA;
-  --lcars-sky:         #77AADD;
-  --lcars-rose:        #9977AA;
-  --lcars-red:         #AA7788;
-  --lcars-violet:      #444466;
-  --lcars-sidebar:     var(--lcars-mauve);
-  --lcars-topbar:      var(--lcars-peach);
-  --lcars-elbow:       var(--lcars-mauve);
-  --lcars-highlight:   var(--lcars-gold);
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:rgba(90,140,210,.35);color:var(--bright)}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  padding:48px 20px 72px;
 }
-
-/* ── RED ALERT ─────────────────────────────────────────────────────────────── */
-[data-lcars-alert="red"] {
-  --lcars-bg:          #0A0000;
-  --lcars-text:        #FF6644;
-  --lcars-text-bright: #FF8866;
-  --lcars-peach:       #CC3322;
-  --lcars-tan:         #DD5544;
-  --lcars-gold:        #FF4433;
-  --lcars-orange:      #EE2211;
-  --lcars-mauve:       #992222;
-  --lcars-lavender:    #884444;
-  --lcars-periwinkle:  #AA3333;
-  --lcars-blue:        #773333;
-  --lcars-sky:         #BB4444;
-  --lcars-rose:        #CC2244;
-  --lcars-red:         #FF2222;
-  --lcars-violet:      #440000;
-  --lcars-sidebar:     var(--lcars-mauve);
-  --lcars-topbar:      var(--lcars-peach);
-  --lcars-elbow:       var(--lcars-mauve);
-  --lcars-highlight:   var(--lcars-red);
-  --alert-vignette:    rgba(180, 0, 0, 0.12);
-  --alert-bg:          rgba(60, 0, 0, 0.3);
+.doc{max-width:860px;margin:0 auto}
+.doc::before{
+  content:"AEGIS · ACTIVE EARTH GEOMAGNETIC IMAGING SYSTEM";
+  display:block;
+  font-size:10.5px;
+  letter-spacing:.26em;
+  color:var(--muted);
+  border-bottom:1px solid var(--line);
+  padding-bottom:14px;
+  margin-bottom:32px;
 }
-
-/* ── RESET ─────────────────────────────────────────────────────────────────── */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-::selection { background: var(--lcars-orange); color: var(--lcars-black); }
-
-body {
-  background: var(--lcars-bg);
-  color: var(--lcars-text);
-  font-family: var(--mono-font);
-  font-size: 13px;
-  line-height: 1.7;
-  overflow-x: hidden;
-  min-height: 100vh;
-  transition: background 0.5s ease, color 0.3s ease;
+h1{
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:.03em;
+  color:var(--bright);
+  line-height:1.2;
+  margin:4px 0 12px;
 }
-
-/* ── RED ALERT VIGNETTE & PULSE ────────────────────────────────────────────── */
-@keyframes red-alert-pulse {
-  0%, 100% { opacity: 0; }
-  50%      { opacity: 1; }
+h2{
+  font-size:18px;
+  font-weight:700;
+  color:var(--bright);
+  letter-spacing:.02em;
+  margin:46px 0 14px;
+  padding-left:13px;
+  border-left:3px solid var(--accent);
 }
-@keyframes red-alert-border {
-  0%, 100% { box-shadow: inset 0 0 60px rgba(200,0,0,0.05); }
-  50%      { box-shadow: inset 0 0 120px rgba(200,0,0,0.15); }
+h3{
+  font-size:13px;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  margin:28px 0 10px;
 }
-[data-lcars-alert="red"] body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  background: radial-gradient(ellipse at center, transparent 50%, var(--alert-vignette) 100%);
-  animation: red-alert-pulse 2s ease-in-out infinite;
+p{margin:0 0 14px}
+strong{color:var(--bright);font-weight:700}
+em{color:var(--accent);font-style:normal}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+a:hover{color:var(--bright)}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin:3px 0}
+hr{border:0;border-top:1px solid var(--line);margin:32px 0}
+table{width:100%;border-collapse:collapse;margin:6px 0 18px;font-size:12.5px}
+th{
+  text-align:left;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;
+  padding:8px 12px;border-bottom:1px solid var(--line);
 }
-[data-lcars-alert="red"] .lcars-frame {
-  animation: red-alert-border 2s ease-in-out infinite;
-}
-[data-lcars-alert="red"] .lcars-masthead::after {
-  content: 'RED ALERT';
-  position: absolute;
-  top: 14px;
-  right: 80px;
-  font-family: var(--display-font);
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 6px;
-  color: #FF2222;
-  animation: lcars-blink 0.8s ease-in-out infinite;
-  z-index: 10;
-}
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   LCARS FRAME
-   ══════════════════════════════════════════════════════════════════════════════ */
-
-.lcars-frame {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: auto var(--topbar-height) 1fr auto;
-  grid-template-areas:
-    "masthead masthead"
-    "elbow    topbar"
-    "sidebar  content"
-    "footer   footer";
-  min-height: 100vh;
-  gap: var(--gap);
-  padding: var(--gap);
-  transition: box-shadow 0.5s ease;
-}
-
-/* ── MASTHEAD ──────────────────────────────────────────────────────────────── */
-.lcars-masthead {
-  grid-area: masthead;
-  display: flex;
-  align-items: stretch;
-  gap: var(--gap);
-  min-height: 120px;
-  position: relative;
-}
-.lcars-masthead .bracket-left {
-  width: var(--sidebar-width);
-  background: var(--lcars-mauve);
-  border-radius: 0 0 0 var(--elbow-radius);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 12px 14px;
-  flex-shrink: 0;
-  transition: background 0.5s ease;
-}
-.lcars-masthead .bracket-left .sys-label {
-  font-family: var(--display-font);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  line-height: 1.2;
-}
-.lcars-masthead .header-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px 24px;
-  position: relative;
-}
-.lcars-masthead .header-main .meta-bar {
-  display: flex;
-  gap: var(--gap);
-  margin-bottom: var(--gap);
-}
-.lcars-masthead .header-main .meta-pill {
-  height: 18px;
-  padding: 0 16px;
-  border-radius: 9px;
-  font-family: var(--display-font);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  transition: background 0.5s ease;
-}
-.lcars-masthead h1 {
-  font-family: var(--display-font);
-  font-weight: 700;
-  font-size: clamp(2.4rem, 6vw, 4.2rem);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--lcars-tan);
-  line-height: 1;
-  transition: color 0.5s ease;
-}
-.lcars-masthead .subtitle-line {
-  font-family: var(--display-font);
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--lcars-lavender);
-  margin-top: 6px;
-  transition: color 0.5s ease;
-}
-.lcars-masthead .bracket-right {
-  width: 60px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  flex-shrink: 0;
-}
-.lcars-masthead .bracket-right .cap-top {
-  flex: 1;
-  background: var(--lcars-peach);
-  border-radius: 0 20px 20px 0;
-  min-height: 28px;
-  transition: background 0.5s ease;
-}
-.lcars-masthead .bracket-right .cap-mid {
-  height: 28px;
-  background: var(--lcars-gold);
-  border-radius: 0 14px 14px 0;
-  transition: background 0.5s ease;
-}
-.lcars-masthead .bracket-right .cap-bot {
-  height: 20px;
-  background: var(--lcars-lavender);
-  border-radius: 0 10px 10px 0;
-  transition: background 0.5s ease;
-}
-
-/* ── ELBOW ─────────────────────────────────────────────────────────────────── */
-.lcars-elbow {
-  grid-area: elbow;
-  background: var(--lcars-elbow);
-  border-radius: 0 var(--elbow-radius) 0 0;
-  position: relative;
-  transition: background 0.5s ease;
-}
-.lcars-elbow::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: var(--elbow-radius);
-  height: var(--topbar-height);
-  background: var(--lcars-bg);
-  border-radius: var(--elbow-radius) 0 0 0;
-  transition: background 0.5s ease;
-}
-
-/* ── TOP BAR ───────────────────────────────────────────────────────────────── */
-.lcars-topbar {
-  grid-area: topbar;
-  display: flex;
-  gap: var(--gap);
-  align-items: stretch;
-}
-.lcars-topbar .bar-segment {
-  height: var(--topbar-height);
-  border-radius: 0 16px 16px 0;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  font-family: var(--display-font);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background 0.5s ease;
-}
-.lcars-topbar .bar-fill {
-  flex: 1;
-  height: var(--topbar-height);
-  background: var(--lcars-topbar);
-  transition: background 0.5s ease;
-}
-.lcars-topbar .bar-end {
-  width: 60px;
-  height: var(--topbar-height);
-  background: var(--lcars-topbar);
-  border-radius: 0 16px 16px 0;
-  flex-shrink: 0;
-  transition: background 0.5s ease;
-}
-
-/* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
-.lcars-sidebar {
-  grid-area: sidebar;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  padding-top: 4px;
-}
-.lcars-sidebar .sidebar-pill {
-  width: 100%;
-  min-height: 32px;
-  padding: 6px 14px;
-  border-radius: 0 16px 16px 0;
-  font-family: var(--display-font);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  transition: filter 0.15s, background 0.5s ease;
-  cursor: default;
-}
-.lcars-sidebar .sidebar-pill:hover { filter: brightness(1.2); }
-.lcars-sidebar .sidebar-spacer {
-  flex: 1;
-  min-height: 20px;
-  width: 100%;
-  background: var(--lcars-violet);
-  border-radius: 0 8px 8px 0;
-  transition: background 0.5s ease;
-}
-.lcars-sidebar .sidebar-readout {
-  width: 100%;
-  padding: 4px 14px;
-  font-family: var(--mono-font);
-  font-size: 10px;
-  color: var(--lcars-lavender);
-  letter-spacing: 1px;
-  transition: color 0.5s ease;
-}
-
-/* Sidebar pill color cycling */
-.lcars-sidebar .sidebar-pill:nth-child(8n+1) { background: var(--lcars-mauve); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+2) { background: var(--lcars-lavender); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+3) { background: var(--lcars-peach); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+4) { background: var(--lcars-gold); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+5) { background: var(--lcars-mauve); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+6) { background: var(--lcars-sky); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+7) { background: var(--lcars-tan); }
-.lcars-sidebar .sidebar-pill:nth-child(8n+8) { background: var(--lcars-orange); }
-
-/* TOC inside sidebar */
-.lcars-sidebar .toc ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-}
-.lcars-sidebar .toc ul ul { display: none; }
-.lcars-sidebar .toc > ul > li > a {
-  display: block;
-  width: 100%;
-  min-height: 32px;
-  padding: 6px 14px;
-  border-radius: 0 16px 16px 0;
-  font-family: var(--display-font);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  transition: filter 0.15s, background 0.5s ease;
-}
-.lcars-sidebar .toc > ul > li > a:hover { filter: brightness(1.25); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+1) > a { background: var(--lcars-mauve); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+2) > a { background: var(--lcars-lavender); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+3) > a { background: var(--lcars-peach); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+4) > a { background: var(--lcars-gold); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+5) > a { background: var(--lcars-tan); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+6) > a { background: var(--lcars-sky); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+7) > a { background: var(--lcars-orange); }
-.lcars-sidebar .toc > ul > li:nth-child(8n+8) > a { background: var(--lcars-rose); }
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   CONTROL PANEL — Easter Egg Interface Elements
-   ══════════════════════════════════════════════════════════════════════════════ */
-.lcars-controls {
-  width: 100%;
-  margin-top: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.lcars-controls .ctrl-header {
-  background: var(--lcars-violet);
-  padding: 4px 14px;
-  border-radius: 0 8px 8px 0;
-  font-family: var(--display-font);
-  font-weight: 700;
-  font-size: 9px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--lcars-mauve);
-  transition: color 0.5s, background 0.5s;
-}
-.lcars-ctrl-btn {
-  width: 100%;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 0 12px 12px 0;
-  font-family: var(--display-font);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--lcars-black);
-  cursor: pointer;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: filter 0.1s, background 0.5s ease;
-  position: relative;
-  overflow: hidden;
-}
-.lcars-ctrl-btn:hover { filter: brightness(1.25); }
-.lcars-ctrl-btn:active { filter: brightness(0.85); }
-.lcars-ctrl-btn .ctrl-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--lcars-black);
-  flex-shrink: 0;
-  transition: background 0.3s;
-}
-.ctrl-red-alert { background: var(--lcars-red); }
-[data-lcars-alert="red"] .ctrl-red-alert {
-  background: #FF2222;
-  animation: lcars-blink 1.5s ease-in-out infinite;
-}
-.ctrl-era-s12 { background: var(--lcars-sky); }
-.ctrl-era-tng { background: var(--lcars-tan); }
-.lcars-controls .ctrl-sep {
-  height: 4px;
-  background: var(--lcars-violet);
-  border-radius: 0 2px 2px 0;
-  margin: 2px 0;
-  transition: background 0.5s;
-}
-
-/* ── MAIN CONTENT ──────────────────────────────────────────────────────────── */
-.lcars-content {
-  grid-area: content;
-  padding: 24px 32px 40px 24px;
-  counter-reset: lcars-section;
-  overflow-x: hidden;
-}
-
-/* ── ABSTRACT ──────────────────────────────────────────────────────────────── */
-.abstract {
-  border: 1px solid var(--lcars-lavender);
-  border-left: 4px solid var(--lcars-lavender);
-  padding: 18px 20px;
-  margin: 0 0 28px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--lcars-text);
-  transition: border-color 0.5s, color 0.5s;
-}
-.abstract strong {
-  display: block;
-  margin-bottom: 8px;
-  font-family: var(--display-font);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--lcars-sky);
-  transition: color 0.5s;
-}
-
-/* ── HEADINGS ──────────────────────────────────────────────────────────────── */
-.lcars-content h2 {
-  counter-increment: lcars-section;
-  font-family: var(--display-font);
-  font-weight: 700;
-  font-size: 28px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--lcars-tan);
-  margin: 44px 0 4px;
-  line-height: 1;
-  transition: color 0.5s;
-}
-.lcars-content h2::before {
-  content: counter(lcars-section, decimal-leading-zero) '-' counter(lcars-section, decimal-leading-zero) counter(lcars-section, decimal-leading-zero);
-  display: block;
-  font-family: var(--display-font);
-  font-weight: 600;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--lcars-lavender);
-  margin-bottom: 4px;
-  transition: color 0.5s;
-}
-.lcars-content h2:first-child { margin-top: 0; }
-
-.lcars-section-bar {
-  display: flex;
-  gap: var(--gap);
-  margin: 8px 0 18px;
-  height: 8px;
-}
-.lcars-section-bar .seg1 { flex: 3; border-radius: 4px; transition: background 0.5s; }
-.lcars-section-bar .seg2 { flex: 1; border-radius: 4px; transition: background 0.5s; }
-.lcars-section-bar .seg3 { flex: 2; border-radius: 4px; transition: background 0.5s; }
-
-h3 {
-  font-family: var(--display-font);
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--lcars-gold);
-  margin: 28px 0 10px;
-  transition: color 0.5s;
-}
-h4 {
-  font-family: var(--display-font);
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--lcars-mauve);
-  margin: 20px 0 8px;
-  transition: color 0.5s;
-}
-h5 {
-  font-family: var(--mono-font);
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--lcars-lavender);
-  margin: 16px 0 6px;
-}
-
-/* ── PROSE ─────────────────────────────────────────────────────────────────── */
-p { font-size: 13px; color: var(--lcars-text); margin: 10px 0; line-height: 1.7; max-width: 72ch; transition: color 0.5s; }
-strong { color: var(--lcars-text-bright); font-weight: 700; }
-em { color: var(--lcars-gold); font-style: normal; }
-a { color: var(--lcars-sky); text-decoration: none; transition: color 0.5s; }
-a:hover { color: var(--lcars-gold); text-decoration: underline; }
-ul, ol { margin: 10px 0 14px 20px; }
-li { margin-bottom: 5px; max-width: 70ch; line-height: 1.7; }
-li::marker { color: var(--lcars-mauve); }
-ul > li { list-style-type: '// '; }
-
-hr {
-  border: none; height: 6px; margin: 28px 0; border-radius: 3px;
-  background: linear-gradient(to right,
-    var(--lcars-mauve) 0%, var(--lcars-mauve) 25%,
-    transparent 25%, transparent 26%,
-    var(--lcars-peach) 26%, var(--lcars-peach) 45%,
-    transparent 45%, transparent 46%,
-    var(--lcars-lavender) 46%, var(--lcars-lavender) 100%);
-}
-
-/* ── CODE ──────────────────────────────────────────────────────────────────── */
-code {
-  background: #0C0C10; border: 1px solid var(--lcars-violet);
-  padding: 1px 8px; font-size: 12px; color: var(--lcars-gold);
-  font-family: var(--mono-font); transition: border-color 0.5s, color 0.5s;
-}
-pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
-pre {
-  background: #07070A; border: 1px solid #1A1A22;
-  border-left: 4px solid var(--lcars-lavender);
-  padding: 18px 22px; margin: 14px 0; font-size: 12px; line-height: 1.85;
-  overflow-x: auto; color: var(--lcars-peach); font-family: var(--mono-font);
-  position: relative; transition: border-color 0.5s, color 0.5s;
-}
-pre::after {
-  content: 'DATA'; position: absolute; top: 6px; right: 10px;
-  font-family: var(--display-font); font-size: 9px; font-weight: 600;
-  letter-spacing: 2px; color: var(--lcars-violet); transition: color 0.5s;
-}
-.codehilite pre { background: #07070A; color: var(--lcars-peach); }
-.codehilite .k, .codehilite .kn, .codehilite .kd, .codehilite .kp { color: var(--lcars-sky); }
-.codehilite .nf, .codehilite .nb { color: var(--lcars-gold); }
-.codehilite .c, .codehilite .c1, .codehilite .cm, .codehilite .ch { color: var(--lcars-violet); font-style: italic; }
-.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sa { color: var(--lcars-tan); }
-.codehilite .kt, .codehilite .nc { color: var(--lcars-mauve); }
-.codehilite .cp { color: var(--lcars-rose); }
-.codehilite .o { color: var(--lcars-lavender); }
-.codehilite .mi, .codehilite .mf { color: var(--lcars-gold); }
-
-/* ── TABLES ────────────────────────────────────────────────────────────────── */
-table { width: 100%; border-collapse: separate; border-spacing: 0 var(--gap); margin: 16px 0; font-size: 12px; }
-th {
-  text-align: left; padding: 8px 16px; background: var(--lcars-violet);
-  font-family: var(--display-font); font-weight: 700; font-size: 11px;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--lcars-mauve);
-  border: none; transition: background 0.5s, color 0.5s;
-}
-th:first-child { border-radius: 6px 0 0 6px; }
-th:last-child  { border-radius: 0 6px 6px 0; }
-td { padding: 8px 16px; border: none; border-bottom: 1px solid #1A1A22; font-size: 12px; vertical-align: top; color: var(--lcars-text); transition: color 0.5s; }
-tr:hover td { background: #0C0C10; }
-
-/* ── BLOCKQUOTE ────────────────────────────────────────────────────────────── */
-blockquote {
-  border-left: 4px solid var(--lcars-gold); background: #0A0A0E;
-  padding: 14px 18px; margin: 16px 0; font-size: 13px; line-height: 1.75;
-  position: relative; transition: border-color 0.5s;
-}
-blockquote::before {
-  content: 'NOTE'; position: absolute; top: 6px; right: 10px;
-  font-family: var(--display-font); font-size: 9px; font-weight: 600;
-  letter-spacing: 2px; color: var(--lcars-violet);
-}
-blockquote p { margin: 4px 0; color: var(--lcars-gold); }
-
-/* ── DT/DD ─────────────────────────────────────────────────────────────────── */
-dt { font-family: var(--display-font); font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: var(--lcars-tan); margin-top: 14px; transition: color 0.5s; }
-dd { margin-left: 24px; color: var(--lcars-text); font-size: 12px; margin-bottom: 4px; }
-
-/* ── FOOTNOTES ─────────────────────────────────────────────────────────────── */
-.footnote { border-top: 2px solid var(--lcars-violet); margin-top: 32px; padding-top: 16px; font-size: 11px; color: var(--lcars-lavender); }
-.footnote hr { display: none; }
-.footnote ol { margin-left: 18px; }
-
-/* ── DETAILS ───────────────────────────────────────────────────────────────── */
-details { border: 1px solid #1A1A22; border-left: 4px solid var(--lcars-mauve); background: #07070A; margin: 16px 0; transition: border-color 0.5s; }
-details > summary {
-  cursor: pointer; list-style: none; padding: 10px 16px;
-  font-family: var(--display-font); font-weight: 700; font-size: 12px;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--lcars-mauve); user-select: none; transition: color 0.5s;
-}
-details > summary::-webkit-details-marker { display: none; }
-details > summary::before { content: '\25B6'; font-size: 9px; margin-right: 10px; color: var(--lcars-mauve); display: inline-block; transition: transform 0.15s ease, color 0.5s; }
-details[open] > summary::before { transform: rotate(90deg); }
-details > summary:hover { color: var(--lcars-gold); }
-details[open] > summary { border-bottom: 1px solid #1A1A22; }
-details > div, details > p { padding: 14px 16px; }
-
-/* ── ANIMATIONS ────────────────────────────────────────────────────────────── */
-@keyframes lcars-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
-@keyframes lcars-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; animation: lcars-pulse 2s ease-in-out infinite; }
-.status-dot.active { background: var(--lcars-gold); }
-.status-dot.alert  { background: var(--lcars-red); animation: lcars-blink 0.8s ease-in-out infinite; }
-.status-dot.ok     { background: var(--lcars-sky); }
-[data-lcars-alert="red"] .status-dot.active { background: #FF2222; animation: lcars-blink 0.6s ease-in-out infinite; }
-[data-lcars-alert="red"] .status-dot.ok { background: #CC3333; }
-
-/* ── FOOTER ────────────────────────────────────────────────────────────────── */
-.lcars-footer { grid-area: footer; display: flex; gap: var(--gap); align-items: stretch; height: 40px; }
-.lcars-footer .foot-elbow {
-  width: var(--sidebar-width); background: var(--lcars-mauve);
-  border-radius: 0 0 0 var(--elbow-radius); position: relative; transition: background 0.5s ease;
-}
-.lcars-footer .foot-elbow::before {
-  content: ''; position: absolute; top: 0; right: 0;
-  width: var(--elbow-radius); height: 100%;
-  background: var(--lcars-bg); border-radius: 0 0 var(--elbow-radius) 0; transition: background 0.5s ease;
-}
-.lcars-footer .foot-bar { flex: 1; display: flex; gap: var(--gap); align-items: stretch; }
-.lcars-footer .foot-info {
-  flex: 1; background: var(--lcars-peach); display: flex; align-items: center;
-  padding: 0 18px; font-family: var(--display-font); font-size: 12px;
-  font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-  color: var(--lcars-black); white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; transition: background 0.5s ease;
-}
-.lcars-footer .foot-seg {
-  width: 80px; border-radius: 0 0 16px 0; display: flex;
-  align-items: center; justify-content: center;
-  font-family: var(--display-font); font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; color: var(--lcars-black); flex-shrink: 0; transition: background 0.5s ease;
-}
-.lcars-footer .foot-seg:last-child { border-radius: 0 0 20px 0; }
-[data-lcars-alert="red"] .lcars-footer .foot-info { animation: lcars-blink 1.5s ease-in-out infinite; }
-
-/* ── RESPONSIVE ────────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  :root { --sidebar-width: 0px; --elbow-radius: 24px; }
-  .lcars-frame { grid-template-columns: 1fr; grid-template-areas: "masthead" "topbar" "content" "footer"; }
-  .lcars-elbow, .lcars-sidebar { display: none; }
-  .lcars-masthead .bracket-left, .lcars-masthead .bracket-right { display: none; }
-  .lcars-footer .foot-elbow { display: none; }
-  .lcars-content { padding: 20px 18px 32px; }
-}
-
-/* ── PRINT ─────────────────────────────────────────────────────────────────── */
-@media print {
-  body { background: #fff; color: #1a1a1a; }
-  body::before { display: none !important; }
-  .lcars-frame { display: block; animation: none !important; }
-  .lcars-sidebar, .lcars-elbow, .lcars-topbar, .lcars-footer { display: none; }
-  .lcars-masthead { display: block; min-height: auto; border-bottom: 3px solid #1a1a1a; }
-  .lcars-masthead::after { display: none; }
-  .lcars-masthead .bracket-left, .lcars-masthead .bracket-right { display: none; }
-  .lcars-masthead h1 { color: #1a1a1a; font-size: 2rem; }
-  .lcars-content { padding: 0; }
-  pre { border-left: 3px solid #999; }
-  a { color: #1a1a1a; }
+td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:hover td{background:rgba(60,120,200,.05)}
+.doc>p:first-of-type{color:var(--accent);letter-spacing:.16em;font-size:12px}
+footer{
+  margin-top:48px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--muted);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
 }
 </style>
 </head>
 <body>
+<main class="doc">
 
-<div class="lcars-frame">
-
-  <!-- ── MASTHEAD ────────────────────────────────────────────────────────────── -->
-  <div class="lcars-masthead">
-    <div class="bracket-left">
-      <div class="sys-label">
-        LCARS<br>
-        
-      </div>
-    </div>
-    <div class="header-main">
-      <div class="meta-bar">
-        
-        
-        
-      </div>
-      <h1>AEGIS — Handbuch</h1>
-      
-    </div>
-    <div class="bracket-right">
-      <div class="cap-top"></div>
-      <div class="cap-mid"></div>
-      <div class="cap-bot"></div>
-    </div>
-  </div>
-
-  <!-- ── ELBOW ───────────────────────────────────────────────────────────────── -->
-  <div class="lcars-elbow"></div>
-
-  <!-- ── TOP BAR ─────────────────────────────────────────────────────────────── -->
-  <div class="lcars-topbar">
-    <div class="bar-segment" style="background:var(--lcars-lavender)"></div>
-    <div class="bar-segment" style="background:var(--lcars-gold)"></div>
-    <div class="bar-fill"></div>
-    <div class="bar-end"></div>
-  </div>
-
-  <!-- ── SIDEBAR ─────────────────────────────────────────────────────────────── -->
-  <div class="lcars-sidebar">
-    
-    <div class="toc">
-<ul>
-<li><a href="#aegis-handbuch">AEGIS — Handbuch</a><ul>
-<li><a href="#was-du-siehst">Was du siehst</a></li>
-<li><a href="#die-verbindung-sonne-sonnenwind-magnetosphare">Die Verbindung: Sonne → Sonnenwind → Magnetosphäre</a></li>
-<li><a href="#datenquellen">Datenquellen</a><ul>
-<li><a href="#wie-die-daten-die-darstellung-beeinflussen">Wie die Daten die Darstellung beeinflussen</a></li>
-</ul>
-</li>
-<li><a href="#solarereignisse-flares-cmes-filamente-protuberanzen">Solarereignisse: Flares, CMEs, Filamente, Protuberanzen</a></li>
-<li><a href="#weltraumwetter-im-alltag">Weltraumwetter im Alltag</a></li>
-<li><a href="#kp-g-sturm-skala-auf-einen-blick">Kp / G-Sturm-Skala auf einen Blick</a></li>
-</ul>
-</li>
-</ul>
-</div>
-
-    
-    <div class="sidebar-spacer"></div>
-
-    <!-- ── CONTROL PANEL ────────────────────────────────────────────────────── -->
-    <div class="lcars-controls">
-      <div class="ctrl-header">Tactical</div>
-      <button class="lcars-ctrl-btn ctrl-red-alert" onclick="toggleRedAlert()" aria-label="Toggle Red Alert">
-        <span class="ctrl-indicator"></span>
-        Red Alert
-      </button>
-      <div class="ctrl-sep"></div>
-      <div class="ctrl-header">Display Config</div>
-      <button class="lcars-ctrl-btn ctrl-era-tng" onclick="setEra('tng')" aria-label="TNG Seasons 3-7">
-        <span class="ctrl-indicator"></span>
-        TNG S3-7
-      </button>
-      <button class="lcars-ctrl-btn ctrl-era-s12" onclick="setEra('s12')" aria-label="TNG Seasons 1-2">
-        <span class="ctrl-indicator"></span>
-        TNG S1-2
-      </button>
-    </div>
-
-    <div class="sidebar-readout">
-      <span class="status-dot active"></span> <span id="sys-status">system active</span><br>
-      
-    </div>
-  </div>
-
-  <!-- ── CONTENT ─────────────────────────────────────────────────────────────── -->
-  <div class="lcars-content">
-
-    
-
-    <h1 id="aegis-handbuch">AEGIS — Handbuch</h1>
+<h1 id="aegis-handbuch">AEGIS — Handbuch</h1>
 <p><strong>A</strong>ctive <strong>E</strong>arth <strong>G</strong>eomagnetic <strong>I</strong>maging <strong>S</strong>ystem</p>
 <p>Eine Echtzeit-3D-Visualisierung der Erdmagnetosphäre im Browser, gespeist mit Live-Daten des amerikanischen Weltraumwetterdienstes NOAA.</p>
 <hr />
@@ -956,6 +211,18 @@ details > div, details > p { padding: 14px 16px; }
 <td>1 min</td>
 </tr>
 <tr>
+<td><strong>Dst</strong></td>
+<td>Modelliert — Burton/O&rsquo;Brien-Kopplung (2000)</td>
+<td>Ringstromstärke [nT], aus dem Sonnenwind-Input integriert. Eine Schätzung, <em>nicht</em> der offizielle Kyoto-Dst.</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>Abgeleitet aus dDst/dt</td>
+<td>Sturmphase — Injektion überwiegt = Hauptphase (↓), Ringstromzerfall überwiegt = Erholung (↑)</td>
+<td>1 min</td>
+</tr>
+<tr>
 <td><strong>Auroren-Ovale</strong></td>
 <td>NOAA OVATION-Modell</td>
 <td>Vorhergesagte Auroraleistung pro Grad Breite/Länge</td>
@@ -975,6 +242,7 @@ details > div, details > p { padding: 14px 16px; }
 <li><strong>Kp → Größe der Auroren-Ovale</strong>: Ein höherer Kp-Wert dehnt die leuchtenden Ringe in Richtung niedrigerer Breitengrade aus.</li>
 <li><strong>Flare → Lichtimpuls</strong>: Ein M- oder X-Flare erzeugt einen sichtbaren Lichtblitz aus Sonnenrichtung.</li>
 <li><strong>Geschwindigkeit + Dichte → Helligkeit des inneren Plasmascheins</strong>: Erhöhter Sonnenwind komprimiert und erhitzt die innere Magnetosphäre.</li>
+<li><strong>Dst → Ringstrom-Anzeige</strong>: Die Dst-Anzeige integriert bei jeder Abfrage die Burton- (1975) / O&rsquo;Brien-&amp;-McPherron-Gleichung (2000) <em>dDst*/dt = Q − Dst*/τ</em> — eine explizite Rückkopplung aus Injektion und Zerfall, druckkorrigiert. Sie fällt während der Sturm-Hauptphase und erholt sich über Stunden.</li>
 </ul>
 <hr />
 <h2 id="solarereignisse-flares-cmes-filamente-protuberanzen">Solarereignisse: Flares, CMEs, Filamente, Protuberanzen</h2>
@@ -1078,75 +346,11 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 <hr />
 <p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · Erdbilder: NASA Blue Marble / Black Marble</em></p>
 
-  </div>
+<footer>
+  <span>AEGIS — Active Earth Geomagnetic Imaging System</span>
+  <span>Handbuch · DE</span>
+</footer>
 
-  <!-- ── FOOTER BAR ──────────────────────────────────────────────────────────── -->
-  <div class="lcars-footer">
-    <div class="foot-elbow"></div>
-    <div class="foot-bar">
-      <div class="foot-info" id="foot-info-text">
-        AEGIS — Handbuch
-      </div>
-      <div class="foot-seg" style="background:var(--lcars-gold)">
-        <span class="status-dot active" style="animation:none;opacity:1"></span>
-      </div>
-      <div class="foot-seg" style="background:var(--lcars-lavender)" id="foot-sector">47</div>
-      <div class="foot-seg" style="background:var(--lcars-mauve)" id="foot-status">OK</div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-(function() {
-  /* Section bars */
-  var palette = [
-    ['var(--lcars-peach)','var(--lcars-lavender)','var(--lcars-mauve)'],
-    ['var(--lcars-gold)','var(--lcars-sky)','var(--lcars-peach)'],
-    ['var(--lcars-mauve)','var(--lcars-orange)','var(--lcars-lavender)'],
-    ['var(--lcars-sky)','var(--lcars-gold)','var(--lcars-rose)'],
-    ['var(--lcars-tan)','var(--lcars-mauve)','var(--lcars-gold)'],
-    ['var(--lcars-lavender)','var(--lcars-peach)','var(--lcars-sky)'],
-  ];
-  document.querySelectorAll('.lcars-content h2').forEach(function(h2, i) {
-    var c = palette[i % palette.length];
-    var bar = document.createElement('div');
-    bar.className = 'lcars-section-bar';
-    bar.innerHTML =
-      '<div class="seg1" style="background:'+c[0]+'"></div>'+
-      '<div class="seg2" style="background:'+c[1]+'"></div>'+
-      '<div class="seg3" style="background:'+c[2]+'"></div>';
-    h2.parentNode.insertBefore(bar, h2.nextSibling);
-  });
-
-  /* Red Alert */
-  window.toggleRedAlert = function() {
-    var html = document.documentElement;
-    var on = html.getAttribute('data-lcars-alert') === 'red';
-    var s = document.getElementById('sys-status');
-    var f = document.getElementById('foot-status');
-    if (on) {
-      html.removeAttribute('data-lcars-alert');
-      if (s) s.textContent = 'system active';
-      if (f) f.textContent = 'OK';
-    } else {
-      html.setAttribute('data-lcars-alert', 'red');
-      if (s) s.textContent = 'RED ALERT';
-      if (f) f.textContent = '!!';
-    }
-  };
-
-  /* Era Switch */
-  window.setEra = function(era) {
-    var html = document.documentElement;
-    html.setAttribute('data-lcars-era', era);
-    html.removeAttribute('data-lcars-alert');
-    var s = document.getElementById('sys-status');
-    var f = document.getElementById('foot-status');
-    if (s) s.textContent = era === 's12' ? 'era: 2364' : 'system active';
-    if (f) f.textContent = 'OK';
-  };
-})();
-</script>
+</main>
 </body>
 </html>

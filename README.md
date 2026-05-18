@@ -93,7 +93,10 @@ NOAA SWPC / GOES / OVATION  ──▶  data-fetcher.js   ──▶  Shue (1997) 
 
 1. `data-fetcher.js` polls solar wind, Kp and GOES X-ray, derives the Shue et
    al. (1997) magnetopause standoff `r₀` and flaring exponent `α` plus the
-   solar-wind dynamic pressure, and frame-interpolates between polls.
+   solar-wind dynamic pressure, integrates the Burton/O'Brien (2000)
+   ring-current equation for a live Dst estimate, and frame-interpolates
+   between polls. It sits behind `data-source.js` so a replay/timeline source
+   can be dropped in without touching the renderer.
 2. `aurora-texture.js` polls the NOAA OVATION aurora nowcast into two polar
    `R8` textures.
 3. `renderer.js` compiles the program and pushes per-frame uniforms; the only
@@ -128,9 +131,10 @@ index.html            # entry; canvas + status panel mount points
 src/
   main.js             # boot + render loop + orbital (terminator) maths
   renderer.js         # WebGL2 program, textures, per-frame uniforms
-  data-fetcher.js     # NOAA SWPC ingestion + Shue model + interpolation
+  data-source.js      # data-source seam (live today; swappable for replay)
+  data-fetcher.js     # NOAA SWPC ingestion + Shue model + Dst ODE + interpolation
   aurora-texture.js   # OVATION nowcast → polar GL textures
-  ui.js               # live status HUD + EN/DE manual links
+  ui.js               # live status HUD (incl. modeled Dst) + EN/DE manual links
   dev-panel.js        # FPS readout + Settings [F2] tuning panel
 shaders/
   vertex.glsl         # full-screen triangle
@@ -159,6 +163,12 @@ and well-known real-time graphics techniques.
 - Carpenter, D. L., & Anderson, R. R. (1992). *An ISEE/whistler model of
   equatorial electron density in the magnetosphere.* J. Geophys. Res., 97(A2),
   1097–1108. — plasmapause.
+- Burton, R. K., McPherron, R. L., & Russell, C. T. (1975). *An empirical
+  relationship between interplanetary conditions and Dst.* J. Geophys. Res.,
+  80(31), 4204–4214. — ring-current / Dst equation.
+- O'Brien, T. P., & McPherron, R. L. (2000). *An empirical phase space analysis
+  of ring current dynamics.* J. Geophys. Res., 105(A4), 7707–7719. — the
+  injection / decay parameterisation used for the live Dst estimate.
 - Newell, P. T., *et al.* (2009). — OVATION auroral precipitation model
   (delivered operationally as NOAA SWPC's OVATION aurora nowcast).
 - Cooper, P. I. (1969). — solar declination equation, used to place the
@@ -192,8 +202,10 @@ Any errors in the physical interpretation are mine, not the cited authors'.
 
 AEGIS is an **illustrative, schematic** visualization for education and
 outreach. It blends empirical models with artistic interpolation and is **not a
-forecasting or operational tool**. For authoritative space-weather information
-see [NOAA SWPC](https://www.swpc.noaa.gov).
+forecasting or operational tool**. The on-screen Dst is a *modeled estimate*
+from the Burton/O'Brien coupling, not the official Kyoto Dst index. For
+authoritative space-weather information see
+[NOAA SWPC](https://www.swpc.noaa.gov).
 
 ---
 

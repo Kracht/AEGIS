@@ -79,6 +79,8 @@ const TIP = {
     Kp:    'Kp index: planetary geomagnetic activity. 0=quiet, 5=G1 storm, 7=G3 strong, 9=G5 extreme',
     P:     'Solar wind dynamic pressure [nPa] — compresses the magnetopause inward toward Earth',
     Flare: 'GOES X-ray flux class — A/B: background, C: minor, M: moderate, X: major flare',
+    Dst:   'Modeled Dst [nT] — ring-current strength integrated from the Burton/O’Brien (2000) solar-wind coupling. An estimate, not the official Kyoto Dst.',
+    Phase: 'Storm phase from dDst/dt: injection winning = main phase (↓), ring-current decay winning = recovery (↑)',
 };
 
 // ── colour helpers ────────────────────────────────────────────────────────────
@@ -107,6 +109,14 @@ function ageColor(s) {
     if (s < 300) return 'rgba(80,200,120,.75)'; // fresh
     if (s < 900) return '#fd5';                 // getting old
     return '#f44';                              // stale (>15 min)
+}
+
+// Dst storm classification (NOAA/Loewe-Prölss bands)
+function dstColor(d) {
+    if (d > -20)  return 'rgba(212,228,255,.92)'; // quiet
+    if (d > -50)  return '#fd5';                  // weak storm
+    if (d > -100) return '#f93';                  // moderate storm
+    return '#f44';                                // intense storm
 }
 
 // ── formatters ────────────────────────────────────────────────────────────────
@@ -171,6 +181,7 @@ ${row('Bz', 'ss-bz', 'Spd', 'ss-speed')}
   <span class="ss-bar" id="ss-kpbar" style="flex-shrink:0"></span>
 </div>
 ${row('P', 'ss-pressure', 'Flare', 'ss-flare')}
+${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
 <div id="ss-gstorm"></div>
 <hr class="ss-sep">
 <div class="ss-foot">
@@ -184,7 +195,7 @@ ${row('P', 'ss-pressure', 'Flare', 'ss-flare')}
 <div id="ss-stale"></div>`;
     }
 
-    update({ bz, bt, speed, pressure, kp, flare, dataAge, isStale }) {
+    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dataAge, isStale }) {
         if (!this._el) return;
 
         this._s('ss-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)} nT`, bzColor(bz));
@@ -194,6 +205,16 @@ ${row('P', 'ss-pressure', 'Flare', 'ss-flare')}
         this._s('ss-kpbar',    kpBar(kp));
         this._s('ss-pressure', `${pressure.toFixed(1)} nPa`);
         this._s('ss-flare',    formatFlare(flare),       flareColor(flare));
+
+        // Dst is modeled, not measured — the leading "~" marks it as an estimate
+        this._s('ss-dst', `~${dst >= 0 ? '+' : ''}${dst.toFixed(0)} nT`, dstColor(dst));
+        const dRate = dstInject + dstDecay;          // dDst*/dt [nT/h]
+        let phase, pcol;
+        if (dRate < -2)     { phase = 'main ↓';     pcol = '#f93'; }
+        else if (dRate > 2) { phase = 'recovery ↑'; pcol = 'rgba(80,200,120,.78)'; }
+        else                { phase = 'steady';     pcol = 'rgba(212,228,255,.92)'; }
+        this._s('ss-dstphase', phase, pcol);
+
         this._s('ss-age',      formatAge(dataAge),       ageColor(dataAge));
 
         const g    = kpToG(kp);

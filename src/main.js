@@ -2,15 +2,15 @@
 // Boots the WebGL2 renderer, starts the live NOAA data + OVATION aurora
 // pollers, runs the per-frame render loop, and feeds the HUD / dev panel.
 
-import { Renderer }      from './renderer.js';
-import { DataFetcher }   from './data-fetcher.js';
-import { AuroraTexture } from './aurora-texture.js';
+import { Renderer }         from './renderer.js';
+import { createDataSource } from './data-source.js';
+import { AuroraTexture }    from './aurora-texture.js';
 import { UI }            from './ui.js';
 import { DevPanel }      from './dev-panel.js';
 
 let rafId    = null;
 let renderer = null;
-let fetcher  = null;
+let source   = null;
 let aurora   = null;
 let ui       = null;
 let devPanel = null;
@@ -71,8 +71,8 @@ async function main() {
         return;
     }
 
-    fetcher = new DataFetcher();
-    fetcher.start();
+    source = createDataSource();
+    source.start();
 
     aurora = new AuroraTexture(renderer.gl);
     renderer.setAurora(aurora);
@@ -101,7 +101,7 @@ async function main() {
         }
 
         const timeSecs = (nowMs - startTime) / 1000;
-        const uniforms = { ...fetcher.toUniforms(), ...orbitalParams(), ...devPanel.getParams() };
+        const uniforms = { ...source.toUniforms(), ...orbitalParams(), ...devPanel.getParams() };
 
         renderer.draw(timeSecs, uniforms);
 
@@ -120,7 +120,7 @@ async function main() {
 window.addEventListener('unload', () => {
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId    = null; }
     if (aurora)   { aurora.destroy();   aurora   = null; }
-    if (fetcher)  { fetcher.stop();     fetcher  = null; }
+    if (source)   { source.stop();      source   = null; }
     if (renderer) { renderer.destroy(); renderer = null; }
 });
 

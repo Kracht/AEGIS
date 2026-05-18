@@ -51,6 +51,8 @@ All data is fetched live from **NOAA's Space Weather Prediction Center (SWPC)**.
 | **P** | Calculated from density + speed | Dynamic pressure on the magnetopause [nPa] | 1 min |
 | **Kp** | Global network of magnetometers | Planetary geomagnetic disturbance index (0–9) | 3 min |
 | **Flare** | GOES satellite X-ray sensors | Solar flare class (A → B → C → M → X) | 1 min |
+| **Dst** | Modeled — Burton/O'Brien (2000) coupling | Ring-current strength [nT], integrated from the solar-wind input. An estimate, *not* the official Kyoto Dst. | 1 min |
+| **Phase** | Derived from dDst/dt | Storm phase — injection winning = main phase (↓), ring-current decay winning = recovery (↑) | 1 min |
 | **Aurora ovals** | NOAA OVATION model | Forecast auroral power per degree of latitude/longitude | 5 min |
 
 ### How data maps to the visualization
@@ -65,6 +67,7 @@ All data is fetched live from **NOAA's Space Weather Prediction Center (SWPC)**.
 - **Kp → aurora oval size**: Higher Kp expands the glowing rings toward lower latitudes.
 - **Flare → brightness pulse**: An M or X-class flare adds a visible burst of light from the Sun direction.
 - **Speed + density → inner plasma glow intensity**: Elevated solar wind compresses and heats the inner magnetosphere.
+- **Dst → ring-current readout**: The panel's Dst integrates the Burton (1975) / O'Brien & McPherron (2000) equation `dDst*/dt = Q − Dst*/τ` every poll — an explicit injection-versus-decay feedback loop, pressure-corrected. It descends during the storm main phase and recovers over hours.
 
 ---
 
