@@ -7,13 +7,15 @@ import { createDataSource } from './data-source.js';
 import { AuroraTexture }    from './aurora-texture.js';
 import { UI }            from './ui.js';
 import { DevPanel }      from './dev-panel.js';
+import { RenderMode }    from './render-mode.js';
 
-let rafId    = null;
-let renderer = null;
-let source   = null;
-let aurora   = null;
-let ui       = null;
-let devPanel = null;
+let rafId      = null;
+let renderer   = null;
+let source     = null;
+let aurora     = null;
+let ui         = null;
+let devPanel   = null;
+let renderMode = null;
 
 const startTime = performance.now();
 
@@ -78,8 +80,9 @@ async function main() {
     renderer.setAurora(aurora);
     aurora.start();
 
-    ui       = new UI();
-    devPanel = new DevPanel();
+    renderMode = new RenderMode();
+    ui         = new UI(renderMode);
+    devPanel   = new DevPanel(renderMode);
 
     let lastUiTime = -Infinity;
 
@@ -101,7 +104,12 @@ async function main() {
         }
 
         const timeSecs = (nowMs - startTime) / 1000;
-        const uniforms = { ...source.toUniforms(), ...orbitalParams(), ...devPanel.getParams() };
+        const uniforms = {
+            ...source.toUniforms(),
+            ...orbitalParams(),
+            ...devPanel.getParams(),
+            renderMode: renderMode.index,
+        };
 
         renderer.draw(timeSecs, uniforms);
 

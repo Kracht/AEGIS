@@ -130,4 +130,18 @@ Weltraumwetter ist keine rein akademische Angelegenheit. Die Auswirkungen sind m
 
 ---
 
+## Darstellungsmodi (F3)
+
+AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit `F3` (oder Klick auf **Mode: …** oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.
+
+| Modus | Was zu sehen ist | Wozu er gut ist |
+|---|---|---|
+| **Visual** | Die volle volumetrische Szene — ray-marched Magnetosheath, Plasmaschicht, Quallen-Feldlinien, Polarlicht, Ringstrom. | Sehen, *wie der erdnahe Weltraum gerade aussieht*. |
+| **Structural** | Nur die unsichtbaren **Flächen**: Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6 — als dünne cyan-weiße Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28%. | Die Optik weglassen und fragen: *„Welche Flächen liegen eigentlich unter dem Bild?"* Die Linien verformen sich live mit `r₀`, `α` und der sturmabhängigen Schalenverzerrung — man sieht direkt, wie sich die Magnetopause komprimiert und der Schweif ausbeult. |
+| **Data** | Visual darunter, **plus** eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung `lag` = `1,5 × 10⁶ km ÷ v_sw`. | Fragen: *„Welche Zahlen stecken hinter diesem Bild?"* Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen. |
+
+`F2` blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.
+
+---
+
 *Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · Erdbilder: NASA Blue Marble / Black Marble*

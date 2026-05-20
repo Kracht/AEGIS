@@ -88,6 +88,7 @@ export class Renderer {
             u_limbScale:       gl.getUniformLocation(this.program, 'u_limbScale'),
             u_fieldScale:      gl.getUniformLocation(this.program, 'u_fieldScale'),
             u_volExtinct:      gl.getUniformLocation(this.program, 'u_volExtinct'),
+            u_renderMode:      gl.getUniformLocation(this.program, 'u_renderMode'),
         };
 
         // Earth textures: load asynchronously, replacing a 1×1 ocean-blue placeholder.
@@ -181,6 +182,7 @@ export class Renderer {
         gl.uniform1f(this.uniforms.u_limbScale,       params.limbScale       ?? 1.0);
         gl.uniform1f(this.uniforms.u_fieldScale,      params.fieldScale      ?? 1.0);
         gl.uniform1f(this.uniforms.u_volExtinct,      params.volExtinct      ?? 1.0);
+        gl.uniform1i(this.uniforms.u_renderMode,      params.renderMode      ?? 0);
 
         // Aurora OVATION textures — fallback to 1×1 zero until data arrives
         const texNH = this._aurora?.texNH ?? this._fallbackTex;

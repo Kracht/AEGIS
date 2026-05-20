@@ -69,6 +69,54 @@ const STYLE = `
     margin-top: 0.1rem;
     min-height: 1em;
 }
+
+/* Data-mode overlay (Phase 3) — bottom-right; shown when renderMode == 'data' */
+#data-panel {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: rgba(0, 4, 14, 0.84);
+    border: 1px solid rgba(60, 120, 200, 0.22);
+    border-radius: 3px;
+    padding: 0.65rem 0.95rem 0.55rem;
+    width: 320px;
+    color: rgba(190, 215, 255, 0.82);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 10.5px;
+    line-height: 1.55;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    pointer-events: auto;
+    z-index: 15;
+    display: none;
+    user-select: none;
+}
+#data-panel.dp-show { display: block; }
+.dp-head {
+    color: rgba(95, 160, 245, 0.88);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+.dp-sec {
+    color: rgba(70, 120, 185, 0.58);
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    margin: 0.45rem 0 0.15rem;
+    padding-bottom: 0.1rem;
+    border-bottom: 1px solid rgba(60, 120, 200, 0.14);
+}
+.dp-line {
+    display: grid;
+    grid-template-columns: 3.4em 5.6em 1fr;
+    align-items: baseline;
+    column-gap: 0.5em;
+    font-size: 10.5px;
+}
+.dp-k    { color: rgba(120, 158, 205, 0.66); }
+.dp-v    { color: rgba(212, 228, 255, 0.94); text-align: right; font-variant-numeric: tabular-nums; }
+.dp-meta { color: rgba(100, 138, 180, 0.62); font-size: 9.5px; }
 `;
 
 // Hover tooltip text per label
@@ -161,8 +209,45 @@ function row(k1, id1, k2, id2, extraRight = '') {
 
 // ── UI class ──────────────────────────────────────────────────────────────────
 
+// Data-mode overlay rows — keyed by uniform, with units, citation and the
+// scene feature each value drives. Kept here so the markup is a single
+// source of truth that update() can re-populate from live uniforms.
+const DATA_ROWS = [
+    { section: 'L1 SOLAR WIND' },
+    { k: 'Bz',  id: 'dp-bz',       u: 'nT',     cite: 'DSCOVR/MAG @ L1',         drive: 'reconnection · X-line firing' },
+    { k: 'Bt',  id: 'dp-bt',       u: 'nT',     cite: 'DSCOVR/MAG',               drive: 'coupling strength' },
+    { k: 'Spd', id: 'dp-speed',    u: 'km/s',   cite: 'DSCOVR/PLASMAG',           drive: 'shock heating · L1 lag' },
+    { k: 'n',   id: 'dp-density',  u: 'cm⁻³',   cite: 'DSCOVR/PLASMAG',           drive: 'dynamic pressure (ρv²)' },
+    { k: 'P',   id: 'dp-pressure', u: 'nPa',    cite: 'ρv² · 1.67e-6',            drive: 'magnetopause compression' },
+    { section: 'MAGNETOSPHERE (DERIVED)' },
+    { k: 'r₀',  id: 'dp-r0',       u: 'R_E',    cite: 'Shue 1997',                drive: 'subsolar magnetopause standoff' },
+    { k: 'α',   id: 'dp-alpha',    u: '',       cite: 'Shue 1997',                drive: 'magnetopause flaring' },
+    { section: 'INDICES' },
+    { k: 'Kp',  id: 'dp-kp',       u: '',       cite: 'NOAA planetary K',         drive: 'aurora oval extent' },
+    { k: 'Flr', id: 'dp-flare',    u: '',       cite: 'GOES X-ray 0.1–0.8 nm',    drive: 'flare flash · radio blackouts' },
+    { section: 'DST RING CURRENT' },
+    { k: 'Dst', id: 'dp-dst',      u: 'nT',     cite: 'Burton 1975 / O\'Brien 2000', drive: 'partial ring current · main/recovery' },
+    { k: 'τ',   id: 'dp-dsttau',   u: 'h',      cite: 'O\'Brien & McPherron 2000', drive: 'ring-current decay timescale' },
+    { k: 'Q',   id: 'dp-dstinj',   u: 'nT/h',   cite: 'VBs injection',            drive: 'ring-current loading rate' },
+    { section: 'PHYSICAL TIME (Phase 1)' },
+    { k: 'lag', id: 'dp-lag',      u: 'min',    cite: '1.5×10⁶ km / v_sw',        drive: 'scene = L1 (now − lag)' },
+    { k: 'age', id: 'dp-age',      u: '',       cite: 'last fetch',               drive: 'data freshness' },
+];
+
+function dataPanelHTML() {
+    const rows = DATA_ROWS.map(r => {
+        if (r.section) return `<div class="dp-sec">${r.section}</div>`;
+        return `<div class="dp-line">
+  <span class="dp-k">${r.k}</span>
+  <span class="dp-v" id="${r.id}">—</span>
+  <span class="dp-meta" title="${r.cite}">→ ${r.drive}</span>
+</div>`;
+    }).join('');
+    return `<div class="dp-head">DATA — live uniforms · F3 cycles modes</div>${rows}`;
+}
+
 export class UI {
-    constructor() {
+    constructor(renderMode = null) {
         this._el = document.getElementById('status');
         if (!this._el) return;
 
@@ -193,9 +278,21 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
 </div>
 <div class="ss-manual">Manual: <a href="./docs/readme.html" target="_blank" rel="noopener">EN</a> | <a href="./docs/readme.de.html" target="_blank" rel="noopener">DE</a></div>
 <div id="ss-stale"></div>`;
+
+        // Data-mode overlay — built once, shown only when renderMode == 'data'.
+        const dp = document.createElement('div');
+        dp.id = 'data-panel';
+        dp.innerHTML = dataPanelHTML();
+        document.body.appendChild(dp);
+        this._dataPanel = dp;
+        if (renderMode) {
+            renderMode.onChange(mode => {
+                dp.classList.toggle('dp-show', mode === 'data');
+            });
+        }
     }
 
-    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dataAge, isStale }) {
+    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dstTau, density, r0, alpha, lagSeconds, dataAge, isStale }) {
         if (!this._el) return;
 
         this._s('ss-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)} nT`, bzColor(bz));
@@ -229,6 +326,27 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
 
         const stEl = document.getElementById('ss-stale');
         if (stEl) stEl.textContent = isStale ? '⚠ stale data — last update > 15 min' : '';
+
+        // ── Data-mode overlay rows ──
+        // Only fill when the panel is on-screen; the DOM writes are cheap but
+        // skipping them when hidden keeps the work proportional to visibility.
+        if (this._dataPanel?.classList.contains('dp-show')) {
+            const lagMin = lagSeconds ? lagSeconds / 60 : 0;
+            this._s('dp-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)}`);
+            this._s('dp-bt',       bt.toFixed(1));
+            this._s('dp-speed',    speed.toFixed(0));
+            this._s('dp-density',  (density ?? 0).toFixed(1));
+            this._s('dp-pressure', pressure.toFixed(2));
+            this._s('dp-r0',       (r0 ?? 0).toFixed(2));
+            this._s('dp-alpha',    (alpha ?? 0).toFixed(3));
+            this._s('dp-kp',       kp.toFixed(1));
+            this._s('dp-flare',    formatFlare(flare));
+            this._s('dp-dst',      `${dst >= 0 ? '+' : ''}${dst.toFixed(0)}`);
+            this._s('dp-dsttau',   (dstTau ?? 0).toFixed(2));
+            this._s('dp-dstinj',   (dstInject ?? 0).toFixed(1));
+            this._s('dp-lag',      lagMin.toFixed(1));
+            this._s('dp-age',      formatAge(dataAge));
+        }
     }
 
     _s(id, text, color) {

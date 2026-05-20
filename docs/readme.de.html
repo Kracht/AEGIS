@@ -355,6 +355,32 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 </tbody>
 </table>
 <hr />
+<h2 id="darstellungsmodi">Darstellungsmodi (F3)</h2>
+<p>AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit <code>F3</code> (oder Klick auf <strong>Mode: …</strong> oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.</p>
+<table>
+<thead>
+<tr><th>Modus</th><th>Was zu sehen ist</th><th>Wozu er gut ist</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Visual</strong></td>
+<td>Die volle volumetrische Szene — ray-marched Magnetosheath, Plasmaschicht, Quallen-Feldlinien, Polarlicht, Ringstrom.</td>
+<td>Sehen, <em>wie der erdnahe Weltraum gerade aussieht</em>.</td>
+</tr>
+<tr>
+<td><strong>Structural</strong></td>
+<td>Nur die unsichtbaren <strong>Flächen</strong>: Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6 — als dünne cyan-weiße Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28%.</td>
+<td>Die Optik weglassen und fragen: <em>&bdquo;Welche Flächen liegen eigentlich unter dem Bild?&ldquo;</em> Die Linien verformen sich live mit <code>r₀</code>, <code>α</code> und der sturmabhängigen Schalenverzerrung — man sieht direkt, wie sich die Magnetopause komprimiert und der Schweif ausbeult.</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Visual darunter, <strong>plus</strong> eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung <code>lag</code> = <code>1,5 × 10⁶ km ÷ v_sw</code>.</td>
+<td>Fragen: <em>&bdquo;Welche Zahlen stecken hinter diesem Bild?&ldquo;</em> Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen.</td>
+</tr>
+</tbody>
+</table>
+<p><code>F2</code> blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.</p>
+<hr />
 <p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · Erdbilder: NASA Blue Marble / Black Marble</em></p>
 
 <footer>

@@ -74,6 +74,12 @@ python3 -m http.server 8080
 
 - `F2` (or the **Settings [F2]** label by the FPS counter) toggles the visual
   tuning panel — camera orbit/FOV, exposure, gamma, and per-layer intensity.
+- `F3` (or the **Mode: …** label next to it) cycles the render mode:
+  **Visual** (default volumetric scene) → **Structural** (SDF outlines of
+  magnetopause, bow shock, L-shells on a black backdrop with a dimmed Earth)
+  → **Data** (Visual underneath, with a panel of every live uniform — value,
+  units, citation, and the scene feature each drives, including Phase 1's
+  `lag` clock). The choice persists in localStorage.
 
 ---
 

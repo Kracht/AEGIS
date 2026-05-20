@@ -355,6 +355,32 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 </tbody>
 </table>
 <hr />
+<h2 id="render-modes">Render Modes (F3)</h2>
+<p>AEGIS shows the <em>same</em> live physics through three layers of abstraction. Press <code>F3</code> (or click <strong>Mode: …</strong> in the top-right) to cycle between them. Your choice persists across reloads.</p>
+<table>
+<thead>
+<tr><th>Mode</th><th>What it shows</th><th>Use it to</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Visual</strong></td>
+<td>Today&rsquo;s full volumetric scene — ray-marched magnetosheath, plasma sheet, jellyfish field lines, aurora, ring current.</td>
+<td>See <em>what near-Earth space looks like</em> in this configuration.</td>
+</tr>
+<tr>
+<td><strong>Structural</strong></td>
+<td>The invisible <strong>surfaces</strong> alone: Shue magnetopause, Cairns/Fairfield bow shock, dipole L-shells L = 2…6 — drawn as thin cyan-white outlines on a black sky with the Earth dimmed to ~28%.</td>
+<td>Strip the art away and answer <em>&ldquo;what are the surfaces I was actually looking at?&rdquo;</em> The outlines deform in real time with <code>r₀</code>, <code>α</code>, and the storm-dependent shell warp, so you can watch the magnetopause compress and the tail balloon directly.</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Visual underneath, <strong>plus</strong> a panel listing every uniform driving the scene with its units, citation, and the feature it drives. Includes the Phase 1 <code>lag</code> clock — <code>1.5 × 10⁶ km ÷ v_sw</code>.</td>
+<td>Answer <em>&ldquo;what are the numbers behind this picture?&rdquo;</em> Useful for tracing why a particular storm phase looks the way it does, or for matching a feature back to its empirical model.</td>
+</tr>
+</tbody>
+</table>
+<p><code>F2</code> toggles the visual-tuning sliders (camera, exposure, per-layer intensities). The two panels are independent and can be open at the same time.</p>
+<hr />
 <p><em>Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · Earth imagery: NASA Blue Marble / Black Marble</em></p>
 
 <footer>

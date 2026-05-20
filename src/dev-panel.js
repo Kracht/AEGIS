@@ -37,7 +37,13 @@ const CSS = `
     position: fixed;
     top: 1.25rem;
     right: 1.5rem;
-    color: rgba(90, 150, 210, 0.55);
+    background: rgba(0, 4, 14, 0.72);
+    border: 1px solid rgba(60, 120, 200, 0.22);
+    border-radius: 3px;
+    padding: 0.28rem 0.7rem 0.24rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: rgba(170, 200, 240, 0.82);
     font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     font-size: 10.5px;
     pointer-events: none;
@@ -49,9 +55,9 @@ const CSS = `
 #perf .perf-settings {
     pointer-events: auto;
     cursor: pointer;
-    color: rgba(95, 160, 245, 0.62);
+    color: rgba(150, 195, 255, 0.88);
 }
-#perf .perf-settings:hover { color: rgba(150, 200, 255, 0.92); }
+#perf .perf-settings:hover { color: rgba(195, 220, 255, 1.0); }
 #dev-panel {
     position: fixed;
     top: 3.0rem;
@@ -159,16 +165,23 @@ const CSS = `
 `;
 
 export class DevPanel {
-    constructor() {
+    constructor(renderMode = null) {
         this._params = { ...DEFAULTS };
         this._visible = false;
         this._inputs  = {};
         this._perfEl  = null;
         this._statsEl = null;
         this._panel   = null;
+        this._modeEl  = null;
+        this._renderMode = renderMode;
         this._injectStyle();
         this._buildDOM();
         this._bindKeys();
+        if (renderMode) {
+            renderMode.onChange(mode => {
+                if (this._modeEl) this._modeEl.textContent = `Mode: ${renderMode.label} [F3]`;
+            });
+        }
     }
 
     getParams() {
@@ -198,13 +211,24 @@ export class DevPanel {
         sep.className = 'perf-sep';
         sep.textContent = '·';
 
+        const mode = document.createElement('span');
+        mode.className = 'perf-settings';
+        mode.textContent = this._renderMode ? `Mode: ${this._renderMode.label} [F3]` : 'Mode: VISUAL [F3]';
+        mode.title = 'Cycle render mode: Visual → Structural → Data';
+        mode.addEventListener('click', () => this._renderMode?.cycle());
+        this._modeEl = mode;
+
+        const sep2 = document.createElement('span');
+        sep2.className = 'perf-sep';
+        sep2.textContent = '·';
+
         const settings = document.createElement('span');
         settings.className = 'perf-settings';
         settings.textContent = 'Settings [F2]';
         settings.title = 'Toggle visual controls';
         settings.addEventListener('click', () => this._toggle());
 
-        this._perfEl.append(this._statsEl, sep, settings);
+        this._perfEl.append(this._statsEl, sep, mode, sep2, settings);
         document.body.appendChild(this._perfEl);
 
         const panel = document.createElement('div');

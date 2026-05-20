@@ -54,6 +54,7 @@ uniform float u_nightlightScale; // city lights scale
 uniform float u_limbScale;       // atmosphere limb scale
 uniform float u_fieldScale;      // field line intensity scale
 uniform float u_volExtinct;      // volumetric extinction scale
+uniform int   u_renderMode;      // 0 = Visual, 1 = Structural, 2 = Data (Visual + DOM)
 
 out vec4 fragColor;
 
@@ -112,6 +113,21 @@ float sdMp(vec3 p) {
     return r - min(rb, 60.0);
 }
 
+// Bow-shock paraboloid (Cairns 1995 / Fairfield 1971): same Shue form with
+// empirical standoff factor 1.32 and slightly larger flaring. Dayside-only —
+// the model diverges at θ=180° and there is no clean shock surface in the
+// deep tail. Used by Structural mode to outline the shock as a thin arc.
+float sdBs(vec3 p) {
+    float r    = length(p);
+    float cosT = clamp(dot(p, SUN) / max(r, 1e-4), -1.0, 1.0);
+    if (cosT < -0.30) return 1e6;
+    float bsR0    = u_r0 * 1.32;
+    float bsAlpha = u_alpha * 1.04;
+    float rBS     = bsR0 * pow(2.0 / (1.0 + cosT + 1e-5), bsAlpha);
+    rBS = min(rBS, 40.0);
+    return r - rBS;
+}
+
 // ================================================================
 // SUN-ANGLE SHELL DEFORMATION  (shared)
 // ================================================================
@@ -129,6 +145,24 @@ float shellWarp(vec3 p) {
     float w = 1.0 - 0.16 * day
                   + 0.60 * ngt * (0.30 + 0.70 * smoothstep(1.0, 7.0, r));
     return clamp(w, 0.55, 3.0);
+}
+
+// Signed distance to the nearest integer dipole L-shell (L = 2..6), using the
+// same shellWarp deformation as fieldLines() so the structural shells match
+// the volumetric jellyfish. Distance is approximated as |L − L_int| / |∂L/∂r|,
+// which gives roughly uniform outline thickness in space.
+float sdLShells(vec3 p) {
+    float r   = length(p);
+    float rho = length(p.xz);
+    if (rho < 0.05 || r < 1.04 || r > 12.0) return 1e6;
+    float warp = shellWarp(p);
+    float rEff = r / warp;
+    float L    = rEff * rEff * rEff / (rho * rho);
+    if (L < 1.8 || L > 6.5) return 1e6;
+    float Ln = floor(L + 0.5);
+    if (Ln < 2.0 || Ln > 6.0) return 1e6;
+    float dLdr = 3.0 * rEff * rEff / (rho * rho * max(warp, 1e-3));
+    return abs(L - Ln) / max(dLdr, 1e-3);
 }
 
 // ================================================================
@@ -725,6 +759,36 @@ vec3 sunGlow(vec3 rd, vec3 cam) {
 }
 
 // ================================================================
+// STRUCTURAL DENSITY (Phase 3 — abstraction layer)
+// ================================================================
+// Outline-only emission: at each march step, evaluate the SDFs of the major
+// invisible surfaces (magnetopause, bow shock, dipole L-shells) and emit
+// exp(−d²·K) at each zero-crossing. The volumetric volDensity() is skipped
+// in this mode, so the result reads as clean line-art on a near-black sky —
+// "what are the surfaces?" stripped of art.
+vec4 structuralDensity(vec3 p) {
+    float r = length(p);
+    if (r > 30.0) return vec4(0.0);
+
+    float dMp = sdMp(p);
+    float dBs = sdBs(p);
+    float dLs = sdLShells(p);
+
+    // Tighter outline on L-shells (denser nest of surfaces); looser on the
+    // single Shue magnetopause shell. Tuned so all three read at a similar
+    // visual weight when integrated through the ray.
+    float lMp = exp(-dMp * dMp * 70.0);
+    float lBs = exp(-dBs * dBs * 70.0);
+    float lLs = exp(-dLs * dLs * 260.0);
+
+    // Mono cyan-white line tint. Per-surface colour-coding kept off so the
+    // structural pass reads as a clean wireframe; Visual already differentiates.
+    vec3  lineCol = vec3(0.65, 0.88, 1.12);
+    float em = lMp * 0.55 + lBs * 0.40 + lLs * 0.45;
+    return vec4(lineCol * em, em * 0.04);   // very light extinction → depth order
+}
+
+// ================================================================
 // MAIN
 // ================================================================
 
@@ -762,10 +826,12 @@ void main() {
     vec3  vc = vec3(0.0);
     float tr = 1.0;
 
+    bool structural = (u_renderMode == 1);
+
     for (int i = 0; i < VSTEPS; i++) {
         float t  = tBeg + (float(i) + jitter) * ds;
         vec3  p  = cam + t * rd;
-        vec4  vd = volDensity(p);
+        vec4  vd = structural ? structuralDensity(p) : volDensity(p);
         float sg = vd.a;
 
         if (sg > 5e-5) {
@@ -775,12 +841,18 @@ void main() {
         }
     }
 
-    // Background
+    // Background. Structural mode keeps Earth as a dim geographic anchor and
+    // drops the atmospheric limb/nightglow (atmosphere is a Visual feature,
+    // not a magnetospheric structure).
     vec3 col;
     if (tE > 0.0) {
         vec3 hp = cam + tE * rd;
         vec3 nrm = normalize(hp);
-        col = shadeEarth(hp, rd) + limb(nrm, rd) * u_limbScale + nightglow(nrm, rd) * u_limbScale;
+        if (structural) {
+            col = shadeEarth(hp, rd) * 0.28;
+        } else {
+            col = shadeEarth(hp, rd) + limb(nrm, rd) * u_limbScale + nightglow(nrm, rd) * u_limbScale;
+        }
     } else {
         col = vec3(0.0, 0.0, 0.0010);
         col += stars(rd) * u_starBright;
