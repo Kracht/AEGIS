@@ -162,6 +162,17 @@ footer{
 <li><strong>Bz nach Süden (−)</strong> → Feldlinien reconnektieren → Sonnenwind pumpt Energie und Teilchen ins System → Geomagnetischer Sturm, Auroren, Störungen</li>
 </ul>
 <hr />
+<h2 id="physikalische-zeit">Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft</h2>
+<p>DSCOVR steht am <strong>Lagrangepunkt L1</strong>, rund 1,5 Millionen Kilometer sonnenwärts der Erde. Das Plasma, das DSCOVR jetzt misst, hat die Erde noch nicht erreicht — es muss erst mit der eigenen Sonnenwindgeschwindigkeit stromabwärts driften.</p>
+<p>Diese Advektionszeit ist genau das, was du in der Szene siehst:</p>
+<p><code>t_lag ≈ 1,5 × 10⁶ km ÷ v_sw</code></p>
+<ul>
+<li>Bei einem typischen 450 km/s → <strong>~55 Minuten</strong></li>
+<li>Bei einem schnellen 800 km/s-CME → <strong>~31 Minuten</strong></li>
+</ul>
+<p>AEGIS puffert jede L1-Messung in einen 90-Minuten-Ring und rendert den Snapshot von <code>t_lag</code> zurück. Eine Bz-Stufe an L1 bleibt für die Laufzeit unsichtbar und schwappt dann in die Szene. Der modellierte Dst integriert über das <strong>verzögerte</strong> Bz und den verzögerten Druck — der Ringstrom-Wert reagiert also in physikalischer Reihenfolge: eine Süddrehung an L1 komprimiert zuerst die Magnetopause und lädt den Schweif, <em>danach</em> erst zeichnet sich die Dst-Signatur ab.</p>
+<p>Es ist bewusst ein einfaches Advektionsmodell. Die feinere Differenzierung zwischen Schweifladung (Minuten) und vollständiger Ausdehnung des Auroren-Ovals (Substurm-Wachstumsphase, weitere zig Minuten) bleibt einer späteren Ausbaustufe vorbehalten; heute teilen sich beide denselben L1-Verzug.</p>
+<hr />
 <h2 id="datenquellen">Datenquellen</h2>
 <p>Alle Daten werden live vom <strong>Space Weather Prediction Center (SWPC) der NOAA</strong> abgerufen. Der wichtigste Satellit ist <strong>DSCOVR</strong>, der am Lagrangepunkt L1 zwischen Erde und Sonne stationiert ist.</p>
 <table>

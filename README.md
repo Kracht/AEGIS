@@ -93,10 +93,15 @@ NOAA SWPC / GOES / OVATION  ──▶  data-fetcher.js   ──▶  Shue (1997) 
 
 1. `data-fetcher.js` polls solar wind, Kp and GOES X-ray, derives the Shue et
    al. (1997) magnetopause standoff `r₀` and flaring exponent `α` plus the
-   solar-wind dynamic pressure, integrates the Burton/O'Brien (2000)
-   ring-current equation for a live Dst estimate, and frame-interpolates
-   between polls. It sits behind `data-source.js` so a replay/timeline source
-   can be dropped in without touching the renderer.
+   solar-wind dynamic pressure, and integrates the Burton/O'Brien (2000)
+   ring-current equation for a live Dst estimate. It buffers each snapshot
+   into a 90-min history ring and reports the L1-advected quantities at
+   `now − 1.5×10⁶ km / v_sw` (~55 min @ 450 km/s, ~31 min @ 800 km/s), so the
+   scene shows what the magnetosphere is seeing *now* — not what the L1 probe
+   just observed. The Dst ODE is closed over the same lag, and a τ≈5 min
+   low-pass eases Kp's 3-hourly bin steps. The fetcher sits behind
+   `data-source.js` so a replay/timeline source can be dropped in without
+   touching the renderer.
 2. `aurora-texture.js` polls the NOAA OVATION aurora nowcast into two polar
    `R8` textures.
 3. `renderer.js` compiles the program and pushes per-frame uniforms; the only
@@ -132,7 +137,7 @@ src/
   main.js             # boot + render loop + orbital (terminator) maths
   renderer.js         # WebGL2 program, textures, per-frame uniforms
   data-source.js      # data-source seam (live today; swappable for replay)
-  data-fetcher.js     # NOAA SWPC ingestion + Shue model + Dst ODE + interpolation
+  data-fetcher.js     # NOAA SWPC ingestion + Shue model + Dst ODE + L1 advection lag
   aurora-texture.js   # OVATION nowcast → polar GL textures
   ui.js               # live status HUD (incl. modeled Dst) + EN/DE manual links
   dev-panel.js        # FPS readout + Settings [F2] tuning panel

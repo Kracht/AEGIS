@@ -39,6 +39,23 @@ Die entscheidende Größe ist **Bz** — die Nord-Süd-Komponente des IMF:
 
 ---
 
+## Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft
+
+DSCOVR steht am **Lagrangepunkt L1**, rund 1,5 Millionen Kilometer sonnenwärts der Erde. Das Plasma, das DSCOVR jetzt misst, hat die Erde noch nicht erreicht — es muss erst mit der eigenen Sonnenwindgeschwindigkeit stromabwärts driften.
+
+Diese Advektionszeit ist genau das, was du in der Szene siehst:
+
+`t_lag ≈ 1,5 × 10⁶ km ÷ v_sw`
+
+- Bei einem typischen 450 km/s → **~55 Minuten**
+- Bei einem schnellen 800 km/s-CME → **~31 Minuten**
+
+AEGIS puffert jede L1-Messung in einen 90-Minuten-Ring und rendert den Snapshot von `t_lag` zurück. Eine Bz-Stufe an L1 bleibt für die Laufzeit unsichtbar und schwappt dann in die Szene. Der modellierte Dst integriert über das **verzögerte** Bz und den verzögerten Druck — der Ringstrom-Wert reagiert also in physikalischer Reihenfolge: eine Süddrehung an L1 komprimiert zuerst die Magnetopause und lädt den Schweif, *danach* erst zeichnet sich die Dst-Signatur ab.
+
+Es ist bewusst ein einfaches Advektionsmodell. Die feinere Differenzierung zwischen Schweifladung (Minuten) und vollständiger Ausdehnung des Auroren-Ovals (Substurm-Wachstumsphase, weitere zig Minuten) bleibt einer späteren Ausbaustufe vorbehalten; heute teilen sich beide denselben L1-Verzug.
+
+---
+
 ## Datenquellen
 
 Alle Daten werden live vom **Space Weather Prediction Center (SWPC) der NOAA** abgerufen. Der wichtigste Satellit ist **DSCOVR**, der am Lagrangepunkt L1 zwischen Erde und Sonne stationiert ist.

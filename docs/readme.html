@@ -162,6 +162,17 @@ footer{
 <li><strong>Bz southward (−)</strong> → field lines reconnect → the solar wind pours energy and particles into the system → geomagnetic storm, aurora, disruptions</li>
 </ul>
 <hr />
+<h2 id="physical-time">Physical Time: Why the Scene Lags L1 by ~30–60 Minutes</h2>
+<p>DSCOVR sits at the <strong>L1 Lagrange point</strong>, roughly 1.5 million kilometers sunward of Earth. The plasma DSCOVR samples right now hasn&rsquo;t reached Earth yet — it has to drift downstream at the solar wind&rsquo;s own speed.</p>
+<p>That advection time is what you&rsquo;re seeing in the scene:</p>
+<p><code>t_lag ≈ 1.5 × 10⁶ km ÷ v_sw</code></p>
+<ul>
+<li>At a typical 450 km/s → <strong>~55 minutes</strong></li>
+<li>At a fast 800 km/s CME → <strong>~31 minutes</strong></li>
+</ul>
+<p>AEGIS buffers every L1 sample into a 90-minute history ring and renders the snapshot from <code>t_lag</code> ago. So a step change in Bz at L1 stays invisible to the scene for the advection time, then sweeps in. The modeled Dst is integrated over the <strong>lagged</strong> Bz and pressure, so the ring-current readout responds in physical sequence: a southward turning at L1 first compresses the magnetopause and loads the tail, <em>then</em> drives the Dst signature minutes later.</p>
+<p>This is deliberately a simple advective model. The further differential between tail loading (minutes) and full auroral oval expansion (substorm growth phase, tens of minutes more) is a future refinement; today, both share the same L1 lag.</p>
+<hr />
 <h2 id="data-sources">Data Sources</h2>
 <p>All data is fetched live from <strong>NOAA&rsquo;s Space Weather Prediction Center (SWPC)</strong>. The satellite providing most of it is <strong>DSCOVR</strong>, parked at the L1 gravitational balance point between Earth and Sun.</p>
 <table>

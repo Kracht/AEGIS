@@ -39,6 +39,23 @@ The critical variable is **Bz** — the north/south component of the IMF:
 
 ---
 
+## Physical Time: Why the Scene Lags L1 by ~30–60 Minutes
+
+DSCOVR sits at the **L1 Lagrange point**, roughly 1.5 million kilometers sunward of Earth. The plasma DSCOVR samples right now hasn't reached Earth yet — it has to drift downstream at the solar wind's own speed.
+
+That advection time is what you're seeing in the scene:
+
+`t_lag ≈ 1.5 × 10⁶ km ÷ v_sw`
+
+- At a typical 450 km/s → **~55 minutes**
+- At a fast 800 km/s CME → **~31 minutes**
+
+AEGIS buffers every L1 sample into a 90-minute history ring and renders the snapshot from `t_lag` ago. So a step change in Bz at L1 stays invisible to the scene for the advection time, then sweeps in. The modeled Dst is integrated over the **lagged** Bz and pressure, so the ring-current readout responds in physical sequence: a southward turning at L1 first compresses the magnetopause and loads the tail, *then* drives the Dst signature minutes later.
+
+This is deliberately a simple advective model. The further differential between tail loading (minutes) and full auroral oval expansion (substorm growth phase, tens of minutes more) is a future refinement; today, both share the same L1 lag.
+
+---
+
 ## Data Sources
 
 All data is fetched live from **NOAA's Space Weather Prediction Center (SWPC)**. The satellite providing most of it is **DSCOVR**, parked at the L1 gravitational balance point between Earth and Sun.
