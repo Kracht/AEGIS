@@ -19,6 +19,8 @@ export const SCENARIOS = [
       file: './data/scenarios/november-2004.json' },
     { id: 'gannon-2024', name: 'Gannon 2024', date: '2024-05-10',
       file: './data/scenarios/gannon-2024.json' },
+    { id: 'jan-2026', name: 'January 2026', date: '2026-01-18',
+      file: './data/scenarios/jan-2026.json' },
 ];
 
 export function scenarioById(id) {

@@ -89,7 +89,8 @@ python3 -m http.server 8080
   value, and citation.
 - The **transport bar** along the bottom replays curated instrument-era storms.
   Pick **Live** (NOAA realtime) or a curated event — **November 2004**,
-  **St. Patrick's 2015**, **Gannon 2024**, or a **high-speed stream** — then
+  **St. Patrick's 2015**, **Gannon 2024**, **January 2026**, or a
+  **high-speed stream** — then
   play / pause / scrub and set the time-acceleration. Selecting a storm reveals
   the causal HUD automatically; that's where the lag clocks and the branch
   independence become legible (you can't watch a 7-hour Dst recovery in real

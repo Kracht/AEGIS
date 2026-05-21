@@ -162,6 +162,7 @@ Die **Transportleiste** am unteren Rand spielt echte, aufgezeichnete Stürme ab,
 | **St. Patrick's 2015** | Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten *nacheinander*. |
 | **November 2004** | Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen. |
 | **Gannon 2024** | Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge. |
+| **Januar 2026** | Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen. |
 
 Wähle einen Sturm, dann **Play / Pause / Scrubben** und eine **Zeitraffer-Stufe** (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch *dasselbe* Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression *vor* der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.
 

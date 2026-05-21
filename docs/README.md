@@ -162,6 +162,7 @@ The **transport bar** along the bottom lets you replay real, recorded storms ins
 | **St. Patrick's 2015** | The classic two-step storm: a CME sheath compresses first, then the ejecta's southward Bz drives the main phase minutes later — watch the branches light *in sequence*. |
 | **November 2004** | A deep solar-cycle-23 superstorm — both branches hammered hard, in two distinct hits. |
 | **Gannon 2024** | The strongest storm in two decades (aurora at tropical latitudes) — the extreme end of both branches. |
+| **January 2026** | An X1.9 flare's fast CME (solar wind past 1200 km/s) drove the hardest dayside compression in the set — r₀ squeezed inside 6 Rₑ — alongside an S4 radiation storm. Both branches hit hard, almost together. |
 
 Pick a storm, then **play / pause / scrub** and choose a **time-acceleration** (a multi-day storm compresses into a few minutes). Because everything runs through the *same* physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression *before* the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.
 

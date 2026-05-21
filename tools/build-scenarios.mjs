@@ -144,6 +144,10 @@ const STORMS = [
       start: '2024-05-10T00:00:00.000Z', end: '2024-05-12T12:00:00.000Z',
       blurb: 'May 2024 — a train of CMEs from AR3664 produced the strongest storm in two decades, with aurora seen at tropical latitudes.',
       teaches: 'Stacked CMEs: repeated compression and sustained southward Bz pile into one deep Dst.' },
+    { id: 'jan-2026', name: 'January 2026 Storm', date: '2026-01-18',
+      start: '2026-01-18T00:00:00.000Z', end: '2026-01-22T00:00:00.000Z',
+      blurb: 'An X1.9 flare launched a fast CME (solar wind past 1200 km/s) that drove a deep storm and an S4 radiation event — the hardest dayside compression in the set, r₀ squeezed inside 6 Rₑ.',
+      teaches: 'A fast CME hammers both branches at once: extreme ram-pressure compression and strong southward Bz together, with little delay between them.' },
     // The two-branch-independence exemplar (consultation §1.2): a corotating
     // high-speed stream whose interface compresses r₀ nearly as hard as a
     // superstorm, yet drives only a minor ring current. Chosen because the
