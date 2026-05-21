@@ -381,7 +381,33 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 </table>
 <p><code>F2</code> toggles the visual-tuning sliders (camera, exposure, per-layer intensities). The two panels are independent and can be open at the same time.</p>
 <hr />
-<p><em>Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · Earth imagery: NASA Blue Marble / Black Marble</em></p>
+<h2 id="causal-hud">Causal HUD &amp; Storm Replay (F4)</h2>
+<p>The render modes answer <em>what</em> you&rsquo;re seeing. The <strong>causal HUD</strong> (<code>F4</code>) answers <em>why it changed</em>. It draws the magnetosphere&rsquo;s driver chain as <strong>two separate tracks</strong>, because they are genuinely independent mechanisms on different clocks:</p>
+<ul>
+<li><strong>Compression branch (fast):</strong> <code>Pdyn = ρv² → r₀ standoff</code>. Solar-wind ram pressure squeezes the dayside boundary inward — in minutes, and almost regardless of field direction.</li>
+<li><strong>Storm branch (slow):</strong> <code>Bz → reconnection (VBs) → ring-current injection (Q) → Dst</code>. Only <em>southward</em> IMF opens the dayside, loads the tail, and feeds the ring current — which then builds and decays over <em>hours</em>.</li>
+</ul>
+<p>Nodes light up from the live values; edges carry the <strong>real propagation delays</strong> — the L1 advection clock (<code>⏱ ~30–60 min</code>) inbound, the ring-current decay time (<code>τ</code>, several hours) outbound. <strong>Hover any node</strong> to reveal its governing equation, current value, and citation. That is the difference between <em>watching an aquarium</em> and <em>understanding space weather</em>.</p>
+<p>The <strong>transport bar</strong> along the bottom replays real, recorded storms instead of waiting for the live sky:</p>
+<table>
+<thead>
+<tr><th>Scenario</th><th>What it teaches</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Live (NOAA)</strong></td><td>The real-time sky, right now.</td></tr>
+<tr><td><strong>High-Speed Stream</strong> (May 2007)</td><td><em>Compression ≠ storm.</em> A corotating stream slams r₀ inward almost as hard as a superstorm, yet Dst stays a tenth as deep — the top branch lights while the bottom barely stirs. The cleanest proof the two branches are independent.</td></tr>
+<tr><td><strong>St. Patrick&rsquo;s 2015</strong></td><td>The classic two-step storm: a CME sheath compresses first, then the ejecta&rsquo;s southward Bz drives the main phase minutes later — the branches light <em>in sequence</em>.</td></tr>
+<tr><td><strong>November 2004</strong></td><td>A deep solar-cycle-23 superstorm — both branches hammered hard, in two distinct hits.</td></tr>
+<tr><td><strong>Gannon 2024</strong></td><td>The strongest storm in two decades (aurora at tropical latitudes) — the extreme end of both branches.</td></tr>
+</tbody>
+</table>
+<p>Pick a storm, then <strong>play / pause / scrub</strong> and choose a <strong>time-acceleration</strong> (a multi-day storm compresses into a few minutes). Because everything runs through the <em>same</em> physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression <em>before</em> the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.</p>
+<blockquote>
+<p><strong>Note on Halloween 2003.</strong> The famous 2003 superstorm is deliberately absent: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable <em>driver</em> data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)</p>
+</blockquote>
+<p>Storm data is real NASA <strong>OMNI</strong> (instrument-era, 5-minute cadence), bundled offline. The modeled Dst is the Burton/O&rsquo;Brien estimate — close to, but not identical to, the measured index.</p>
+<hr />
+<p><em>Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · NASA OMNI (replay) · Earth imagery: NASA Blue Marble / Black Marble</em></p>
 
 <footer>
   <span>AEGIS — Active Earth Geomagnetic Imaging System</span>

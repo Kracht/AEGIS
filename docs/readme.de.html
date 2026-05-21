@@ -381,7 +381,33 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 </table>
 <p><code>F2</code> blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.</p>
 <hr />
-<p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · Erdbilder: NASA Blue Marble / Black Marble</em></p>
+<h2 id="kausal-hud">Kausal-HUD &amp; Sturm-Wiedergabe (F4)</h2>
+<p>Die Darstellungsmodi beantworten, <em>was</em> du siehst. Das <strong>Kausal-HUD</strong> (<code>F4</code>) beantwortet, <em>warum es sich geändert hat</em>. Es zeichnet die Antriebskette der Magnetosphäre als <strong>zwei getrennte Stränge</strong>, denn es sind tatsächlich unabhängige Mechanismen mit verschiedenen Zeitskalen:</p>
+<ul>
+<li><strong>Kompressions-Strang (schnell):</strong> <code>Pdyn = ρv² → r₀ Standoff</code>. Der Staudruck des Sonnenwinds drückt die Tagseiten-Grenze nach innen — in Minuten und fast unabhängig von der Feldrichtung.</li>
+<li><strong>Sturm-Strang (langsam):</strong> <code>Bz → Rekonnexion (VBs) → Ringstrom-Injektion (Q) → Dst</code>. Nur <em>südwärts</em> gerichtetes IMF öffnet die Tagseite, lädt den Schweif und speist den Ringstrom — der sich dann über <em>Stunden</em> auf- und abbaut.</li>
+</ul>
+<p>Die Knoten leuchten nach den Live-Werten; die Kanten tragen die <strong>echten Laufzeit-Verzögerungen</strong> — die L1-Advektionsuhr (<code>⏱ ~30–60 min</code>) auf dem Hinweg, die Ringstrom-Abklingzeit (<code>τ</code>, mehrere Stunden) auf dem Rückweg. <strong>Fahre über einen Knoten</strong>, um seine Gleichung, den aktuellen Wert und die Quelle zu sehen. Das ist der Unterschied zwischen <em>Aquarium betrachten</em> und <em>Weltraumwetter verstehen</em>.</p>
+<p>Die <strong>Transportleiste</strong> am unteren Rand spielt echte, aufgezeichnete Stürme ab, statt auf den Live-Himmel zu warten:</p>
+<table>
+<thead>
+<tr><th>Szenario</th><th>Was es lehrt</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Live (NOAA)</strong></td><td>Der echte Himmel, jetzt gerade.</td></tr>
+<tr><td><strong>High-Speed Stream</strong> (Mai 2007)</td><td><em>Kompression ≠ Sturm.</em> Ein korotierender Strom drückt r₀ fast so stark hinein wie ein Supersturm, doch Dst bleibt ein Zehntel so tief — der obere Strang leuchtet, der untere kaum. Der sauberste Beleg, dass die Stränge unabhängig sind.</td></tr>
+<tr><td><strong>St. Patrick&rsquo;s 2015</strong></td><td>Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten <em>nacheinander</em>.</td></tr>
+<tr><td><strong>November 2004</strong></td><td>Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen.</td></tr>
+<tr><td><strong>Gannon 2024</strong></td><td>Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge.</td></tr>
+</tbody>
+</table>
+<p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.</p>
+<blockquote>
+<p><strong>Hinweis zu Halloween 2003.</strong> Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren <em>Antriebsdaten</em> — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)</p>
+</blockquote>
+<p>Die Sturmdaten sind echte NASA-<strong>OMNI</strong>-Daten (Instrumentenära, 5-Minuten-Takt), offline gebündelt. Der modellierte Dst ist die Burton/O&rsquo;Brien-Schätzung — nahe am gemessenen Index, aber nicht identisch.</p>
+<hr />
+<p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · Erdbilder: NASA Blue Marble / Black Marble</em></p>
 
 <footer>
   <span>AEGIS — Active Earth Geomagnetic Imaging System</span>

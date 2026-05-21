@@ -14,18 +14,29 @@
 //                       r0, alpha, bz, speed, kp, bt, density, pressure,
 //                       flare,                       // drivers + Shue model
 //                       dst, dstInject, dstDecay, dstTau,  // ring-current ODE
-//                       dataAge, isStale             // provenance
+//                       dataAge, isStale,            // provenance
+//                       timeline?                    // present only for replay
 //                     }
 //                     called every frame; all fields in physical units
-//                     (see data-fetcher.js for derivations / citations).
+//                     (see magnetosphere-model.js for derivations / citations).
 //
-// The renderer and HUD consume this object and nothing else from the data
-// layer — keep this contract stable when adding new sources.
+// Both the live poller (DataFetcher) and the curated-storm replay
+// (TimelineSource) drive the *same* MagnetosphereModel — so the physics a
+// student sees in replay is identical to the live engine. The renderer and HUD
+// consume this object and nothing else from the data layer — keep the contract
+// stable when adding sources.
 
-import { DataFetcher } from './data-fetcher.js';
+import { DataFetcher }     from './data-fetcher.js';
+import { TimelineSource }  from './timeline-source.js';
+import { LIVE_ID, scenarioById } from './scenarios.js';
 
-// Returns the active data source. Swap the implementation here (e.g. a
-// TimelineSource) without touching the renderer or the main loop.
-export function createDataSource() {
+// Returns the data source for a scenario id. 'live' (the default) gives the
+// NOAA poller; any curated-storm id gives a TimelineSource. main.js swaps
+// sources through this factory when the transport bar changes scenario.
+export function createDataSource(id = LIVE_ID) {
+    if (id && id !== LIVE_ID) {
+        const meta = scenarioById(id);
+        if (meta && meta.file) return new TimelineSource(meta);
+    }
     return new DataFetcher();
 }

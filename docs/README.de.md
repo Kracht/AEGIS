@@ -144,4 +144,31 @@ AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit `F3` (oder Klic
 
 ---
 
-*Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · Erdbilder: NASA Blue Marble / Black Marble*
+## Kausal-HUD & Sturm-Wiedergabe (F4)
+
+Die Darstellungsmodi beantworten, *was* du siehst. Das **Kausal-HUD** (`F4`) beantwortet, *warum es sich geändert hat*. Es zeichnet die Antriebskette der Magnetosphäre als **zwei getrennte Stränge**, denn es sind tatsächlich unabhängige Mechanismen mit verschiedenen Zeitskalen:
+
+- **Kompressions-Strang (schnell):** `Pdyn = ρv²  →  r₀ Standoff`. Der Staudruck des Sonnenwinds drückt die Tagseiten-Grenze nach innen. Das geschieht in Minuten und hängt kaum von der Feldrichtung ab.
+- **Sturm-Strang (langsam):** `Bz → Rekonnexion (VBs) → Ringstrom-Injektion (Q) → Dst`. Nur *südwärts* gerichtetes IMF öffnet die Tagseite, lädt den Schweif und speist den Ringstrom — der sich dann über *Stunden* auf- und wieder abbaut.
+
+Die Knoten leuchten nach den Live-Werten; die Kanten tragen die **echten Laufzeit-Verzögerungen** — die L1-Advektionsuhr (`⏱ ~30–60 min`) auf dem Hinweg, die Ringstrom-Abklingzeit (`τ`, mehrere Stunden) auf dem Rückweg. **Fahre über einen Knoten**, um seine Gleichung, den aktuellen Wert und die Quelle zu sehen. Genau das ist der Unterschied zwischen *Aquarium betrachten* und *Weltraumwetter verstehen*: dieselbe schöne Szene, aber mit explizit gemachter und korrekt verzögerter Ursache-Wirkung.
+
+Die **Transportleiste** am unteren Rand spielt echte, aufgezeichnete Stürme ab, statt auf den Live-Himmel zu warten:
+
+| Szenario | Was es lehrt |
+|---|---|
+| **Live (NOAA)** | Der echte Himmel, jetzt gerade. |
+| **High-Speed Stream** (Mai 2007) | *Kompression ≠ Sturm.* Ein korotierender Strom drückt r₀ fast so stark hinein wie ein Supersturm, doch Dst bleibt ein Zehntel so tief — der obere Strang leuchtet, der untere kaum. Der sauberste Beleg, dass die beiden Stränge unabhängig sind. |
+| **St. Patrick's 2015** | Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten *nacheinander*. |
+| **November 2004** | Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen. |
+| **Gannon 2024** | Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge. |
+
+Wähle einen Sturm, dann **Play / Pause / Scrubben** und eine **Zeitraffer-Stufe** (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch *dasselbe* Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression *vor* der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.
+
+> **Hinweis zu Halloween 2003.** Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren *Antriebsdaten* — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)
+
+Die Sturmdaten sind echte NASA-**OMNI**-Daten (Instrumentenära, 5-Minuten-Takt), offline gebündelt. Der modellierte Dst ist die Burton/O'Brien-Schätzung — nahe am gemessenen Index, aber nicht identisch.
+
+---
+
+*Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · Erdbilder: NASA Blue Marble / Black Marble*

@@ -78,8 +78,24 @@ python3 -m http.server 8080
   **Visual** (default volumetric scene) → **Structural** (SDF outlines of
   magnetopause, bow shock, L-shells on a black backdrop with a dimmed Earth)
   → **Data** (Visual underneath, with a panel of every live uniform — value,
-  units, citation, and the scene feature each drives, including Phase 1's
-  `lag` clock). The choice persists in localStorage.
+  units, citation, and the scene feature each drives, including the L1 `lag`
+  clock). The choice persists in localStorage.
+- `F4` toggles the **causal HUD** — the two-branch graph of *why the scene
+  changed*: a fast compression branch (`Pdyn → r₀`) and a slow storm branch
+  (`Bz → reconnection → injection → Dst`), drawn as separate tracks because
+  they are independent mechanisms. Nodes light from the live values, edges
+  carry the real propagation delays (the L1 advection clock, the ring-current
+  decay time τ), and hovering a node reveals its governing equation, current
+  value, and citation.
+- The **transport bar** along the bottom replays curated instrument-era storms.
+  Pick **Live** (NOAA realtime) or a curated event — **November 2004**,
+  **St. Patrick's 2015**, **Gannon 2024**, or a **high-speed stream** — then
+  play / pause / scrub and set the time-acceleration. Selecting a storm reveals
+  the causal HUD automatically; that's where the lag clocks and the branch
+  independence become legible (you can't watch a 7-hour Dst recovery in real
+  time). The high-speed stream is the teaching contrast: it compresses r₀
+  almost as hard as the November superstorm, yet drives only a tenth of the
+  Dst — compression and storm are *not* the same thing.
 
 ---
 
@@ -97,17 +113,20 @@ NOAA SWPC / GOES / OVATION  ──▶  data-fetcher.js   ──▶  Shue (1997) 
               volumetric ray march of the whole scene
 ```
 
-1. `data-fetcher.js` polls solar wind, Kp and GOES X-ray, derives the Shue et
-   al. (1997) magnetopause standoff `r₀` and flaring exponent `α` plus the
-   solar-wind dynamic pressure, and integrates the Burton/O'Brien (2000)
-   ring-current equation for a live Dst estimate. It buffers each snapshot
-   into a 90-min history ring and reports the L1-advected quantities at
-   `now − 1.5×10⁶ km / v_sw` (~55 min @ 450 km/s, ~31 min @ 800 km/s), so the
-   scene shows what the magnetosphere is seeing *now* — not what the L1 probe
-   just observed. The Dst ODE is closed over the same lag, and a τ≈5 min
-   low-pass eases Kp's 3-hourly bin steps. The fetcher sits behind
-   `data-source.js` so a replay/timeline source can be dropped in without
-   touching the renderer.
+1. `magnetosphere-model.js` is the physics core: given a raw solar-wind sample
+   and a clock, it derives the Shue et al. (1997) magnetopause standoff `r₀`
+   and flaring exponent `α` plus the solar-wind dynamic pressure, and integrates
+   the Burton/O'Brien (2000) ring-current equation for a live Dst estimate. It
+   buffers each snapshot into a 90-min history ring and reports the L1-advected
+   quantities at `now − 1.5×10⁶ km / v_sw` (~55 min @ 450 km/s, ~31 min @ 800
+   km/s), so the scene shows what the magnetosphere is seeing *now* — not what
+   the L1 probe just observed. The Dst ODE is closed over the same lag, and a
+   τ≈5 min low-pass eases Kp's 3-hourly bin steps. The model is **time-agnostic**
+   (no wallclock inside): `data-fetcher.js` drives it with `Date.now()` from the
+   live NOAA feed, while `timeline-source.js` drives the *same* model with a
+   scrub clock from a curated storm — so replay obeys identical physics, and the
+   causal sequencing emerges rather than being keyframed. Both sit behind
+   `data-source.js` and are interchangeable through `createDataSource(id)`.
 2. `aurora-texture.js` polls the NOAA OVATION aurora nowcast into two polar
    `R8` textures.
 3. `renderer.js` compiles the program and pushes per-frame uniforms; the only
@@ -133,6 +152,16 @@ Center (SWPC)** — U.S. Government work, public domain.
 Most measurements originate from **DSCOVR** at the L1 Lagrange point and the
 **GOES** satellites.
 
+The curated-storm replays use **real instrument-era data** from NASA's
+**[OMNI](https://omniweb.gsfc.nasa.gov/)** dataset (IMF + plasma time-shifted to
+the bow-shock nose, 5-min cadence, plus hourly planetary Kp), fetched once via
+the CDAWeb REST service and bundled as compact JSON under `data/scenarios/`
+(regenerate with `tools/build-scenarios.mjs`). Halloween 2003 is conspicuously
+absent: OMNI's upstream monitors were saturated during that superstorm, so a
+faithful *driver-driven* replay is impossible — the same "real data only" rule
+that rules out Carrington 1859. November 2004 (fully covered, comparably deep)
+stands in.
+
 ---
 
 ## Project structure
@@ -142,15 +171,23 @@ index.html            # entry; canvas + status panel mount points
 src/
   main.js             # boot + render loop + orbital (terminator) maths
   renderer.js         # WebGL2 program, textures, per-frame uniforms
-  data-source.js      # data-source seam (live today; swappable for replay)
-  data-fetcher.js     # NOAA SWPC ingestion + Shue model + Dst ODE + L1 advection lag
+  data-source.js      # data-source seam + createDataSource(id) factory
+  magnetosphere-model.js # time-agnostic physics core (Shue, Dst ODE, L1 lag)
+  data-fetcher.js     # live NOAA SWPC ingestion — wallclock driver of the model
+  timeline-source.js  # curated-storm replay — scrub-clock driver of the model
+  scenarios.js        # curated-storm manifest (shared by source + transport)
   aurora-texture.js   # OVATION nowcast → polar GL textures
   ui.js               # live status HUD (incl. modeled Dst) + EN/DE manual links
   dev-panel.js        # FPS readout + Settings [F2] tuning panel
+  render-mode.js      # Visual/Structural/Data mode controller (F3)
+  causal-hud.js       # two-branch causal graph overlay (F4)
+  transport.js        # scenario picker + scrub/play/speed bar
 shaders/
   vertex.glsl         # full-screen triangle
   fragment.glsl       # the entire scene (ray-marched volumetrics)
 textures/             # NASA Blue Marble (monthly) + Black Marble night
+data/scenarios/       # bundled real OMNI storm series (replay)
+tools/build-scenarios.mjs # offline regenerator for data/scenarios/ (NASA CDAWeb)
 docs/                 # user manuals (EN / DE)
 ```
 
@@ -204,6 +241,10 @@ and well-known real-time graphics techniques.
 - **NASA Visible Earth** — *Blue Marble Next Generation* (monthly) and
   *Black Marble / Earth at Night* surface imagery. Credit: NASA Earth
   Observatory; used with attribution.
+- **NASA/GSFC Space Physics Data Facility — OMNI** (King, J. H., &
+  Papitashvili, N. E.). High-resolution (5-min) and hourly OMNI data, accessed
+  via CDAWeb. [doi:10.48322/hkaw-ff03](https://doi.org/10.48322/hkaw-ff03).
+  Public domain — the curated-storm replays.
 
 Any errors in the physical interpretation are mine, not the cited authors'.
 

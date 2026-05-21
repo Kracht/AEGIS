@@ -144,4 +144,31 @@ AEGIS shows the *same* live physics through three layers of abstraction. Press `
 
 ---
 
-*Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · Earth imagery: NASA Blue Marble / Black Marble*
+## Causal HUD & Storm Replay (F4)
+
+The render modes answer *what* you're seeing. The **causal HUD** (`F4`) answers *why it changed*. It draws the magnetosphere's driver chain as **two separate tracks**, because they are genuinely independent mechanisms on different clocks:
+
+- **Compression branch (fast):** `Pdyn = ρv²  →  r₀ standoff`. Solar-wind ram pressure squeezes the dayside boundary inward. This responds in minutes and barely cares about the magnetic field direction.
+- **Storm branch (slow):** `Bz → reconnection (VBs) → ring-current injection (Q) → Dst`. Only *southward* IMF opens the dayside, loads the tail, and feeds the ring current — and the ring current then builds and decays over *hours*.
+
+Nodes light up from the live values; edges carry the **real propagation delays** — the L1 advection clock (`⏱ ~30–60 min`) on the way in, the ring-current decay time (`τ`, several hours) on the way out. **Hover any node** to reveal its governing equation, current value, and citation. This is the difference between *watching an aquarium* and *understanding space weather*: the same beautiful scene, but now with its cause-and-effect made explicit and correctly delayed.
+
+The **transport bar** along the bottom lets you replay real, recorded storms instead of waiting for the live sky:
+
+| Scenario | What it teaches |
+|---|---|
+| **Live (NOAA)** | The real-time sky, right now. |
+| **High-Speed Stream** (May 2007) | *Compression ≠ storm.* A corotating stream slams r₀ inward almost as hard as a superstorm, yet Dst stays a tenth as deep — the top branch lights while the bottom barely stirs. The cleanest demonstration that the two branches are independent. |
+| **St. Patrick's 2015** | The classic two-step storm: a CME sheath compresses first, then the ejecta's southward Bz drives the main phase minutes later — watch the branches light *in sequence*. |
+| **November 2004** | A deep solar-cycle-23 superstorm — both branches hammered hard, in two distinct hits. |
+| **Gannon 2024** | The strongest storm in two decades (aurora at tropical latitudes) — the extreme end of both branches. |
+
+Pick a storm, then **play / pause / scrub** and choose a **time-acceleration** (a multi-day storm compresses into a few minutes). Because everything runs through the *same* physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression *before* the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.
+
+> **Note on Halloween 2003.** The famous 2003 superstorm is deliberately not included: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable *driver* data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)
+
+Storm data is real NASA **OMNI** (instrument-era, 5-minute cadence), bundled offline. The modeled Dst is the Burton/O'Brien estimate — close to, but not identical to, the measured index.
+
+---
+
+*Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · NASA OMNI (replay) · Earth imagery: NASA Blue Marble / Black Marble*

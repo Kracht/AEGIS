@@ -8,6 +8,9 @@ import { AuroraTexture }    from './aurora-texture.js';
 import { UI }            from './ui.js';
 import { DevPanel }      from './dev-panel.js';
 import { RenderMode }    from './render-mode.js';
+import { Transport }     from './transport.js';
+import { CausalHUD }     from './causal-hud.js';
+import { LIVE_ID }       from './scenarios.js';
 
 let rafId      = null;
 let renderer   = null;
@@ -16,6 +19,8 @@ let aurora     = null;
 let ui         = null;
 let devPanel   = null;
 let renderMode = null;
+let transport  = null;
+let causalHud  = null;
 
 const startTime = performance.now();
 
@@ -73,7 +78,7 @@ async function main() {
         return;
     }
 
-    source = createDataSource();
+    source = createDataSource(LIVE_ID);
     source.start();
 
     aurora = new AuroraTexture(renderer.gl);
@@ -83,6 +88,22 @@ async function main() {
     renderMode = new RenderMode();
     ui         = new UI(renderMode);
     devPanel   = new DevPanel(renderMode);
+    causalHud  = new CausalHUD();
+
+    // The transport bar swaps the active DataSource through the Phase-0 seam.
+    // Live → quiet causal HUD; a curated storm auto-reveals it (that's where
+    // the lag clocks and branch independence actually become legible).
+    transport = new Transport({
+        onSelect: (id) => {
+            source.stop();
+            source = createDataSource(id);
+            source.start();
+            if (id === LIVE_ID) causalHud.hide(); else causalHud.show();
+        },
+        onPlayPause: () => source.togglePlay?.(),
+        onSeek:      (f) => source.seekFraction?.(f),
+        onSpeed:     (x) => source.setSpeed?.(x),
+    });
 
     let lastUiTime = -Infinity;
 
@@ -113,9 +134,14 @@ async function main() {
 
         renderer.draw(timeSecs, uniforms);
 
+        // The causal HUD reads the same uniforms every frame so its nodes light
+        // smoothly as a scrubbed storm evolves (cheap: SVG attribute writes).
+        causalHud.update(uniforms);
+
         // UI rerenders at 1 Hz — data changes slowly, no need for 60 fps DOM updates
         if (timeSecs - lastUiTime >= 1.0) {
             ui.update(uniforms);
+            transport.update(uniforms.timeline);
             lastUiTime = timeSecs;
         }
 
