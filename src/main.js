@@ -10,6 +10,7 @@ import { DevPanel }      from './dev-panel.js';
 import { RenderMode }    from './render-mode.js';
 import { Transport }     from './transport.js';
 import { CausalHUD }     from './causal-hud.js';
+import { CameraController } from './camera.js';
 import { LIVE_ID }       from './scenarios.js';
 
 let rafId      = null;
@@ -21,6 +22,7 @@ let devPanel   = null;
 let renderMode = null;
 let transport  = null;
 let causalHud  = null;
+let camera     = null;
 
 const startTime = performance.now();
 
@@ -89,6 +91,8 @@ async function main() {
     ui         = new UI(renderMode);
     devPanel   = new DevPanel(renderMode);
     causalHud  = new CausalHUD();
+    // After DevPanel — the camera chip appends into the perf bar it builds.
+    camera     = new CameraController(canvas);
 
     // The transport bar swaps the active DataSource through the Phase-0 seam.
     // Live → quiet causal HUD; a curated storm auto-reveals it (that's where
@@ -129,6 +133,7 @@ async function main() {
             ...source.toUniforms(),
             ...orbitalParams(),
             ...devPanel.getParams(),
+            ...camera.getParams(),   // after devPanel: FREE-mode zoom overrides Orbit slider
             renderMode: renderMode.index,
         };
 

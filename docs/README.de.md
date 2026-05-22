@@ -14,7 +14,7 @@ Die Szene zeigt die Erde und die unsichtbare Blase aus Magnetkraft, die sie sch�
 |---|---|
 | Blaue/weiße Tropfenform | Die Magnetosphäre — sonnenseitig komprimiert, auf der Nachtseite zu einem langen Schweif ausgezogen |
 | Warm getönte äußere Kuppel (Tagseite) | **Bugstoßwelle und Magnetosheath** — der Überschall-Sonnenwind schockt, erhitzt und legt sich um das magnetische Hindernis der Erde |
-| Bogenförmige Stränge in „Quallen"-Form | Geomagnetische **Feldlinienschalen** (McIlwain L = 2…6) — geschlossene Feldlinien, sonnenseitig zu einer Glocke komprimiert und in nachlaufende Schweiffilamente ausgezogen (die echte Tropfenform der Magnetosphäre) |
+| Bogenförmige Stränge in „Quallen"-Form | Geomagnetische **Feldlinienschalen** (McIlwain L = 2…6) — geschlossene Feldlinien, sonnenseitig zu einer Glocke komprimiert und in nachlaufende Schweiffilamente ausgezogen (die echte Tropfenform der Magnetosphäre). Sie **reagieren auf den Sturm**: Der Staudruck presst die Tagseiten-Glocke nach innen, der Ringstrom (sinkendes Dst) bläht die inneren Schalen nach außen, und südwärtiges Bz zieht die Schweiffilamente aus — die schnelle Kompression und die langsame Aufblähung zeitlich sichtbar getrennt |
 | Innerer Plasmaschimmer | Die **Plasmaphäre** — ein Ring aus kühlem, dichtem Plasma nahe der Erde; schrumpft bei Stürmen nach innen |
 | Karmesinrotes Leuchten dicht um die Erde (nur bei Sturm) | **Partieller Ringstrom** — westwärts driftende energiereiche Ionen auf den geschlossenen Feldlinien; asymmetrisch (eng am Mittag, ausgebeult zur Mitternacht); das magnetische Signal einer geomagnetischen Hauptphase |
 | Horizontales Band im Schweif | **Plasmaschicht** (Harris-Stromschicht) — dünne Lage dichten Plasmas in der magnetischen Äquatorebene des Schweifs, in Echtzeit flatternd |
@@ -141,6 +141,10 @@ AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit `F3` (oder Klic
 | **Data** | Visual darunter, **plus** eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung `lag` = `1,5 × 10⁶ km ÷ v_sw`. | Fragen: *„Welche Zahlen stecken hinter diesem Bild?"* Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen. |
 
 `F2` blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.
+
+### Kamera & Free-Look (C)
+
+Standardmäßig fliegt die Kamera einen langsamen Kinobogen über die **Flanke** — den seitlichen 3/4-Blickwinkel, in dem die Sturmverformung am besten lesbar ist — und schwenkt bewusst nie den Magnetschweif hinab (was sie im Schweif-Inneren vergraben würde). Mit `C` (oder Klick auf **Cam: …** oben rechts) aktivierst du **Free-Look**: **Ziehen zum Umkreisen** der Erde, **Scrollen zum Zoomen** (4–45 Rₑ). Die Ansicht bleibt in beiden Modi auf die Erde zentriert — du kannst also genau den Winkel wählen, der die Tagseiten-Kompression und den aufgeblähten Ringstrom einfängt, und dann zurückschalten, damit sie von selbst weiterkreist.
 
 ---
 

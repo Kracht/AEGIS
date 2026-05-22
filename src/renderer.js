@@ -69,6 +69,7 @@ export class Renderer {
             u_bt:            gl.getUniformLocation(this.program, 'u_bt'),
             u_density:       gl.getUniformLocation(this.program, 'u_density'),
             u_pressure:      gl.getUniformLocation(this.program, 'u_pressure'),
+            u_dst:           gl.getUniformLocation(this.program, 'u_dst'),
             u_flare:         gl.getUniformLocation(this.program, 'u_flare'),
             u_dataAge:       gl.getUniformLocation(this.program, 'u_dataAge'),
             u_auroraGridNH:  gl.getUniformLocation(this.program, 'u_auroraGridNH'),
@@ -89,6 +90,9 @@ export class Renderer {
             u_fieldScale:      gl.getUniformLocation(this.program, 'u_fieldScale'),
             u_volExtinct:      gl.getUniformLocation(this.program, 'u_volExtinct'),
             u_renderMode:      gl.getUniformLocation(this.program, 'u_renderMode'),
+            u_camMode:         gl.getUniformLocation(this.program, 'u_camMode'),
+            u_camAzim:         gl.getUniformLocation(this.program, 'u_camAzim'),
+            u_camElev:         gl.getUniformLocation(this.program, 'u_camElev'),
         };
 
         // Earth textures: load asynchronously, replacing a 1×1 ocean-blue placeholder.
@@ -165,6 +169,7 @@ export class Renderer {
         gl.uniform1f(this.uniforms.u_bt,         params.bt       ?? 5.0);
         gl.uniform1f(this.uniforms.u_density,    params.density  ?? 5.0);
         gl.uniform1f(this.uniforms.u_pressure,   params.pressure ?? 1.7);
+        gl.uniform1f(this.uniforms.u_dst,        params.dst      ?? 0.0);
         gl.uniform1f(this.uniforms.u_flare,      params.flare    ?? 0.0);
         gl.uniform1f(this.uniforms.u_dataAge,    params.dataAge  ?? 0.0);
         gl.uniform1f(this.uniforms.u_earthRot,   params.earthRot ?? 0.0);
@@ -183,6 +188,9 @@ export class Renderer {
         gl.uniform1f(this.uniforms.u_fieldScale,      params.fieldScale      ?? 1.0);
         gl.uniform1f(this.uniforms.u_volExtinct,      params.volExtinct      ?? 1.0);
         gl.uniform1i(this.uniforms.u_renderMode,      params.renderMode      ?? 0);
+        gl.uniform1i(this.uniforms.u_camMode,         params.camMode         ?? 0);
+        gl.uniform1f(this.uniforms.u_camAzim,         params.camAzim         ?? 0.0);
+        gl.uniform1f(this.uniforms.u_camElev,         params.camElev         ?? 0.0);
 
         // Aurora OVATION textures — fallback to 1×1 zero until data arrives
         const texNH = this._aurora?.texNH ?? this._fallbackTex;

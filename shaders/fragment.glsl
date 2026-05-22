@@ -34,6 +34,7 @@ uniform float u_kp;      // Kp index
 uniform float u_bt;      // IMF total field [nT]
 uniform float u_density; // SW density [1/cm³]
 uniform float u_pressure;// SW dynamic pressure [nPa]
+uniform float u_dst;     // Burton/O'Brien ring-current Dst* [nT] (integrated, lagged)
 uniform float u_flare;   // GOES flare level
 uniform float u_dataAge;
 uniform sampler2D u_auroraGridNH;
@@ -55,6 +56,9 @@ uniform float u_limbScale;       // atmosphere limb scale
 uniform float u_fieldScale;      // field line intensity scale
 uniform float u_volExtinct;      // volumetric extinction scale
 uniform int   u_renderMode;      // 0 = Visual, 1 = Structural, 2 = Data (Visual + DOM)
+uniform int   u_camMode;         // 0 = auto cinematic orbit, 1 = free look (mouse)
+uniform float u_camAzim;         // free-look azimuth [rad]
+uniform float u_camElev;         // free-look elevation [rad] (clamped off the poles)
 
 out vec4 fragColor;
 
@@ -137,14 +141,35 @@ float sdBs(vec3 p) {
 // so the two stay coupled — and the ring current inherits the real
 // noon-compressed / midnight-bulged partial-ring-current asymmetry.
 //   w < 1 → compressed (dayside)   w > 1 → stretched (tail)
+//
+// As-built (Phase 5): the deformation is no longer a frozen teardrop. Its three
+// coefficients now track the live drivers, the way an empirical field model
+// (Tsyganenko T96/TS05) parametrizes its analytic deformation by Pdyn, Dst and
+// IMF — a "poor man's Tsyganenko" at the shell-coordinate level rather than a
+// per-ray field-line integration. Three independent morphological signatures:
+//   • DAYSIDE PINCH   ∝ dynamic pressure (read off r₀ via Shue) — fast, pressure
+//   • TAIL STRETCH    ∝ southward IMF Bz (substorm flux loading) — minutes
+//   • INNER INFLATION ∝ −Dst depression (ring-current diamagnetism) — slow, the
+//     same quantity ground magnetometers measure; lags and decays with the ODE.
+// Compression and inflation thus separate IN TIME, reinforcing the two-branch
+// lesson: a pressure pulse pinches the dayside immediately; the ring current
+// balloons the inner shells only as Dst integrates down, and lingers on recovery.
 float shellWarp(vec3 p) {
     float r    = length(p);
     float cosS = dot(p, SUN) / max(r, 1e-4);
     float day  = max( cosS, 0.0);
     float ngt  = max(-cosS, 0.0);
-    float w = 1.0 - 0.16 * day
-                  + 0.60 * ngt * (0.30 + 0.70 * smoothstep(1.0, 7.0, r));
-    return clamp(w, 0.55, 3.0);
+
+    // Driver scalars (quiet → 0/baseline, storm → larger).
+    float comp = clamp(10.5 / max(u_r0, 4.0), 1.0, 2.2);   // dayside pinch (pressure via r₀)
+    float strm = clamp(-u_bz / 12.0, 0.0, 1.5);            // tail loading (southward IMF)
+    float infl = clamp(-u_dst / 80.0, 0.0, 1.6);           // ring-current inflation (−Dst)
+
+    float w = 1.0 - 0.16 * comp * day                      // dayside crushes earthward under pressure
+                  + (0.60 + 0.45 * strm) * ngt
+                    * (0.30 + 0.70 * smoothstep(1.0, 7.0, r))  // tail elongates with the storm
+                  + 0.18 * infl * smoothstep(8.0, 2.5, r);     // inner closed shells balloon outward
+    return clamp(w, 0.55, 3.2);
 }
 
 // Signed distance to the nearest integer dipole L-shell (L = 2..6), using the
@@ -191,8 +216,14 @@ float fieldLines(vec3 p) {
     // stay locked): <1 compresses the dayside bell, >1 stretches the tail.
     float warp = shellWarp(p);
 
-    // Sun-dependent reach: tentacles trail far tailward, dayside stays tight.
-    float rMax = mix(7.0, 15.0, ngt);
+    // Sun-dependent reach, now storm-aware: the dayside bell can only reach as
+    // far as the (Shue-compressed) magnetopause lets it, so under pressure it
+    // retreats earthward with r₀; the tail tentacles trail farther as southward
+    // IMF loads flux into the lobes.
+    float strm    = clamp(-u_bz / 12.0, 0.0, 1.5);
+    float dayMax  = min(7.0, u_r0 * 0.72);                 // dayside closes in with the magnetopause
+    float tailMax = 15.0 + 7.0 * strm;                     // tail draws out during the storm
+    float rMax    = mix(dayMax, tailMax, ngt);
     if (r < 1.04 || r > rMax) return 0.0;
 
     float rEff = r / warp;                             // deformed dipole radius
@@ -795,11 +826,28 @@ vec4 structuralDensity(vec3 p) {
 void main() {
     vec2 uv = (2.0 * gl_FragCoord.xy - u_resolution) / u_resolution.y;
 
-    // Camera: 12 R_E orbit, vertical kept moderate to avoid pure polar view
-    // (which projects field-line tubes as concentric rings).
-    float ang = u_time * 0.058;
-    float ch  = 3.0 + 2.5 * sin(u_time * 0.029);  // range 0.5–5.5 R_E only
-    vec3  cam = vec3(cos(ang) * u_camRadius, ch, sin(ang) * u_camRadius);
+    // Camera, always centered on Earth (fwd = −cam below). Two modes:
+    vec3 cam;
+    if (u_camMode == 1) {
+        // FREE LOOK — mouse-driven spherical orbit. Elevation is clamped off the
+        // poles in JS so the up-vector cross product never degenerates (and so
+        // the shells never project as flat concentric rings from straight above).
+        float ce = cos(u_camElev);
+        cam = u_camRadius * vec3(ce * cos(u_camAzim), sin(u_camElev), ce * sin(u_camAzim));
+    } else {
+        // AUTO — confined 3/4 orbit on the flank. The old free-running full 360°
+        // spin swung the camera straight down the anti-sunward axis once per
+        // revolution — and with the storm-aware tail now reaching ~25 R_E while
+        // the orbit sits at 12 R_E, that buried the camera inside the lobe and
+        // washed the structure into a smear. Instead, sweep a slow arc across the
+        // flank, from a sunward 3/4 (dayside bell as hero) to a mild tailward
+        // profile — the side-on angles where compression / inflation / tail-
+        // stretch read best, dwelling at the flanks (sin flattens there) and
+        // never crossing into the tail or the head-on axis.
+        float ang = 1.40 + 0.55 * sin(u_time * 0.032);  // ≈ 49°…112° azimuth (flank arc)
+        float ch  = 3.0 + 2.5 * sin(u_time * 0.029);    // 0.5–5.5 R_E elevation (parallax)
+        cam = vec3(cos(ang) * u_camRadius, ch, sin(ang) * u_camRadius);
+    }
     vec3  fwd = normalize(-cam);
     vec3  rgt = normalize(cross(fwd, vec3(0.0, 1.0, 0.0)));
     vec3  upv = cross(rgt, fwd);

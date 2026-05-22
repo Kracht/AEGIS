@@ -35,7 +35,7 @@ you load the page.
 |---|---|
 | Blue/white teardrop | The magnetosphere — Sun-compressed, drawn into a long night-side tail |
 | Warm dayside dome | Bow shock + magnetosheath — shocked, heated, draped solar wind |
-| Arcing strands ("jellyfish") | Geomagnetic field-line shells (McIlwain L = 2…6) — Sun-compressed bell, tail-swept filaments |
+| Arcing strands ("jellyfish") | Geomagnetic field-line shells (McIlwain L = 2…6) — and they *flex with the drivers*: the dayside bell crushes inward under pressure, the inner shells balloon out as the ring current (Dst) deepens, and the tail draws out under southward Bz |
 | Inner glow | Plasmasphere — cold dense plasma; shrinks inward during storms |
 | Crimson glow hugging Earth (storms) | Partial ring current — noon-tight / midnight-bulged, frozen onto the closed field lines; the Dst signature of a main phase |
 | Tail band | Plasma sheet (Harris current sheet), flapping in real time |
@@ -72,6 +72,12 @@ python3 -m http.server 8080
 
 **Controls**
 
+- `C` (or the **Cam: …** label by the FPS counter) toggles **free-look**: by
+  default the camera flies a slow cinematic arc across the flank (the side-on
+  angle where the storm deformation reads best, never diving down the tail); in
+  free-look you **drag to orbit** Earth and **scroll to zoom** (4–45 Rₑ), so you
+  can park on whichever 3/4 angle frames the compression and ring-current
+  inflation. The view stays centered on Earth in both modes.
 - `F2` (or the **Settings [F2]** label by the FPS counter) toggles the visual
   tuning panel — camera orbit/FOV, exposure, gamma, and per-layer intensity.
 - `F3` (or the **Mode: …** label next to it) cycles the render mode:
@@ -133,7 +139,13 @@ NOAA SWPC / GOES / OVATION  ──▶  data-fetcher.js   ──▶  Shue (1997) 
 3. `renderer.js` compiles the program and pushes per-frame uniforms; the only
    geometry is a single oversized triangle.
 4. `fragment.glsl` ray-marches emission/extinction through an SDF model of the
-   magnetosphere (96 jittered steps, Reinhard tone map).
+   magnetosphere (96 jittered steps, Reinhard tone map). The field-line shells
+   are not a frozen shape: their deforming warp is driven by the live state the
+   way an empirical field model (Tsyganenko) parametrises its analytic
+   deformation — dynamic pressure (via `r₀`) pinches the dayside, southward
+   `Bz` stretches the tail, and the integrated `Dst` inflates the inner closed
+   shells. Because `Dst` is the lagged, decaying ODE output, the fast pressure
+   compression and the slow ring-current inflation visibly separate in time.
 
 ---
 
@@ -182,6 +194,7 @@ src/
   dev-panel.js        # FPS readout + Settings [F2] tuning panel
   render-mode.js      # Visual/Structural/Data mode controller (F3)
   causal-hud.js       # two-branch causal graph overlay (F4)
+  camera.js           # auto cinematic orbit ↔ free-look (drag/zoom) controller (C)
   transport.js        # scenario picker + scrub/play/speed bar
 shaders/
   vertex.glsl         # full-screen triangle
@@ -209,6 +222,9 @@ and well-known real-time graphics techniques.
 - Cairns, I. H., *et al.* (1995). — bow-shock standoff scaling.
 - Harris, E. G. (1962). *On a plasma sheath separating regions of oppositely
   directed magnetic field.* Nuovo Cimento, 23, 115–121. — tail current sheet.
+- Tsyganenko, N. A. (1995, 2002). *Modeling the Earth's magnetospheric magnetic
+  field…* J. Geophys. Res. — the empirical, driver-parametrised field
+  deformation (Pdyn, Dst, IMF) that the field-line warp emulates qualitatively.
 - Carpenter, D. L., & Anderson, R. R. (1992). *An ISEE/whistler model of
   equatorial electron density in the magnetosphere.* J. Geophys. Res., 97(A2),
   1097–1108. — plasmapause.

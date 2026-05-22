@@ -14,7 +14,7 @@ The scene shows Earth and the invisible bubble of magnetic force that protects i
 |---|---|
 | Blue/white teardrop shape | The magnetosphere — compressed on the Sun-facing side, stretched into a long tail on the night side |
 | Warm-tinted outer dome (dayside) | **Bow shock + magnetosheath** — where the supersonic solar wind shocks, heats, and drapes around Earth's magnetic obstacle |
-| Arcing strands forming a "jellyfish" | Geomagnetic **field-line shells** (McIlwain L = 2…6) — closed field lines, compressed into a bell on the Sun side and swept into trailing tail filaments (the magnetosphere's real teardrop shape) |
+| Arcing strands forming a "jellyfish" | Geomagnetic **field-line shells** (McIlwain L = 2…6) — closed field lines, compressed into a bell on the Sun side and swept into trailing tail filaments (the magnetosphere's real teardrop shape). They **respond to the storm**: ram pressure crushes the dayside bell inward, the ring current (deepening Dst) balloons the inner shells outward, and southward Bz draws the tail filaments out — fast compression and slow inflation visibly separated in time |
 | Inner plasma glow | The **plasmasphere** — a torus of cold, dense plasma trapped close to Earth; shrinks inward during storms |
 | Crimson glow hugging Earth (storm only) | **Partial ring current** — westward-drifting energetic ions on the closed field lines; asymmetric (tight near noon, bulged toward midnight); the magnetic signature of a geomagnetic main phase |
 | Horizontal band across the tail | **Plasma sheet** (Harris current sheet) — thin layer of dense plasma at the magnetic equator inside the tail, flapping in real time |
@@ -141,6 +141,10 @@ AEGIS shows the *same* live physics through three layers of abstraction. Press `
 | **Data** | Visual underneath, **plus** a panel listing every uniform driving the scene with its units, citation, and the feature it drives. Includes the Phase 1 `lag` clock — `1.5 × 10⁶ km ÷ v_sw`. | Answer *"what are the numbers behind this picture?"* Useful for tracing why a particular storm phase looks the way it does, or for matching a feature back to its empirical model. |
 
 `F2` toggles the visual-tuning sliders (camera, exposure, per-layer intensities). The two panels are independent and can be open at the same time.
+
+### Camera & free-look (C)
+
+By default the camera flies a slow cinematic arc across the **flank** — the side-on 3/4 angle where the storm deformation reads best — and deliberately never swings down the magnetotail (which would bury it inside the lobe). Press `C` (or click **Cam: …** in the top-right) for **free-look**: **drag to orbit** Earth, **scroll to zoom** (4–45 Rₑ). The view stays centered on Earth either way, so you can settle on whatever angle frames the dayside compression and the inflated ring current, then toggle back to let it orbit on its own.
 
 ---
 
