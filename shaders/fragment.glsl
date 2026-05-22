@@ -59,6 +59,8 @@ uniform int   u_renderMode;      // 0 = Visual, 1 = Structural, 2 = Data (Visual
 uniform int   u_camMode;         // 0 = auto cinematic orbit, 1 = free look (mouse)
 uniform float u_camAzim;         // free-look azimuth [rad]
 uniform float u_camElev;         // free-look elevation [rad] (clamped off the poles)
+uniform float u_bzAurora;        // IMF Bz delayed by the substorm growth phase [nT]
+uniform float u_auroraSynth;     // 0 = live OVATION texture, 1 = model oval (replay)
 
 out vec4 fragColor;
 
@@ -362,26 +364,58 @@ vec4 volDensity(vec3 p) {
 
         // AURORA — thin glowing band hugging the polar regions, ISS-style.
         // Subtle and beautiful, not a dominating crown.
-        if (r > 1.016 && r < 1.10 && sinLat > 0.55) {
+        if (r > 1.016 && r < 1.10 && sinLat > 0.42) {
             float aurU   = fract(atan(-p.z, p.x) / 6.28318 + 0.5 + u_earthRot);
             float latDeg = degrees(asin(clamp(sinLat, 0.0, 0.9999)));
             float aurV   = clamp((latDeg - 50.0) / 40.0, 0.0, 1.0);
-            float ovation = (p.y >= 0.0)
+            float ovaTex = (p.y >= 0.0)
                 ? texture(u_auroraGridNH, vec2(aurU, aurV)).r
                 : texture(u_auroraGridSH, vec2(aurU, aurV)).r;
+            // The OVATION grid only spans 50–90° (CLAMP_TO_EDGE on latitude), so
+            // sampling below 50° returns the clamped 50° edge row. Without this
+            // mask that edge value smears across the whole 25–50° band as a hard
+            // filled cap ("a slice through a ball"). Fade it out at the real data
+            // floor; the synthetic oval below has its own smooth falloff.
+            ovaTex *= smoothstep(49.0, 51.0, latDeg);
 
-            if (ovation > 0.005) {
+            // Model auroral oval — used in REPLAY (no live OVATION exists for a
+            // past storm), blended out in live mode (u_auroraSynth = 0, real
+            // nowcast texture). The equatorward boundary marches toward the
+            // equator with activity (~2°/Kp, Gussenhoven et al. 1983), driven
+            // here by the GROWTH-PHASE-LAGGED Bz (u_bzAurora, ~30 min behind the
+            // tail) with a Kp floor — so the oval expands and brightens minutes
+            // AFTER the tail X-line fires, the substorm growth phase made
+            // visible. ~6° equatorward shift toward magnetic midnight.
+            float bzAur  = clamp(-u_bzAurora / 15.0, 0.0, 1.0);
+            float aurAct = max(bzAur, clamp((u_kp - 2.0) / 7.0, 0.0, 1.0));
+            float midn   = clamp(-dot(normalize(p), SUN), 0.0, 1.0);   // 1 at magnetic midnight
+            // Teardrop oval (Gussenhoven et al. 1983 boundary, ~2°/Kp): the
+            // equatorward edge marches down with activity AND dips deeper toward
+            // midnight. Thickness is asymmetric — thin on the dayside, broad on
+            // the nightside, broader still with activity — matching how OVATION
+            // draws a fat night-side oval and a narrow day-side arc.
+            float bnd    = 67.0 - 17.0 * aurAct - 9.0 * midn;     // equatorward boundary [°]
+            float halfW  = 2.5 + 5.0 * midn + 3.0 * aurAct;       // half-width [°] (fat at midnight)
+            float center = bnd + halfW;                            // bright ridge sits poleward of the edge
+            float dLat   = latDeg - center;
+            // Sharp poleward edge, diffuse equatorward tail (the real profile).
+            float sig    = (dLat < 0.0) ? halfW : halfW * 0.6;
+            float synth  = (0.10 + 0.90 * aurAct) * exp(-(dLat * dLat) / (sig * sig));
+            float oval   = mix(ovaTex, synth, u_auroraSynth);
+
+            if (oval > 0.005) {
                 // Sharp altitude falloff → thin band, ISS look
                 float altFade = exp(-(r - 1.016) * 22.0);
                 float t1 = u_time * 0.13, t2 = u_time * 0.08;
                 // Single-octave curtain noise — keeps it organic but not chaotic
                 float curtain = vn(p * 9.0 + vec3(t1, 0, t2));
                 float aurNoise = 0.55 + 0.45 * curtain;
-                float aurInt = ovation * aurNoise * altFade * 12.0 * u_auroraScale;
-                // Color: bright green base, red at strong peaks, violet only in storms
+                float aurInt = oval * aurNoise * altFade * 12.0 * u_auroraScale;
+                // Color: bright green base, red at strong peaks, violet only in
+                // storms — keyed to the lagged Bz so colour also trails the tail.
                 vec3 aurCol = mix(vec3(0.05, 1.10, 0.32), vec3(1.05, 0.18, 0.06),
-                                  smoothstep(0.30, 0.85, ovation));
-                aurCol = mix(aurCol, vec3(0.55, 0.06, 0.95), bzStorm * 0.45);
+                                  smoothstep(0.30, 0.85, oval));
+                aurCol = mix(aurCol, vec3(0.55, 0.06, 0.95), bzAur * 0.45);
                 sg += aurInt; em += aurInt * aurCol;
             }
         }

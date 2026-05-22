@@ -110,6 +110,16 @@ export class TimelineSource {
         }
     }
 
+    // Measured SYM-H at the current cursor (the model-vs-reality "ghost").
+    // Returns null when the bundled scenario predates the per-sample symh column.
+    _symhAt(targetMs) {
+        if (!this._loaded || this._idx.symh === undefined) return null;
+        const i = Math.round((targetMs - this._t0) / this._dtMs);
+        const row = this._data.samples[Math.min(Math.max(i, 0), this._data.samples.length - 1)];
+        const v = row?.[this._idx.symh];
+        return (v === null || v === undefined || !isFinite(v)) ? null : v;
+    }
+
     toUniforms() {
         if (this._loaded && this._playing) {
             const now = performance.now();
@@ -132,6 +142,7 @@ export class TimelineSource {
                 fraction:   this.fraction,
                 utc:        this._loaded ? new Date(this._playMs).toISOString() : '',
                 realDstMin: this._data?.realDstMin ?? null,
+                realDst:    this._symhAt(this._playMs),
             },
         };
     }

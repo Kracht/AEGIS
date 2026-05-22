@@ -136,6 +136,9 @@ async function main() {
             ...camera.getParams(),   // after devPanel: FREE-mode zoom overrides Orbit slider
             renderMode: renderMode.index,
         };
+        // Live mode keeps the real OVATION texture; a replay has no historical
+        // OVATION, so the shader synthesises the oval from the model state.
+        uniforms.auroraSynth = uniforms.timeline ? 1.0 : 0.0;
 
         renderer.draw(timeSecs, uniforms);
 

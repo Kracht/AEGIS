@@ -40,7 +40,7 @@ you load the page.
 | Crimson glow hugging Earth (storms) | Partial ring current — noon-tight / midnight-bulged, frozen onto the closed field lines; the Dst signature of a main phase |
 | Tail band | Plasma sheet (Harris current sheet), flapping in real time |
 | Orange spot behind Earth | Near-Earth reconnection X-line (Bz southward) |
-| Polar rings | Aurora ovals from the NOAA OVATION nowcast |
+| Polar rings | Aurora ovals — the live NOAA OVATION nowcast; in storm replays, a model oval (Kp/Bz-driven teardrop: fat and deep on the night side, narrow on the day side) that expands equatorward ~30 min *after* the tail loads (substorm growth phase) |
 | Terminator | Real day/night boundary for the current UTC time |
 
 A full annotated walkthrough is in the manuals:
@@ -102,7 +102,11 @@ python3 -m http.server 8080
   independence become legible (you can't watch a 7-hour Dst recovery in real
   time). The high-speed stream is the teaching contrast: it compresses r₀
   almost as hard as the November superstorm, yet drives only a tenth of the
-  Dst — compression and storm are *not* the same thing.
+  Dst — compression and storm are *not* the same thing. During a replay the
+  status panel shows the **measured SYM-H** beside the modeled Dst, so you can
+  watch the estimate track (or miss) the real ring current. The propagation
+  delays are always on view there too — `L1 → bow shock` and the further
+  `aurora` growth-phase lag.
 
 ---
 
@@ -135,7 +139,11 @@ NOAA SWPC / GOES / OVATION  ──▶  data-fetcher.js   ──▶  Shue (1997) 
    causal sequencing emerges rather than being keyframed. Both sit behind
    `data-source.js` and are interchangeable through `createDataSource(id)`.
 2. `aurora-texture.js` polls the NOAA OVATION aurora nowcast into two polar
-   `R8` textures.
+   `R8` textures. These drive the oval in **live** mode; in **replay** (no
+   historical OVATION exists) the shader synthesises the oval from the model
+   state — a Gussenhoven (1983) equatorward boundary (~2°/Kp) shaped into a
+   teardrop, fed by a Bz delayed an extra ~30 min beyond the L1 lag so the oval
+   expands *after* the tail loads (the substorm growth phase).
 3. `renderer.js` compiles the program and pushes per-frame uniforms; the only
    geometry is a single oversized triangle.
 4. `fragment.glsl` ray-marches emission/extinction through an SDF model of the
@@ -236,6 +244,9 @@ and well-known real-time graphics techniques.
   injection / decay parameterisation used for the live Dst estimate.
 - Newell, P. T., *et al.* (2009). — OVATION auroral precipitation model
   (delivered operationally as NOAA SWPC's OVATION aurora nowcast).
+- Gussenhoven, M. S., Hardy, D. A., & Heinemann, N. (1983). *Systematics of the
+  equatorward diffuse auroral boundary.* J. Geophys. Res., 88(A7), 5692–5708. —
+  the ~2°/Kp equatorward-boundary relation used for the replay aurora oval.
 - Cooper, P. I. (1969). — solar declination equation, used to place the
   day/night terminator.
 - Reinhard, E., *et al.* (2002). *Photographic Tone Reproduction for Digital

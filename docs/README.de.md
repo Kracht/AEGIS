@@ -19,7 +19,7 @@ Die Szene zeigt die Erde und die unsichtbare Blase aus Magnetkraft, die sie sch�
 | Karmesinrotes Leuchten dicht um die Erde (nur bei Sturm) | **Partieller Ringstrom** — westwärts driftende energiereiche Ionen auf den geschlossenen Feldlinien; asymmetrisch (eng am Mittag, ausgebeult zur Mitternacht); das magnetische Signal einer geomagnetischen Hauptphase |
 | Horizontales Band im Schweif | **Plasmaschicht** (Harris-Stromschicht) — dünne Lage dichten Plasmas in der magnetischen Äquatorebene des Schweifs, in Echtzeit flatternd |
 | Heller orangener Fleck hinter der Erde (Bz südwärts) | **Substurm-Rekonnexionslinie** — wo gestreckte Schweif-Feldlinien aufreißen und gespeicherte Energie explosiv freisetzen |
-| Leuchtende Polringe | **Auroren-Ovale** — wo energiereiche Teilchen in die Atmosphäre regnen |
+| Leuchtende Polringe | **Auroren-Ovale** — wo energiereiche Teilchen in die Atmosphäre regnen. Live: der NOAA-OVATION-Nowcast. In Sturm-Wiedergaben: ein Modell-Oval (Gussenhoven-1983-Grenze, ~2°/Kp) als Tropfenform — breit und tief bis in mittlere Breiten auf der Nachtseite, ein schmaler Bogen auf der Tagseite — das sich ~30 min *nach* der Schweifladung ausdehnt |
 | Terminator-Linie auf der Erde | Die echte Tag/Nacht-Grenze zur aktuellen UTC-Zeit |
 | Erdoberfläche | NASA Blue Marble (monatlich/saisonal) für den Tag; Black Marble Stadtlichter für die Nacht |
 | Statusanzeige (oben links) | Live-Messwerte vom Satelliten DSCOVR am L1-Lagrangepunkt, ~1,5 Millionen km erdwärts der Sonne |
@@ -52,7 +52,7 @@ Diese Advektionszeit ist genau das, was du in der Szene siehst:
 
 AEGIS puffert jede L1-Messung in einen 90-Minuten-Ring und rendert den Snapshot von `t_lag` zurück. Eine Bz-Stufe an L1 bleibt für die Laufzeit unsichtbar und schwappt dann in die Szene. Der modellierte Dst integriert über das **verzögerte** Bz und den verzögerten Druck — der Ringstrom-Wert reagiert also in physikalischer Reihenfolge: eine Süddrehung an L1 komprimiert zuerst die Magnetopause und lädt den Schweif, *danach* erst zeichnet sich die Dst-Signatur ab.
 
-Es ist bewusst ein einfaches Advektionsmodell. Die feinere Differenzierung zwischen Schweifladung (Minuten) und vollständiger Ausdehnung des Auroren-Ovals (Substurm-Wachstumsphase, weitere zig Minuten) bleibt einer späteren Ausbaustufe vorbehalten; heute teilen sich beide denselben L1-Verzug.
+Es ist bewusst ein einfaches Advektionsmodell. Darauf aufgesetzt trägt das Auroren-Oval einen **weiteren Verzug von ~30 min (Wachstumsphase)**: Sein steuerndes Bz wird eine halbe Stunde weiter zurück abgetastet, sodass in einer Wiedergabe erst der Schweif lädt und die X-Linie zündet und sich das Oval erst Minuten später ausdehnt und aufhellt — die Substurm-Wachstumsphase sichtbar gemacht. Der L1-Verzug und dieser zusätzliche Aurora-Verzug werden beide live in der Statusanzeige gezeigt (`lag · L1→shock NN min · aurora NN min`).
 
 ---
 
@@ -169,6 +169,8 @@ Die **Transportleiste** am unteren Rand spielt echte, aufgezeichnete Stürme ab,
 | **Januar 2026** | Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen. |
 
 Wähle einen Sturm, dann **Play / Pause / Scrubben** und eine **Zeitraffer-Stufe** (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch *dasselbe* Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression *vor* der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.
+
+Während ein Sturm läuft, zeigt die Statusanzeige das **gemessene SYM-H** (der echte Ringstrom-Index aus dem OMNI-Datensatz) direkt neben dem modellierten Dst — so kann man verfolgen, wie die Burton/O'Brien-Schätzung dem echten Sturm folgt und wo sie abweicht. Ehrliche Validierung, kein verstecktes Schönen.
 
 > **Hinweis zu Halloween 2003.** Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren *Antriebsdaten* — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)
 

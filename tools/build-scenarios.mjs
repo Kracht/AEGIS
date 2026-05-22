@@ -104,7 +104,7 @@ async function build(meta, { surveyOnly = false } = {}) {
     if (surveyOnly) return summary;
 
     const samples = epochs.map((t, i) => [
-        r2(bz[i]), r2(bt[i]), r2(spd[i]), r2(den[i]), r2(kpAt(t)),
+        r2(bz[i]), r2(bt[i]), r2(spd[i]), r2(den[i]), r2(kpAt(t)), r2(symh[i]),
     ]);
 
     const out = {
@@ -113,8 +113,8 @@ async function build(meta, { surveyOnly = false } = {}) {
         date: meta.date,
         summary: meta.blurb,
         teaches: meta.teaches,
-        fields: ['bz', 'bt', 'speed', 'density', 'kp'],
-        units:  ['nT', 'nT', 'km/s', 'n/cc', 'Kp'],
+        fields: ['bz', 'bt', 'speed', 'density', 'kp', 'symh'],
+        units:  ['nT', 'nT', 'km/s', 'n/cc', 'Kp', 'nT'],
         source: 'NASA CDAWeb OMNI_HRO2_5MIN (IMF/plasma, bow-shock-shifted) + OMNI2_H0_MRG1HR (Kp). DOI 10.48322/hkaw-ff03.',
         cadenceSec: 300,
         t0: new Date(epochs[0]).toISOString(),

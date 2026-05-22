@@ -136,7 +136,7 @@ footer{
 </tr>
 <tr>
 <td>Leuchtende Polringe</td>
-<td><strong>Auroren-Ovale</strong> — wo energiereiche Teilchen in die Atmosphäre regnen</td>
+<td><strong>Auroren-Ovale</strong> — wo energiereiche Teilchen in die Atmosphäre regnen. Live: der NOAA-OVATION-Nowcast. In Sturm-Wiedergaben: ein Modell-Oval (Gussenhoven-1983-Grenze, ~2°/Kp) als Tropfenform — breit und tief bis in mittlere Breiten auf der Nachtseite, ein schmaler Bogen auf der Tagseite — das sich ~30 min <em>nach</em> der Schweifladung ausdehnt</td>
 </tr>
 <tr>
 <td>Terminator-Linie auf der Erde</td>
@@ -171,7 +171,7 @@ footer{
 <li>Bei einem schnellen 800 km/s-CME → <strong>~31 Minuten</strong></li>
 </ul>
 <p>AEGIS puffert jede L1-Messung in einen 90-Minuten-Ring und rendert den Snapshot von <code>t_lag</code> zurück. Eine Bz-Stufe an L1 bleibt für die Laufzeit unsichtbar und schwappt dann in die Szene. Der modellierte Dst integriert über das <strong>verzögerte</strong> Bz und den verzögerten Druck — der Ringstrom-Wert reagiert also in physikalischer Reihenfolge: eine Süddrehung an L1 komprimiert zuerst die Magnetopause und lädt den Schweif, <em>danach</em> erst zeichnet sich die Dst-Signatur ab.</p>
-<p>Es ist bewusst ein einfaches Advektionsmodell. Die feinere Differenzierung zwischen Schweifladung (Minuten) und vollständiger Ausdehnung des Auroren-Ovals (Substurm-Wachstumsphase, weitere zig Minuten) bleibt einer späteren Ausbaustufe vorbehalten; heute teilen sich beide denselben L1-Verzug.</p>
+<p>Es ist bewusst ein einfaches Advektionsmodell. Darauf aufgesetzt trägt das Auroren-Oval einen <strong>weiteren Verzug von ~30 min (Wachstumsphase)</strong>: Sein steuerndes Bz wird eine halbe Stunde weiter zurück abgetastet, sodass in einer Wiedergabe erst der Schweif lädt und die X-Linie zündet und sich das Oval erst Minuten später ausdehnt und aufhellt — die Substurm-Wachstumsphase sichtbar gemacht. Der L1-Verzug und dieser zusätzliche Aurora-Verzug werden beide live in der Statusanzeige gezeigt (<code>lag · L1→shock NN min · aurora NN min</code>).</p>
 <hr />
 <h2 id="datenquellen">Datenquellen</h2>
 <p>Alle Daten werden live vom <strong>Space Weather Prediction Center (SWPC) der NOAA</strong> abgerufen. Der wichtigste Satellit ist <strong>DSCOVR</strong>, der am Lagrangepunkt L1 zwischen Erde und Sonne stationiert ist.</p>
@@ -405,6 +405,7 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 </tbody>
 </table>
 <p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.</p>
+<p>Während ein Sturm läuft, zeigt die Statusanzeige das <strong>gemessene SYM-H</strong> (der echte Ringstrom-Index aus dem OMNI-Datensatz) direkt neben dem modellierten Dst — so kann man verfolgen, wie die Burton/O&rsquo;Brien-Schätzung dem echten Sturm folgt und wo sie abweicht. Ehrliche Validierung, kein verstecktes Schönen.</p>
 <blockquote>
 <p><strong>Hinweis zu Halloween 2003.</strong> Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren <em>Antriebsdaten</em> — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)</p>
 </blockquote>

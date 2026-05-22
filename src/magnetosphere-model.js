@@ -101,6 +101,11 @@ function lerp(a, b, t) {
 const L1_DISTANCE_KM   = 1.5e6;           // Sun–Earth L1 ≈ 1.5 million km
 const HISTORY_LIMIT_MS = 90 * 60 * 1000;  // 90 min — covers slowest realistic v_sw
 const KP_FILTER_TAU_MS = 5 * 60 * 1000;   // modest aurora-side low-pass on Kp
+// Substorm growth phase: the auroral oval responds to a southward turning only
+// after flux loads into the tail — ~30 min ON TOP of the L1 advection lag the
+// dayside/tail already carry. Sampling Bz at this extra offset lets the oval
+// expand and brighten minutes after the tail X-line fires (Phase 1.x).
+const AURORA_GROWTH_MS = 30 * 60 * 1000;
 
 export function l1LagMs(speedKms) {
     const v = Math.min(Math.max(speedKms, 200), 1500);
@@ -236,6 +241,9 @@ export class MagnetosphereModel {
     sampleUniforms(nowMs) {
         const lag = this._hasData ? l1LagMs(this._curr.speed) : 0;
         const s   = this._hasData ? this._sampleHistory(nowMs - lag) : this._curr;
+        // Aurora driver: Bz from a further AURORA_GROWTH_MS back, so the oval
+        // trails the tail by the substorm growth-phase delay.
+        const sAur = this._hasData ? this._sampleHistory(nowMs - lag - AURORA_GROWTH_MS) : this._curr;
         return {
             r0:        s.r0,
             alpha:     s.alpha,
@@ -250,7 +258,9 @@ export class MagnetosphereModel {
             dstInject: this._curr.dstInject,
             dstDecay:  this._curr.dstDecay,
             dstTau:    this._curr.dstTau,
+            bzAurora:  sAur.bz,
             lagSeconds: lag / 1000,
+            auroraLagSeconds: (lag + AURORA_GROWTH_MS) / 1000,
         };
     }
 }

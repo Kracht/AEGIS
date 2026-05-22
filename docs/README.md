@@ -19,7 +19,7 @@ The scene shows Earth and the invisible bubble of magnetic force that protects i
 | Crimson glow hugging Earth (storm only) | **Partial ring current** — westward-drifting energetic ions on the closed field lines; asymmetric (tight near noon, bulged toward midnight); the magnetic signature of a geomagnetic main phase |
 | Horizontal band across the tail | **Plasma sheet** (Harris current sheet) — thin layer of dense plasma at the magnetic equator inside the tail, flapping in real time |
 | Bright orange spot behind Earth (Bz southward) | **Substorm reconnection X-line** — where stretched tail field lines snap and explosively release stored energy |
-| Glowing polar rings | **Aurora ovals** — where energetic particles rain into the atmosphere |
+| Glowing polar rings | **Aurora ovals** — where energetic particles rain into the atmosphere. Live: the NOAA OVATION nowcast. In storm replays: a model oval (Gussenhoven 1983 boundary, ~2°/Kp) drawn as a teardrop — fat and reaching deep toward mid-latitudes on the night side, a narrow arc on the day side — that expands ~30 min *after* the tail loads |
 | Terminator line on Earth | The real day/night boundary for the current UTC time |
 | Earth surface texture | NASA Blue Marble (monthly, seasonal) for day; Black Marble city lights for night |
 | Status panel (top-left) | Live numbers from DSCOVR at the L1 Lagrange point, ~1.5 million km sunward |
@@ -52,7 +52,7 @@ That advection time is what you're seeing in the scene:
 
 AEGIS buffers every L1 sample into a 90-minute history ring and renders the snapshot from `t_lag` ago. So a step change in Bz at L1 stays invisible to the scene for the advection time, then sweeps in. The modeled Dst is integrated over the **lagged** Bz and pressure, so the ring-current readout responds in physical sequence: a southward turning at L1 first compresses the magnetopause and loads the tail, *then* drives the Dst signature minutes later.
 
-This is deliberately a simple advective model. The further differential between tail loading (minutes) and full auroral oval expansion (substorm growth phase, tens of minutes more) is a future refinement; today, both share the same L1 lag.
+This is deliberately a simple advective model. On top of it, the auroral oval carries a **further ~30 min growth-phase delay**: its driving Bz is sampled an extra half-hour back, so in a replay the tail loads and the X-line fires first, and the oval expands and brightens minutes later — the substorm growth phase made visible. The L1 lag and this extra aurora lag are both shown live in the status panel (`lag · L1→shock NN min · aurora NN min`).
 
 ---
 
@@ -169,6 +169,8 @@ The **transport bar** along the bottom lets you replay real, recorded storms ins
 | **January 2026** | An X1.9 flare's fast CME (solar wind past 1200 km/s) drove the hardest dayside compression in the set — r₀ squeezed inside 6 Rₑ — alongside an S4 radiation storm. Both branches hit hard, almost together. |
 
 Pick a storm, then **play / pause / scrub** and choose a **time-acceleration** (a multi-day storm compresses into a few minutes). Because everything runs through the *same* physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression *before* the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.
+
+While a storm replays, the status panel shows the **measured SYM-H** (the real ring-current index from the OMNI record) right beside the modeled Dst — so you can watch the Burton/O'Brien estimate track the real storm and see where it diverges. Honest validation, not a hidden fudge.
 
 > **Note on Halloween 2003.** The famous 2003 superstorm is deliberately not included: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable *driver* data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)
 

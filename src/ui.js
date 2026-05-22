@@ -57,6 +57,12 @@ const STYLE = `
     color: rgba(100, 140, 180, 0.52);
     margin-top: 0.16rem;
 }
+.ss-diag {
+    font-size: 10px;
+    color: rgba(110, 150, 195, 0.62);
+    letter-spacing: 0.02em;
+}
+.ss-diag .ss-ghost-obs { color: rgba(150, 185, 235, 0.85); }
 .ss-manual a {
     color: rgba(120, 165, 220, 0.78);
     text-decoration: none;
@@ -268,6 +274,8 @@ ${row('Bz', 'ss-bz', 'Spd', 'ss-speed')}
 ${row('P', 'ss-pressure', 'Flare', 'ss-flare')}
 ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
 <div id="ss-gstorm"></div>
+<div class="ss-diag" id="ss-lag" title="Solar wind observed at L1 reaches the bow shock one advection time later (1.5×10⁶ km ÷ v_sw); the auroral oval lags a further ~30 min through the substorm growth phase.">—</div>
+<div class="ss-diag" id="ss-ghost"></div>
 <hr class="ss-sep">
 <div class="ss-foot">
   <a href="https://www.swpc.noaa.gov" target="_blank"
@@ -292,7 +300,7 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
         }
     }
 
-    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dstTau, density, r0, alpha, lagSeconds, dataAge, isStale }) {
+    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dstTau, density, r0, alpha, lagSeconds, auroraLagSeconds, dataAge, isStale, timeline }) {
         if (!this._el) return;
 
         this._s('ss-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)} nT`, bzColor(bz));
@@ -326,6 +334,30 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
 
         const stEl = document.getElementById('ss-stale');
         if (stEl) stEl.textContent = isStale ? '⚠ stale data — last update > 15 min' : '';
+
+        // Always-on propagation-delay readout: the L1→bow-shock advection lag,
+        // plus the further substorm growth-phase delay the aurora carries.
+        if (lagSeconds) {
+            const l1 = Math.round(lagSeconds / 60);
+            const au = auroraLagSeconds ? Math.round(auroraLagSeconds / 60) : null;
+            this._s('ss-lag', au !== null
+                ? `lag · L1→shock ${l1} min · aurora ${au} min`
+                : `lag · L1→shock ${l1} min`);
+        }
+
+        // Model-vs-reality ghost: during replay, show the measured SYM-H beside
+        // the modeled Dst so the estimate is visibly validated against ground truth.
+        const ghEl = document.getElementById('ss-ghost');
+        if (ghEl) {
+            const obs = timeline?.realDst;
+            if (timeline && obs !== null && obs !== undefined && isFinite(obs)) {
+                ghEl.innerHTML = `Dst model ~${dst >= 0 ? '+' : ''}${dst.toFixed(0)} · `
+                    + `<span class="ss-ghost-obs">observed ${obs >= 0 ? '+' : ''}${obs.toFixed(0)} nT</span> (SYM-H)`;
+                ghEl.style.display = '';
+            } else {
+                ghEl.style.display = 'none';
+            }
+        }
 
         // ── Data-mode overlay rows ──
         // Only fill when the panel is on-screen; the DOM writes are cheap but

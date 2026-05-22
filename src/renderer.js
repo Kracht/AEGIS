@@ -93,6 +93,8 @@ export class Renderer {
             u_camMode:         gl.getUniformLocation(this.program, 'u_camMode'),
             u_camAzim:         gl.getUniformLocation(this.program, 'u_camAzim'),
             u_camElev:         gl.getUniformLocation(this.program, 'u_camElev'),
+            u_bzAurora:        gl.getUniformLocation(this.program, 'u_bzAurora'),
+            u_auroraSynth:     gl.getUniformLocation(this.program, 'u_auroraSynth'),
         };
 
         // Earth textures: load asynchronously, replacing a 1×1 ocean-blue placeholder.
@@ -191,6 +193,8 @@ export class Renderer {
         gl.uniform1i(this.uniforms.u_camMode,         params.camMode         ?? 0);
         gl.uniform1f(this.uniforms.u_camAzim,         params.camAzim         ?? 0.0);
         gl.uniform1f(this.uniforms.u_camElev,         params.camElev         ?? 0.0);
+        gl.uniform1f(this.uniforms.u_bzAurora,        params.bzAurora        ?? params.bz ?? -2.0);
+        gl.uniform1f(this.uniforms.u_auroraSynth,     params.auroraSynth     ?? 0.0);
 
         // Aurora OVATION textures — fallback to 1×1 zero until data arrives
         const texNH = this._aurora?.texNH ?? this._fallbackTex;

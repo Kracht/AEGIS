@@ -136,7 +136,7 @@ footer{
 </tr>
 <tr>
 <td>Glowing polar rings</td>
-<td><strong>Aurora ovals</strong> — where energetic particles rain into the atmosphere</td>
+<td><strong>Aurora ovals</strong> — where energetic particles rain into the atmosphere. Live: the NOAA OVATION nowcast. In storm replays: a model oval (Gussenhoven 1983 boundary, ~2°/Kp) drawn as a teardrop — fat and reaching deep toward mid-latitudes on the night side, a narrow arc on the day side — that expands ~30 min <em>after</em> the tail loads</td>
 </tr>
 <tr>
 <td>Terminator line on Earth</td>
@@ -171,7 +171,7 @@ footer{
 <li>At a fast 800 km/s CME → <strong>~31 minutes</strong></li>
 </ul>
 <p>AEGIS buffers every L1 sample into a 90-minute history ring and renders the snapshot from <code>t_lag</code> ago. So a step change in Bz at L1 stays invisible to the scene for the advection time, then sweeps in. The modeled Dst is integrated over the <strong>lagged</strong> Bz and pressure, so the ring-current readout responds in physical sequence: a southward turning at L1 first compresses the magnetopause and loads the tail, <em>then</em> drives the Dst signature minutes later.</p>
-<p>This is deliberately a simple advective model. The further differential between tail loading (minutes) and full auroral oval expansion (substorm growth phase, tens of minutes more) is a future refinement; today, both share the same L1 lag.</p>
+<p>This is deliberately a simple advective model. On top of it, the auroral oval carries a <strong>further ~30 min growth-phase delay</strong>: its driving Bz is sampled an extra half-hour back, so in a replay the tail loads and the X-line fires first, and the oval expands and brightens minutes later — the substorm growth phase made visible. The L1 lag and this extra aurora lag are both shown live in the status panel (<code>lag · L1→shock NN min · aurora NN min</code>).</p>
 <hr />
 <h2 id="data-sources">Data Sources</h2>
 <p>All data is fetched live from <strong>NOAA&rsquo;s Space Weather Prediction Center (SWPC)</strong>. The satellite providing most of it is <strong>DSCOVR</strong>, parked at the L1 gravitational balance point between Earth and Sun.</p>
@@ -405,6 +405,7 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 </tbody>
 </table>
 <p>Pick a storm, then <strong>play / pause / scrub</strong> and choose a <strong>time-acceleration</strong> (a multi-day storm compresses into a few minutes). Because everything runs through the <em>same</em> physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression <em>before</em> the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.</p>
+<p>While a storm replays, the status panel shows the <strong>measured SYM-H</strong> (the real ring-current index from the OMNI record) right beside the modeled Dst — so you can watch the Burton/O&rsquo;Brien estimate track the real storm and see where it diverges. Honest validation, not a hidden fudge.</p>
 <blockquote>
 <p><strong>Note on Halloween 2003.</strong> The famous 2003 superstorm is deliberately absent: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable <em>driver</em> data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)</p>
 </blockquote>
