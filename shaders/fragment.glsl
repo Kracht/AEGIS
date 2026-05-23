@@ -55,7 +55,7 @@ uniform float u_nightlightScale; // city lights scale
 uniform float u_limbScale;       // atmosphere limb scale
 uniform float u_fieldScale;      // field line intensity scale
 uniform float u_volExtinct;      // volumetric extinction scale
-uniform int   u_renderMode;      // 0 = Visual, 1 = Structural, 2 = Data (Visual + DOM)
+uniform int   u_renderMode;      // 0 = Visual, 1 = Structural, 2 = Data, 3 = Physics (Structural base + 2D overlay)
 uniform int   u_camMode;         // 0 = auto cinematic orbit, 1 = free look (mouse)
 uniform float u_camAzim;         // free-look azimuth [rad]
 uniform float u_camElev;         // free-look elevation [rad] (clamped off the poles)
@@ -908,7 +908,10 @@ void main() {
     vec3  vc = vec3(0.0);
     float tr = 1.0;
 
-    bool structural = (u_renderMode == 1);
+    // Physics mode (3) reuses the clean Structural line-art as its base; the
+    // vector/topology glyphs are drawn over it by the 2D camera-synced overlay
+    // (physics-overlay.js), never in the ray-marcher.
+    bool structural = (u_renderMode == 1 || u_renderMode == 3);
 
     for (int i = 0; i < VSTEPS; i++) {
         float t  = tBeg + (float(i) + jitter) * ds;

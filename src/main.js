@@ -10,6 +10,7 @@ import { DevPanel }      from './dev-panel.js';
 import { RenderMode }    from './render-mode.js';
 import { Transport }     from './transport.js';
 import { CausalHUD }     from './causal-hud.js';
+import { PhysicsOverlay } from './physics-overlay.js';
 import { CameraController } from './camera.js';
 import { LIVE_ID }       from './scenarios.js';
 
@@ -22,6 +23,7 @@ let devPanel   = null;
 let renderMode = null;
 let transport  = null;
 let causalHud  = null;
+let physicsOverlay = null;
 let camera     = null;
 
 const startTime = performance.now();
@@ -91,6 +93,12 @@ async function main() {
     ui         = new UI(renderMode);
     devPanel   = new DevPanel(renderMode);
     causalHud  = new CausalHUD();
+    physicsOverlay = new PhysicsOverlay(canvas);
+    // Physics mode (F3) reveals the camera-synced vector/topology overlay; every
+    // other mode hides it. Structural base for Physics is set in the shader.
+    renderMode.onChange((mode) => {
+        if (mode === 'physics') physicsOverlay.show(); else physicsOverlay.hide();
+    });
     // After DevPanel — the camera chip appends into the perf bar it builds.
     camera     = new CameraController(canvas);
 
@@ -145,6 +153,10 @@ async function main() {
         // The causal HUD reads the same uniforms every frame so its nodes light
         // smoothly as a scrubbed storm evolves (cheap: SVG attribute writes).
         causalHud.update(uniforms);
+
+        // Physics-mode overlay mirrors the shader camera (needs the same u_time)
+        // and redraws its glyphs each frame; it no-ops cheaply when not visible.
+        physicsOverlay.update(uniforms, timeSecs);
 
         // UI rerenders at 1 Hz — data changes slowly, no need for 60 fps DOM updates
         if (timeSecs - lastUiTime >= 1.0) {

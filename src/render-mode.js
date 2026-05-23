@@ -4,12 +4,15 @@
 //                bow shock, L-shells.
 //   Data       — Visual underneath + a DOM overlay of the live uniforms with
 //                units, citations and what scene feature each drives.
+//   Physics    — Structural line-art base + a camera-synced 2D vector/topology
+//                overlay ("what is the mechanism"): field-direction glyphs,
+//                open vs closed flux, and the two reconnection X-lines.
 //
-// Toggle: F3 cycles Visual → Structural → Data → Visual. Persisted in
+// Toggle: F3 cycles Visual → Structural → Data → Physics → Visual. Persisted in
 // localStorage so a reload preserves the user's choice.
 
-const MODES = ['visual', 'structural', 'data'];
-const LABEL = { visual: 'VISUAL', structural: 'STRUCTURAL', data: 'DATA' };
+const MODES = ['visual', 'structural', 'data', 'physics'];
+const LABEL = { visual: 'VISUAL', structural: 'STRUCTURAL', data: 'DATA', physics: 'PHYSICS' };
 const STORE = 'aegis.renderMode';
 
 export class RenderMode {

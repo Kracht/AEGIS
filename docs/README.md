@@ -132,13 +132,14 @@ Space weather is not just a scientific curiosity. Its effects are measurable and
 
 ## Render Modes (F3)
 
-AEGIS shows the *same* live physics through three layers of abstraction. Press `F3` (or click **Mode: …** in the top-right) to cycle between them. Your choice persists across reloads.
+AEGIS shows the *same* live physics through four layers of abstraction. Press `F3` (or click **Mode: …** in the top-right) to cycle between them. Your choice persists across reloads.
 
 | Mode | What it shows | Use it to |
 |---|---|---|
 | **Visual** | Today's full volumetric scene — ray-marched magnetosheath, plasma sheet, jellyfish field lines, aurora, ring current. | See *what near-Earth space looks like* in this configuration. |
 | **Structural** | The invisible **surfaces** alone: Shue magnetopause, Cairns/Fairfield bow shock, dipole L-shells L = 2…6 — drawn as thin cyan-white outlines on a black sky with the Earth dimmed to ~28%. | Strip the art away and answer *"what are the surfaces I was actually looking at?"* The outlines deform in real time with `r₀`, `α`, and the storm-dependent shell warp, so you can watch the magnetopause compress and the tail balloon directly. |
 | **Data** | Visual underneath, **plus** a panel listing every uniform driving the scene with its units, citation, and the feature it drives. Includes the Phase 1 `lag` clock — `1.5 × 10⁶ km ÷ v_sw`. | Answer *"what are the numbers behind this picture?"* Useful for tracing why a particular storm phase looks the way it does, or for matching a feature back to its empirical model. |
+| **Physics** | The Structural line-art **plus** a camera-synced 2D overlay of the *mechanism*: schematic field-direction glyphs colour-coded **open vs. closed** (closed = blue, returns to Earth; open = amber, connected to the IMF), the draped upstream IMF arrows, and the **two reconnection X-lines**. | Answer *"how does the energy actually get in?"* Open flux is the doorway: watch southward Bz open the dayside, the **dayside X-line** drop to the equator (it rides up to high-latitude lobe reconnection when Bz turns north), and — minutes later, on the lagged tail driver — the **near-Earth neutral line** light in the tail. That delay between the two X-lines *is* the substorm. Each marker is labelled on-screen; hover one for its governing relation. The field is an honest **schematic** (analytic dipole + draped IMF), not an MHD solution. |
 
 `F2` toggles the visual-tuning sliders (camera, exposure, per-layer intensities). The two panels are independent and can be open at the same time.
 

@@ -356,7 +356,7 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 </table>
 <hr />
 <h2 id="render-modes">Render Modes (F3)</h2>
-<p>AEGIS shows the <em>same</em> live physics through three layers of abstraction. Press <code>F3</code> (or click <strong>Mode: …</strong> in the top-right) to cycle between them. Your choice persists across reloads.</p>
+<p>AEGIS shows the <em>same</em> live physics through four layers of abstraction. Press <code>F3</code> (or click <strong>Mode: …</strong> in the top-right) to cycle between them. Your choice persists across reloads.</p>
 <table>
 <thead>
 <tr><th>Mode</th><th>What it shows</th><th>Use it to</th></tr>
@@ -376,6 +376,11 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 <td><strong>Data</strong></td>
 <td>Visual underneath, <strong>plus</strong> a panel listing every uniform driving the scene with its units, citation, and the feature it drives. Includes the Phase 1 <code>lag</code> clock — <code>1.5 × 10⁶ km ÷ v_sw</code>.</td>
 <td>Answer <em>&ldquo;what are the numbers behind this picture?&rdquo;</em> Useful for tracing why a particular storm phase looks the way it does, or for matching a feature back to its empirical model.</td>
+</tr>
+<tr>
+<td><strong>Physics</strong></td>
+<td>The Structural line-art <strong>plus</strong> a camera-synced 2D overlay of the <em>mechanism</em>: schematic field-direction glyphs colour-coded <strong>open vs. closed</strong> (closed = blue, returns to Earth; open = amber, connected to the IMF), the draped upstream IMF arrows, and the <strong>two reconnection X-lines</strong>.</td>
+<td>Answer <em>&ldquo;how does the energy actually get in?&rdquo;</em> Open flux is the doorway: watch southward Bz open the dayside, the <strong>dayside X-line</strong> drop to the equator (it rides up to high-latitude lobe reconnection when Bz turns north), and — minutes later, on the lagged tail driver — the <strong>near-Earth neutral line</strong> light in the tail. That delay between the two X-lines <em>is</em> the substorm. Each marker is labelled on-screen; hover one for its governing relation. The field is an honest <strong>schematic</strong> (analytic dipole + draped IMF), not an MHD solution.</td>
 </tr>
 </tbody>
 </table>

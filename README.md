@@ -85,7 +85,12 @@ python3 -m http.server 8080
   magnetopause, bow shock, L-shells on a black backdrop with a dimmed Earth)
   → **Data** (Visual underneath, with a panel of every live uniform — value,
   units, citation, and the scene feature each drives, including the L1 `lag`
-  clock). The choice persists in localStorage.
+  clock) → **Physics** (the Structural line-art plus a camera-synced 2D
+  overlay of the *mechanism*: open-vs-closed field-direction glyphs, draped
+  IMF, and the two reconnection X-lines — the dayside one rides Bz to the
+  equator, the near-Earth neutral line lights minutes later on the lagged
+  tail driver; a schematic, not an MHD solution). The choice persists in
+  localStorage.
 - `F4` toggles the **causal HUD** — the two-branch graph of *why the scene
   changed*: a fast compression branch (`Pdyn → r₀`) and a slow storm branch
   (`Bz → reconnection → injection → Dst`), drawn as separate tracks because
@@ -200,8 +205,10 @@ src/
   aurora-texture.js   # OVATION nowcast → polar GL textures
   ui.js               # live status HUD (incl. modeled Dst) + EN/DE manual links
   dev-panel.js        # FPS readout + Settings [F2] tuning panel
-  render-mode.js      # Visual/Structural/Data mode controller (F3)
+  render-mode.js      # Visual/Structural/Data/Physics mode controller (F3)
   causal-hud.js       # two-branch causal graph overlay (F4)
+  camera-projection.js # JS mirror of the shader camera (projects world→screen)
+  physics-overlay.js  # Physics mode: camera-synced field/topology 2D overlay
   camera.js           # auto cinematic orbit ↔ free-look (drag/zoom) controller (C)
   transport.js        # scenario picker + scrub/play/speed bar
 shaders/

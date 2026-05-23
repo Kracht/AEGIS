@@ -132,13 +132,14 @@ Weltraumwetter ist keine rein akademische Angelegenheit. Die Auswirkungen sind m
 
 ## Darstellungsmodi (F3)
 
-AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit `F3` (oder Klick auf **Mode: …** oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.
+AEGIS zeigt dieselbe Live-Physik in vier Abstraktionsstufen. Mit `F3` (oder Klick auf **Mode: …** oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.
 
 | Modus | Was zu sehen ist | Wozu er gut ist |
 |---|---|---|
 | **Visual** | Die volle volumetrische Szene — ray-marched Magnetosheath, Plasmaschicht, Quallen-Feldlinien, Polarlicht, Ringstrom. | Sehen, *wie der erdnahe Weltraum gerade aussieht*. |
 | **Structural** | Nur die unsichtbaren **Flächen**: Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6 — als dünne cyan-weiße Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28%. | Die Optik weglassen und fragen: *„Welche Flächen liegen eigentlich unter dem Bild?"* Die Linien verformen sich live mit `r₀`, `α` und der sturmabhängigen Schalenverzerrung — man sieht direkt, wie sich die Magnetopause komprimiert und der Schweif ausbeult. |
 | **Data** | Visual darunter, **plus** eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung `lag` = `1,5 × 10⁶ km ÷ v_sw`. | Fragen: *„Welche Zahlen stecken hinter diesem Bild?"* Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen. |
+| **Physics** | Das Structural-Liniengerüst **plus** ein kamerasynchrones 2D-Overlay des *Mechanismus*: schematische Feldrichtungs-Glyphen, farbcodiert nach **offen vs. geschlossen** (geschlossen = blau, kehrt zur Erde zurück; offen = bernstein, mit dem IMF verbunden), die angeströmten IMF-Pfeile und die **zwei Rekonnexions-X-Linien**. | Fragen: *„Wie kommt die Energie eigentlich herein?"* Offener Fluss ist die Tür: bei südlichem Bz öffnet sich die Tagseite, die **Tagseiten-X-Linie** rutscht zum Äquator (bei nördlichem Bz wandert sie zur hochbreitigen Lobe-Rekonnexion), und — Minuten später, über den verzögerten Schweif-Treiber — leuchtet die **erdnahe neutrale Linie** im Schweif auf. Diese Verzögerung zwischen den beiden X-Linien *ist* der Substurm. Jeder Marker ist auf dem Bild beschriftet; zum Anfahren erscheint die jeweilige Gleichung. Das Feld ist ein ehrliches **Schema** (analytischer Dipol + angeströmtes IMF), keine MHD-Lösung. |
 
 `F2` blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.
 
