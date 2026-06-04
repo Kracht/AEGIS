@@ -9,6 +9,7 @@ import { SPEEDS }             from './timeline-source.js';
 
 const CSS = `
 #transport {
+    --tp-peek: 14px;     /* translate adds the ~1.1rem bottom gap, so the visible strip ≈ this + 1.1rem */
     position: fixed;
     bottom: 1.1rem;
     left: 50%;
@@ -24,7 +25,42 @@ const CSS = `
     color: rgba(180, 210, 250, 0.85);
     z-index: 20;
     user-select: none;
+    transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Collapsed — the bar slides down out of view, leaving only the handle strip
+   peeking above the bottom edge. */
+#transport.tp-collapsed {
+    transform: translateX(-50%) translateY(calc(100% - var(--tp-peek)));
+}
+/* Grab strip at the top edge: click to slide the bar down / back up. The
+   chevron points down when open (click to hide) and flips up when collapsed
+   (click to restore). */
+#transport .tp-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    height: 14px;
+    margin: -0.2rem -0.7rem 0.4rem;     /* span the full width, sit at the top edge */
+    cursor: pointer;
+    pointer-events: auto;
+    color: rgba(140, 185, 240, 0.6);
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+}
+#transport .tp-handle:hover { color: rgba(195, 222, 255, 0.95); }
+#transport .tp-handle::before,
+#transport .tp-handle::after {
+    content: '';
+    width: 26px; height: 1px;
+    background: rgba(90, 150, 220, 0.32);
+}
+#transport .tp-chev {
+    font-size: 11px;
+    line-height: 1;
+    transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#transport.tp-collapsed .tp-chev { transform: rotate(180deg); }
 #transport .tp-scenarios { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
 #transport .tp-scn {
     flex: 1 1 auto;
@@ -114,6 +150,14 @@ export class Transport {
         root.id = 'transport';
         root.classList.add('tp-live');
 
+        // Top grab strip — collapses the bar down to just this handle.
+        const handle = document.createElement('div');
+        handle.className = 'tp-handle';
+        handle.title = 'Show / hide the timeline bar';
+        handle.innerHTML = `<span class="tp-chev">⌄</span><span>TIMELINE</span>`;
+        handle.addEventListener('click', () => this._toggleCollapse());
+        root.appendChild(handle);
+
         const scn = document.createElement('div');
         scn.className = 'tp-scenarios';
         this._scnEls = {};
@@ -168,6 +212,18 @@ export class Transport {
 
         document.body.appendChild(root);
         this._root = root;
+
+        // Restore the collapsed state from a previous visit.
+        try {
+            if (localStorage.getItem('aegis.transportCollapsed') === '1') {
+                root.classList.add('tp-collapsed');
+            }
+        } catch { /* private mode — start expanded */ }
+    }
+
+    _toggleCollapse() {
+        const collapsed = this._root.classList.toggle('tp-collapsed');
+        try { localStorage.setItem('aegis.transportCollapsed', collapsed ? '1' : '0'); } catch { /* private mode */ }
     }
 
     _select(id) {

@@ -82,16 +82,14 @@ python3 -m http.server 8080
 - `F2` (or the **Settings [F2]** label by the FPS counter) toggles the visual
   tuning panel — camera orbit/FOV, exposure, gamma, and per-layer intensity.
 - `F3` (or the **Mode: …** label next to it) cycles the render mode:
-  **Visual** (default volumetric scene) → **Structural** (SDF outlines of
-  magnetopause, bow shock, L-shells on a black backdrop with a dimmed Earth)
-  → **Data** (Visual underneath, with a panel of every live uniform — value,
-  units, citation, and the scene feature each drives, including the L1 `lag`
-  clock) → **Physics** (the Structural line-art plus a camera-synced 2D
-  overlay of the *mechanism*: open-vs-closed field-direction glyphs, draped
-  IMF, and the two reconnection X-lines — the dayside one rides Bz to the
-  equator, the near-Earth neutral line lights minutes later on the lagged
-  tail driver; a schematic, not an MHD solution). The choice persists in
-  localStorage.
+  **Visual** (default volumetric scene) → **Data** (Visual underneath, with a
+  panel of every live uniform — value, units, citation, and the scene feature
+  each drives, including the L1 `lag` clock) → **Physics** (SDF line-art of the
+  magnetopause, bow shock and L-shells plus a camera-synced 2D overlay of the
+  *mechanism*: open-vs-closed field-direction glyphs, draped IMF, and the two
+  reconnection X-lines — the dayside one rides Bz to the equator, the near-Earth
+  neutral line lights minutes later on the lagged tail driver; a schematic, not
+  an MHD solution). The choice persists in localStorage.
 - `F4` toggles the **causal HUD** — the two-branch graph of *why the scene
   changed*: a fast compression branch (`Pdyn → r₀`) and a slow storm branch
   (`Bz → reconnection → injection → Dst`), drawn as separate tracks because
@@ -112,7 +110,9 @@ python3 -m http.server 8080
   status panel shows the **measured SYM-H** beside the modeled Dst, so you can
   watch the estimate track (or miss) the real ring current. The propagation
   delays are always on view there too — `L1 → bow shock` and the further
-  `aurora` growth-phase lag.
+  `aurora` growth-phase lag. The bar collapses: click the **TIMELINE** handle
+  along its top edge to slide it down to a thin strip (and click again to bring
+  it back) — handy for an unobstructed full-scene view. The state is remembered.
 
 ---
 
