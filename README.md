@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="logo.png" alt="AEGIS — Active Earth Geomagnetic Imaging System" width="600">
-</p>
-
 <h1 align="center">AEGIS</h1>
 
 <p align="center">
@@ -17,6 +13,11 @@
 </p>
 
 ---
+
+<p align="center">
+  <img src="visual.png" alt="AEGIS — Visual render mode" width="49%">
+  <img src="physics.png" alt="AEGIS — Physics render mode" width="49%">
+</p>
 
 AEGIS ray-marches the magnetosphere in a single WebGL2 fragment shader. The
 magnetopause, bow shock, plasmasphere, ring current, magnetotail current sheet,
