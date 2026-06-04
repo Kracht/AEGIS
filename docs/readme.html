@@ -356,7 +356,7 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 </table>
 <hr />
 <h2 id="render-modes">Render Modes (F3)</h2>
-<p>AEGIS shows the <em>same</em> live physics through four layers of abstraction. Press <code>F3</code> (or click <strong>Mode: …</strong> in the top-right) to cycle between them. Your choice persists across reloads.</p>
+<p>AEGIS shows the <em>same</em> live physics through three layers of abstraction. Press <code>F3</code> (or click <strong>Mode: …</strong> in the top-right) to cycle between them. Your choice persists across reloads.</p>
 <table>
 <thead>
 <tr><th>Mode</th><th>What it shows</th><th>Use it to</th></tr>
@@ -368,18 +368,13 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 <td>See <em>what near-Earth space looks like</em> in this configuration.</td>
 </tr>
 <tr>
-<td><strong>Structural</strong></td>
-<td>The invisible <strong>surfaces</strong> alone: Shue magnetopause, Cairns/Fairfield bow shock, dipole L-shells L = 2…6 — drawn as thin cyan-white outlines on a black sky with the Earth dimmed to ~28%.</td>
-<td>Strip the art away and answer <em>&ldquo;what are the surfaces I was actually looking at?&rdquo;</em> The outlines deform in real time with <code>r₀</code>, <code>α</code>, and the storm-dependent shell warp, so you can watch the magnetopause compress and the tail balloon directly.</td>
-</tr>
-<tr>
 <td><strong>Data</strong></td>
 <td>Visual underneath, <strong>plus</strong> a panel listing every uniform driving the scene with its units, citation, and the feature it drives. Includes the Phase 1 <code>lag</code> clock — <code>1.5 × 10⁶ km ÷ v_sw</code>.</td>
 <td>Answer <em>&ldquo;what are the numbers behind this picture?&rdquo;</em> Useful for tracing why a particular storm phase looks the way it does, or for matching a feature back to its empirical model.</td>
 </tr>
 <tr>
 <td><strong>Physics</strong></td>
-<td>The Structural line-art <strong>plus</strong> a camera-synced 2D overlay of the <em>mechanism</em>: schematic field-direction glyphs colour-coded <strong>open vs. closed</strong> (closed = blue, returns to Earth; open = amber, connected to the IMF), the draped upstream IMF arrows, and the <strong>two reconnection X-lines</strong>.</td>
+<td>The invisible <strong>surfaces</strong> as thin cyan-white SDF line-art on a black sky with the Earth dimmed to ~28% — Shue magnetopause, Cairns/Fairfield bow shock, dipole L-shells L = 2…6, deforming in real time with <code>r₀</code>, <code>α</code> and the storm-dependent shell warp — <strong>plus</strong> a camera-synced 2D overlay of the <em>mechanism</em>: schematic field-direction glyphs colour-coded <strong>open vs. closed</strong> (closed = blue, returns to Earth; open = amber, connected to the IMF), the draped upstream IMF arrows, and the <strong>two reconnection X-lines</strong>.</td>
 <td>Answer <em>&ldquo;how does the energy actually get in?&rdquo;</em> Open flux is the doorway: watch southward Bz open the dayside, the <strong>dayside X-line</strong> drop to the equator (it rides up to high-latitude lobe reconnection when Bz turns north), and — minutes later, on the lagged tail driver — the <strong>near-Earth neutral line</strong> light in the tail. That delay between the two X-lines <em>is</em> the substorm. Each marker is labelled on-screen; hover one for its governing relation. The field is an honest <strong>schematic</strong> (analytic dipole + draped IMF), not an MHD solution.</td>
 </tr>
 </tbody>
@@ -409,7 +404,7 @@ Filaments are dense, cool strands of plasma suspended above the solar surface by
 <tr><td><strong>January 2026</strong></td><td>An X1.9 flare&rsquo;s fast CME (solar wind past 1200 km/s) drove the hardest dayside compression in the set — r₀ squeezed inside 6 Rₑ — alongside an S4 radiation storm. Both branches hit hard, almost together.</td></tr>
 </tbody>
 </table>
-<p>Pick a storm, then <strong>play / pause / scrub</strong> and choose a <strong>time-acceleration</strong> (a multi-day storm compresses into a few minutes). Because everything runs through the <em>same</em> physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression <em>before</em> the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically.</p>
+<p>Pick a storm, then <strong>play / pause / scrub</strong> and choose a <strong>time-acceleration</strong> (a multi-day storm compresses into a few minutes). Because everything runs through the <em>same</em> physics model as live mode, the lag clocks tick honestly: a scrubbed storm lights the dayside compression <em>before</em> the ring-current response, never the same frame. Selecting a storm reveals the causal HUD automatically. To clear the view, click the <strong>TIMELINE</strong> handle on the bar&rsquo;s top edge to slide it down to a thin strip (the chevron flips to invite it back); the collapsed state is remembered across reloads.</p>
 <p>While a storm replays, the status panel shows the <strong>measured SYM-H</strong> (the real ring-current index from the OMNI record) right beside the modeled Dst — so you can watch the Burton/O&rsquo;Brien estimate track the real storm and see where it diverges. Honest validation, not a hidden fudge.</p>
 <blockquote>
 <p><strong>Note on Halloween 2003.</strong> The famous 2003 superstorm is deliberately absent: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable <em>driver</em> data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)</p>

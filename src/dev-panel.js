@@ -214,7 +214,7 @@ export class DevPanel {
         const mode = document.createElement('span');
         mode.className = 'perf-settings';
         mode.textContent = this._renderMode ? `Mode: ${this._renderMode.label} [F3]` : 'Mode: VISUAL [F3]';
-        mode.title = 'Cycle render mode: Visual → Structural → Data';
+        mode.title = 'Cycle render mode: Visual → Data → Physics';
         mode.addEventListener('click', () => this._renderMode?.cycle());
         this._modeEl = mode;
 

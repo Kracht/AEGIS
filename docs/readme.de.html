@@ -356,7 +356,7 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 </table>
 <hr />
 <h2 id="darstellungsmodi">Darstellungsmodi (F3)</h2>
-<p>AEGIS zeigt dieselbe Live-Physik in vier Abstraktionsstufen. Mit <code>F3</code> (oder Klick auf <strong>Mode: …</strong> oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.</p>
+<p>AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit <code>F3</code> (oder Klick auf <strong>Mode: …</strong> oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.</p>
 <table>
 <thead>
 <tr><th>Modus</th><th>Was zu sehen ist</th><th>Wozu er gut ist</th></tr>
@@ -368,18 +368,13 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 <td>Sehen, <em>wie der erdnahe Weltraum gerade aussieht</em>.</td>
 </tr>
 <tr>
-<td><strong>Structural</strong></td>
-<td>Nur die unsichtbaren <strong>Flächen</strong>: Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6 — als dünne cyan-weiße Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28%.</td>
-<td>Die Optik weglassen und fragen: <em>&bdquo;Welche Flächen liegen eigentlich unter dem Bild?&ldquo;</em> Die Linien verformen sich live mit <code>r₀</code>, <code>α</code> und der sturmabhängigen Schalenverzerrung — man sieht direkt, wie sich die Magnetopause komprimiert und der Schweif ausbeult.</td>
-</tr>
-<tr>
 <td><strong>Data</strong></td>
 <td>Visual darunter, <strong>plus</strong> eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung <code>lag</code> = <code>1,5 × 10⁶ km ÷ v_sw</code>.</td>
 <td>Fragen: <em>&bdquo;Welche Zahlen stecken hinter diesem Bild?&ldquo;</em> Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen.</td>
 </tr>
 <tr>
 <td><strong>Physics</strong></td>
-<td>Das Structural-Liniengerüst <strong>plus</strong> ein kamerasynchrones 2D-Overlay des <em>Mechanismus</em>: schematische Feldrichtungs-Glyphen, farbcodiert nach <strong>offen vs. geschlossen</strong> (geschlossen = blau, kehrt zur Erde zurück; offen = bernstein, mit dem IMF verbunden), die angeströmten IMF-Pfeile und die <strong>zwei Rekonnexions-X-Linien</strong>.</td>
+<td>Die unsichtbaren <strong>Flächen</strong> als dünne cyan-weiße SDF-Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28% — Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6, live verformt mit <code>r₀</code>, <code>α</code> und der sturmabhängigen Schalenverzerrung — <strong>plus</strong> ein kamerasynchrones 2D-Overlay des <em>Mechanismus</em>: schematische Feldrichtungs-Glyphen, farbcodiert nach <strong>offen vs. geschlossen</strong> (geschlossen = blau, kehrt zur Erde zurück; offen = bernstein, mit dem IMF verbunden), die angeströmten IMF-Pfeile und die <strong>zwei Rekonnexions-X-Linien</strong>.</td>
 <td>Fragen: <em>&bdquo;Wie kommt die Energie eigentlich herein?&ldquo;</em> Offener Fluss ist die Tür: bei südlichem Bz öffnet sich die Tagseite, die <strong>Tagseiten-X-Linie</strong> rutscht zum Äquator (bei nördlichem Bz wandert sie zur hochbreitigen Lobe-Rekonnexion), und — Minuten später, über den verzögerten Schweif-Treiber — leuchtet die <strong>erdnahe neutrale Linie</strong> im Schweif auf. Diese Verzögerung zwischen den beiden X-Linien <em>ist</em> der Substurm. Jeder Marker ist auf dem Bild beschriftet; zum Anfahren erscheint die jeweilige Gleichung. Das Feld ist ein ehrliches <strong>Schema</strong> (analytischer Dipol + angeströmtes IMF), keine MHD-Lösung.</td>
 </tr>
 </tbody>
@@ -409,7 +404,7 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 <tr><td><strong>Januar 2026</strong></td><td>Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen.</td></tr>
 </tbody>
 </table>
-<p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch.</p>
+<p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch. Für den freien Blick klickst du den <strong>TIMELINE</strong>-Griff an der Oberkante der Leiste — sie gleitet zu einem schmalen Streifen herunter (der Pfeil dreht sich um und lädt sie zurück); der eingeklappte Zustand bleibt über Reloads erhalten.</p>
 <p>Während ein Sturm läuft, zeigt die Statusanzeige das <strong>gemessene SYM-H</strong> (der echte Ringstrom-Index aus dem OMNI-Datensatz) direkt neben dem modellierten Dst — so kann man verfolgen, wie die Burton/O&rsquo;Brien-Schätzung dem echten Sturm folgt und wo sie abweicht. Ehrliche Validierung, kein verstecktes Schönen.</p>
 <blockquote>
 <p><strong>Hinweis zu Halloween 2003.</strong> Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren <em>Antriebsdaten</em> — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)</p>
