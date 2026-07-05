@@ -172,10 +172,12 @@ Pick a storm, then **play / pause / scrub** and choose a **time-acceleration** (
 
 While a storm replays, the status panel shows the **measured SYM-H** (the real ring-current index from the OMNI record) right beside the modeled Dst — so you can watch the Burton/O'Brien estimate track the real storm and see where it diverges. Honest validation, not a hidden fudge.
 
+The Dst node in the causal HUD also carries a second observation ghost: **GFZ Potsdam's Hp30** — a 30-minute Kp-family planetary index, but *open-ended above 9* so superstorms register their actual intensity instead of saturating. Hover the Dst node to read the live Hp30; the node's border tints amber when Hp30 crosses the Kp-equivalent storm-onset (≥ 5). In replay, you'll see november-2004, gannon-2024, and jan-2026 climb well past 9 — the kind of detail Kp's 0–9 ladder hides.
+
 > **Note on Halloween 2003.** The famous 2003 superstorm is deliberately not included: its upstream solar-wind monitors (ACE/Wind) were saturated during the event, so OMNI has no usable *driver* data — a faithful replay would be flat. November 2004, comparably deep and fully covered, stands in. (Same principle that excludes Carrington 1859: no instrument data, no honest replay.)
 
 Storm data is real NASA **OMNI** (instrument-era, 5-minute cadence), bundled offline. The modeled Dst is the Burton/O'Brien estimate — close to, but not identical to, the measured index.
 
 ---
 
-*Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · NASA OMNI (replay) · Earth imagery: NASA Blue Marble / Black Marble*
+*Data: NOAA SWPC · DSCOVR at L1 · GOES-16/18 · NASA OMNI (replay) · GFZ Potsdam Hp30 (Yamazaki et al. 2024, DOI 10.5880/Hpo.0003, CC BY 4.0) · Earth imagery: NASA Blue Marble / Black Marble*

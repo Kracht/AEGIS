@@ -108,7 +108,11 @@ python3 -m http.server 8080
   almost as hard as the November superstorm, yet drives only a tenth of the
   Dst — compression and storm are *not* the same thing. During a replay the
   status panel shows the **measured SYM-H** beside the modeled Dst, so you can
-  watch the estimate track (or miss) the real ring current. The propagation
+  watch the estimate track (or miss) the real ring current. The Dst node in the
+  causal HUD also carries an **observed Hp30 ghost** (GFZ Potsdam's 30-min
+  planetary Kp-family index, open-ended above 9 so superstorms register their
+  actual intensity); hover the node to see it, and the node's border tints amber
+  when Hp30 crosses the Kp-equivalent storm-onset (≥ 5). The propagation
   delays are always on view there too — `L1 → bow shock` and the further
   `aurora` growth-phase lag. The bar collapses: click the **TIMELINE** handle
   along its top edge to slide it down to a thin strip (and click again to bring
@@ -170,14 +174,30 @@ Center (SWPC)** — U.S. Government work, public domain.
 
 | Feed | Endpoint | Used for |
 |---|---|---|
-| Solar wind magnetic field | `services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json` | Bz, Bt |
-| Solar wind plasma | `services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json` | speed, density, pressure |
+| Solar wind magnetic field | `services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json` | Bz, Bt |
+| Solar wind plasma | `services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json` | speed, density |
 | Planetary K-index | `services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | Kp, G-storm scale |
 | GOES X-ray flux | `services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json` | flare class |
 | OVATION aurora | `services.swpc.noaa.gov/json/ovation_aurora_latest.json` | auroral ovals |
+| Hp30 (GFZ) | `kp.gfz.de/fileadmin/files_for_gfz_cms/Hp30_ap30_nowcast.txt` (via the optional `api/hp30_proxy.php`) | observed 30-min planetary index — ghost trace beside the modelled aurora driver |
 
-Most measurements originate from **DSCOVR** at the L1 Lagrange point and the
-**GOES** satellites.
+Solar-wind measurements come from whichever L1 monitor SWPC marks *active* in
+the RTSW feed (SWFO-L1, IMAP, ACE or DSCOVR); X-ray flux comes from the
+**GOES** satellites. **Hp30** is the Kp-family 30-minute geomagnetic index
+maintained by Geomagnetic Observatory Niemegk / GFZ Helmholtz Centre for
+Geosciences (Yamazaki et al. 2024, DOI 10.5880/Hpo.0003, **CC BY 4.0**); unlike
+Kp it is open-ended above 9, so the strongest storms register their actual
+intensity instead of saturating.
+
+> **Live Hp30 needs a same-origin proxy.** GFZ's file server sends no
+> `Access-Control-Allow-Origin`, so a browser cannot fetch it directly. The
+> repo ships a tiny optional pass-through at `api/hp30_proxy.php` — drop it on
+> any PHP-capable host alongside `index.html` and live Hp30 lights up; serve
+> the repo from anything without PHP (Python `http.server`, GitHub Pages,
+> `npx serve`) and the source self-disables silently. **The replay path is
+> unaffected either way** — `tools/augment-hp30.mjs` bakes Hp30 into the
+> scenario JSONs at build time, so the curated storms always show the index
+> climbing past 9 regardless of how you host the live demo.
 
 The curated-storm replays use **real instrument-era data** from NASA's
 **[OMNI](https://omniweb.gsfc.nasa.gov/)** dataset (IMF + plasma time-shifted to
@@ -201,6 +221,7 @@ src/
   data-source.js      # data-source seam + createDataSource(id) factory
   magnetosphere-model.js # time-agnostic physics core (Shue, Dst ODE, L1 lag)
   data-fetcher.js     # live NOAA SWPC ingestion — wallclock driver of the model
+  hp30-source.js      # live GFZ Hp30 nowcast poller — observed-ghost trace
   timeline-source.js  # curated-storm replay — scrub-clock driver of the model
   scenarios.js        # curated-storm manifest (shared by source + transport)
   aurora-texture.js   # OVATION nowcast → polar GL textures
@@ -218,6 +239,8 @@ shaders/
 textures/             # NASA Blue Marble (monthly) + Black Marble night
 data/scenarios/       # bundled real OMNI storm series (replay)
 tools/build-scenarios.mjs # offline regenerator for data/scenarios/ (NASA CDAWeb)
+tools/augment-hp30.mjs    # offline: appends GFZ Hp30 ghost column to each scenario
+api/hp30_proxy.php        # optional CORS pass-through for live GFZ Hp30 nowcast
 docs/                 # user manuals (EN / DE)
 ```
 

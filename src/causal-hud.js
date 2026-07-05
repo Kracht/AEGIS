@@ -63,7 +63,10 @@ const NODES = [
       detail: (u) => ({ title: 'Ring-current index',
         eq: 'dDst*/dt = Q − Dst*/τ ;  Dst = Dst* + 7.26√Pdyn − 11',
         val: `${u.dst.toFixed(0)} nT   (τ = ${u.dstTau.toFixed(1)} h)`,
-        cite: 'Burton et al. 1975 — injection vs. decay' }) },
+        cite: 'Burton et al. 1975 — injection vs. decay',
+        obs: (typeof u.hp30 === 'number' && isFinite(u.hp30))
+            ? `Hp30 = ${u.hp30.toFixed(2)}  (GFZ — 30-min, open above 9)`
+            : null }) },
 ];
 
 // Edges: from → to, with an optional clock(u) annotation that surfaces the
@@ -148,6 +151,8 @@ const CSS = `
 #ch-tip .t-title { color: rgba(120, 180, 250, 0.95); font-size: 10px; letter-spacing: 0.06em; margin-bottom: 0.25rem; }
 #ch-tip .t-eq    { color: rgba(200, 222, 255, 0.92); font-size: 11px; margin-bottom: 0.2rem; }
 #ch-tip .t-val   { color: rgba(150, 235, 200, 0.92); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+/* Observed-ghost line: amber to distinguish measured ground truth from modeled value (t-val, cyan-green). */
+#ch-tip .t-obs   { color: rgba(255, 180, 90, 0.92); font-size: 10px; font-variant-numeric: tabular-nums; margin-top: 0.2rem; }
 #ch-tip .t-cite  { color: rgba(110, 150, 200, 0.6); font-size: 8.5px; margin-top: 0.3rem; font-style: italic; }
 `;
 
@@ -243,6 +248,7 @@ export class CausalHUD {
             `<div class="t-title">${d.title}</div>` +
             `<div class="t-eq">${d.eq}</div>` +
             `<div class="t-val">${d.val}</div>` +
+            (d.obs ? `<div class="t-obs">observed · ${d.obs}</div>` : '') +
             `<div class="t-cite">${d.cite}</div>`;
         this._tip.style.display = 'block';
         this._moveTip(ev);
@@ -278,6 +284,20 @@ export class CausalHUD {
         }
         for (const e of this._edgeEls) {
             if (e.clockText && e.clock) e.clockText.textContent = e.clock(u);
+        }
+
+        // Hp30 observed-ghost border on the Dst node: amber tint when the
+        // measured GFZ index crosses the Kp-equivalent storm-onset (≥ 5).
+        // Brightness ramps further past 9 (Hp30 is open-ended) so a Carrington-
+        // class event reads as a hot border rather than saturating at Kp = 9.
+        const dstEls = this._nodeEls.dst;
+        if (dstEls && typeof u.hp30 === 'number' && isFinite(u.hp30)) {
+            const g = clamp01((u.hp30 - 4) / 7);   // dim at 4, full at 11
+            if (g > 0) {
+                dstEls.box.style.stroke = `rgba(255, ${165 - g * 40}, ${70 + (1 - g) * 60}, ${0.55 + g * 0.4})`;
+                dstEls.box.style.filter =
+                    `drop-shadow(0 0 ${3 + g * 6}px rgba(255, 170, 80, ${0.35 + g * 0.5}))`;
+            }
         }
     }
 }

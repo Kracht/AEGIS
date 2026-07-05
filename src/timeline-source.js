@@ -120,6 +120,17 @@ export class TimelineSource {
         return (v === null || v === undefined || !isFinite(v)) ? null : v;
     }
 
+    // Observed Hp30 at the cursor — the GFZ 30-min planetary index, open-ended
+    // above 9, ghost-trace for the modeled aurora driver. Missing data is the
+    // -1 sentinel produced by augment-hp30.mjs.
+    _hp30At(targetMs) {
+        if (!this._loaded || this._idx.hp30 === undefined) return null;
+        const i = Math.round((targetMs - this._t0) / this._dtMs);
+        const row = this._data.samples[Math.min(Math.max(i, 0), this._data.samples.length - 1)];
+        const v = row?.[this._idx.hp30];
+        return (v === null || v === undefined || !isFinite(v) || v < 0) ? null : v;
+    }
+
     toUniforms() {
         if (this._loaded && this._playing) {
             const now = performance.now();
@@ -132,6 +143,7 @@ export class TimelineSource {
             ...this._model.sampleUniforms(this._playMs),
             dataAge: 0,
             isStale: false,
+            hp30:   this._hp30At(this._playMs),
             timeline: {
                 id:         this._meta.id,
                 name:       this._data?.name ?? this._meta.name,
@@ -143,6 +155,7 @@ export class TimelineSource {
                 utc:        this._loaded ? new Date(this._playMs).toISOString() : '',
                 realDstMin: this._data?.realDstMin ?? null,
                 realDst:    this._symhAt(this._playMs),
+                hp30Max:    this._data?.realHp30Max ?? null,
             },
         };
     }

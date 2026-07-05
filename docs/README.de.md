@@ -172,10 +172,12 @@ Wähle einen Sturm, dann **Play / Pause / Scrubben** und eine **Zeitraffer-Stufe
 
 Während ein Sturm läuft, zeigt die Statusanzeige das **gemessene SYM-H** (der echte Ringstrom-Index aus dem OMNI-Datensatz) direkt neben dem modellierten Dst — so kann man verfolgen, wie die Burton/O'Brien-Schätzung dem echten Sturm folgt und wo sie abweicht. Ehrliche Validierung, kein verstecktes Schönen.
 
+Der Dst-Knoten im Kausal-HUD trägt zusätzlich einen zweiten Beobachtungs-Geist: **Hp30 vom GFZ Potsdam** — ein planetarer Kp-verwandter Index in 30-Minuten-Auflösung, aber *nach oben offen* statt bei 9 gedeckelt, sodass Supersturm-Intensitäten realistisch dargestellt werden. Beim Hover über den Dst-Knoten erscheint der aktuelle Hp30-Wert; der Rahmen des Knotens färbt sich bernsteinfarben, sobald Hp30 die Sturmschwelle (≥ 5) überschreitet. In der Wiedergabe sieht man bei november-2004, gannon-2024 und jan-2026 deutliche Werte jenseits 9 — Details, die die 0–9-Skala von Kp verschluckt.
+
 > **Hinweis zu Halloween 2003.** Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren *Antriebsdaten* — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)
 
 Die Sturmdaten sind echte NASA-**OMNI**-Daten (Instrumentenära, 5-Minuten-Takt), offline gebündelt. Der modellierte Dst ist die Burton/O'Brien-Schätzung — nahe am gemessenen Index, aber nicht identisch.
 
 ---
 
-*Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · Erdbilder: NASA Blue Marble / Black Marble*
+*Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · GFZ Potsdam Hp30 (Yamazaki et al. 2024, DOI 10.5880/Hpo.0003, CC BY 4.0) · Erdbilder: NASA Blue Marble / Black Marble*
