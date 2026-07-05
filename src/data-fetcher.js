@@ -7,12 +7,18 @@
 // identical dynamics.
 
 import { MagnetosphereModel } from './magnetosphere-model.js';
+import { Hp30Source } from './hp30-source.js';
 
 const BASE = 'https://services.swpc.noaa.gov';
 
+// NOTE (2026-07): SWPC removed the whole /products/solar-wind/ directory
+// (mag-2-hour.json, plasma-2-hour.json now 404). The RTSW JSON feeds replace
+// them: newest-first array-of-objects, several spacecraft interleaved with
+// `active: true` marking the primary source. CORS is open on all of these —
+// no proxy needed for NOAA.
 const ENDPOINTS = {
-    mag:    `${BASE}/products/solar-wind/mag-2-hour.json`,
-    plasma: `${BASE}/products/solar-wind/plasma-2-hour.json`,
+    mag:    `${BASE}/json/rtsw/rtsw_mag_1m.json`,
+    plasma: `${BASE}/json/rtsw/rtsw_wind_1m.json`,
     kp:     `${BASE}/products/noaa-planetary-k-index.json`,
     xray:   `${BASE}/json/goes/primary/xrays-1-day.json`,
 };
@@ -44,6 +50,21 @@ function parseAoA(rows) {
         const obj = {};
         first.forEach((h, j) => { obj[h] = row[j]; });
         if (first.slice(1).some(h => obj[h] !== null && obj[h] !== undefined)) return obj;
+    }
+    return null;
+}
+
+// RTSW feeds (json/rtsw/*): newest-first rows, spacecraft interleaved.
+// Prefer the newest `active: true` row whose required fields are all finite;
+// fall back to any usable row so a source handover doesn't blank the model.
+function parseRtsw(rows, need) {
+    if (!Array.isArray(rows)) return null;
+    for (const row of rows) {
+        if (!row || !row.active) continue;
+        if (need.every(f => Number.isFinite(row[f]))) return row;
+    }
+    for (const row of rows) {
+        if (row && need.every(f => Number.isFinite(row[f]))) return row;
     }
     return null;
 }
@@ -85,6 +106,7 @@ export class DataFetcher {
     constructor() {
         this._raw     = {};
         this._model   = new MagnetosphereModel();
+        this._hp30    = new Hp30Source();
         this._active  = false;
         this._timers  = [];
         this._everIngested = false;
@@ -95,12 +117,14 @@ export class DataFetcher {
         for (const [key, url] of Object.entries(ENDPOINTS)) {
             this._schedule(key, url, POLL_MS[key]);
         }
+        this._hp30.start();
     }
 
     stop() {
         this._active = false;
         this._timers.forEach(clearTimeout);
         this._timers = [];
+        this._hp30.stop();
     }
 
     _schedule(key, url, interval) {
@@ -119,7 +143,11 @@ export class DataFetcher {
     }
 
     _ingest(key, raw) {
-        this._raw[key] = key === 'xray' ? parseXray(raw) : parseAoA(raw);
+        this._raw[key] =
+            key === 'xray'   ? parseXray(raw) :
+            key === 'mag'    ? parseRtsw(raw, ['bz_gsm', 'bt']) :
+            key === 'plasma' ? parseRtsw(raw, ['proton_speed', 'proton_density']) :
+                               parseAoA(raw);
 
         // Assemble one raw L1 sample from whatever endpoints have reported so
         // far; missing fields fall back to the model's DEFAULTS.
@@ -132,8 +160,8 @@ export class DataFetcher {
             bt:      m.bt,
             bx:      m.bx_gsm,
             by:      m.by_gsm,
-            density: p.density,
-            speed:   p.speed,
+            density: p.proton_density,
+            speed:   p.proton_speed,
             kp:      k.kp,
             flux:    x.flux,
         };
@@ -161,6 +189,7 @@ export class DataFetcher {
             ...this._model.sampleUniforms(Date.now()),
             dataAge: isFinite(age) ? age / 1000 : 0,
             isStale: this.isStale,
+            hp30:    this._hp30.valueAt(Date.now()),
         };
     }
 }
