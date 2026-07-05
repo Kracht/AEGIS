@@ -1,98 +1,438 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="" data-theme="dark">
+<!--
+  swoc-export.html — Pandoc HTML Template
+  Visual language: Space Weather Operations Center — watch floor aesthetic.
+  Deliberately FICTIONAL identity: no real agency, institute or city is named
+  (the R/S/G scale terminology is public vocabulary, not an affiliation).
+
+  Supported frontmatter variables (same contract as mocr-export.html):
+    title          — hero title, first line       (default: SPACE WEATHER)
+    title_accent   — hero title, accented line    (default: OPERATIONS)
+    subtitle       — hero sub-line paragraph
+    abstract       — hero eyebrow label
+    author         — one or more authors (used as console position line)
+    date           — overrides JS-injected date in header
+    agency         — header top line              (default: Solar-Terrestrial Watch)
+    facility       — header facility line         (default: Space Weather Operations...)
+    position       — console position label       (default: SWO / SPACE WEATHER OFFICER)
+    console_row    — console row number           (default: 2)
+    console_pos    — console position ID          (default: 1859)
+    mission        — watch name in clock cluster  (default: WATCH 27 — CARRINGTON ROTATION)
+    classification — footer / right column label  (default: SOLAR-TERRESTRIAL FORECAST DESK)
+    location       — footer right column line     (default: L1 UPSTREAM MONITOR · 1.5M KM)
+    ref            — footer left column ref code
+    toc            — set to true to render table of contents
+    lang           — html lang attribute          (default: en)
+-->
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<title>AEGIS — Handbuch</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- convert.py always injects a title (H1/filename fallback), and its 
+       parser cannot nest — keep this flat. -->
+  <title>AEGIS — Handbuch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
 
-:root{
-  --bg:#00040e;
-  --txt:rgba(198,218,255,.84);
-  --bright:rgba(220,233,255,.96);
-  --muted:rgba(120,158,205,.62);
-  --line:rgba(60,120,200,.20);
-  --accent:rgba(122,170,228,.92);
-  --mono:'JetBrains Mono','Fira Code','Courier New',monospace;
+/* =====================================================
+   1. DESIGN TOKENS
+===================================================== */
+:root {
+  --accent:       #2EE58A;   /* aurora green */
+  --accent-dark:  #1BA862;
+  --accent-dim:   rgba(46,229,138,0.10);
+  --solar:        #FFB000;   /* solar amber — secondary */
+  --solar-dim:    rgba(255,176,0,0.12);
+  --alert:        #FF4422;
+  --trans:        0.24s ease;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-::selection{background:rgba(90,140,210,.35);color:var(--bright)}
-body{
-  background:var(--bg);
-  color:var(--txt);
-  font-family:var(--mono);
-  font-size:14px;
-  line-height:1.75;
-  -webkit-font-smoothing:antialiased;
-  padding:48px 20px 72px;
-}
-.doc{max-width:860px;margin:0 auto}
-.doc::before{
-  content:"AEGIS · ACTIVE EARTH GEOMAGNETIC IMAGING SYSTEM";
-  display:block;
-  font-size:10.5px;
-  letter-spacing:.26em;
-  color:var(--muted);
-  border-bottom:1px solid var(--line);
-  padding-bottom:14px;
-  margin-bottom:32px;
-}
-h1{
-  font-size:30px;
-  font-weight:700;
-  letter-spacing:.03em;
-  color:var(--bright);
-  line-height:1.2;
-  margin:4px 0 12px;
-}
-h2{
-  font-size:18px;
-  font-weight:700;
-  color:var(--bright);
-  letter-spacing:.02em;
-  margin:46px 0 14px;
-  padding-left:13px;
-  border-left:3px solid var(--accent);
-}
-h3{
-  font-size:13px;
-  font-weight:700;
-  color:var(--accent);
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  margin:28px 0 10px;
-}
-p{margin:0 0 14px}
-strong{color:var(--bright);font-weight:700}
-em{color:var(--accent);font-style:normal}
-a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
-a:hover{color:var(--bright)}
-ul{margin:0 0 14px;padding-left:20px}
-li{margin:3px 0}
-hr{border:0;border-top:1px solid var(--line);margin:32px 0}
-table{width:100%;border-collapse:collapse;margin:6px 0 18px;font-size:12.5px}
-th{
-  text-align:left;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;
-  padding:8px 12px;border-bottom:1px solid var(--line);
-}
-td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-tr:hover td{background:rgba(60,120,200,.05)}
-.doc>p:first-of-type{color:var(--accent);letter-spacing:.16em;font-size:12px}
-footer{
-  margin-top:48px;padding-top:16px;border-top:1px solid var(--line);
-  font-size:11px;color:var(--muted);
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
-}
-</style>
-</head>
-<body>
-<main class="doc">
 
-<h1 id="aegis-handbuch">AEGIS — Handbuch</h1>
+[data-theme="dark"] {
+  --bg:           #050A0F;
+  --bg-alt:       #0A1118;
+  --surface:      #0D1620;
+  --border:       #1B2836;
+  --border-strong:#31465C;
+  --text-1:       #D8E4EC;
+  --text-2:       #7C8C9A;
+  --text-3:       #3D4E5E;
+  --grid-line:    rgba(46,229,138,0.035);
+  --corner:       #2EE58A;
+  --crt-bg:       #100B00;
+  --crt-text:     #E8A200;
+  --crt-bright:   #FFD066;
+  --crt-dim:      #6B4E10;
+  --aurora-a:     rgba(46,229,138,0.07);
+  --aurora-b:     rgba(80,120,255,0.05);
+  --aurora-c:     rgba(190,80,255,0.04);
+}
+
+[data-theme="light"] {
+  --bg:           #E2E6E4;
+  --bg-alt:       #D5DBD8;
+  --surface:      #C8D0CC;
+  --border:       #A8B2AC;
+  --border-strong:#78847E;
+  --text-1:       #14201A;
+  --text-2:       #40514A;
+  --text-3:       #78847E;
+  --grid-line:    rgba(20,32,26,0.05);
+  --corner:       #158A52;
+  --accent:       #158A52;
+  --accent-dim:   rgba(21,138,82,0.10);
+  --crt-bg:       #100B00;
+  --crt-text:     #E8A200;
+  --crt-bright:   #FFD066;
+  --crt-dim:      #6B4E10;
+  --aurora-a:     rgba(21,138,82,0.07);
+  --aurora-b:     rgba(60,90,200,0.04);
+  --aurora-c:     rgba(150,60,200,0.03);
+}
+
+/* =====================================================
+   2. RESET + BASE
+===================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* =====================================================
+   3. ATMOSPHERE — dot grid + slow auroral curtain
+===================================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  height: 42vh;
+  background:
+    radial-gradient(60% 100% at 18% 0%, var(--aurora-a), transparent 70%),
+    radial-gradient(50% 90%  at 55% 0%, var(--aurora-b), transparent 70%),
+    radial-gradient(45% 80%  at 86% 0%, var(--aurora-c), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0%   { transform: translateX(-3%) scaleY(1);    opacity: 0.8; }
+  50%  { transform: translateX( 2%) scaleY(1.12); opacity: 1;   }
+  100% { transform: translateX( 4%) scaleY(0.94); opacity: 0.75;}
+}
+
+/* =====================================================
+   4. CORNER DECORATORS — crosshair mounting marks
+===================================================== */
+.corner-mark {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  z-index: 100;
+  opacity: 0.55;
+}
+.corner-mark::before,
+.corner-mark::after {
+  content: '';
+  position: absolute;
+  background: var(--corner);
+}
+.corner-mark::before { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+.corner-mark::after  { height: 1px; width: 100%; top: 50%; left: 0; transform: translateY(-50%); }
+.corner-mark .cdot {
+  position: absolute;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--corner);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+.corner-mark.tl { top: 14px; left: 14px; }
+.corner-mark.tr { top: 14px; right: 14px; }
+.corner-mark.bl { bottom: 14px; left: 14px; }
+.corner-mark.br { bottom: 14px; right: 14px; }
+
+/* =====================================================
+   5. FIXED CONTROLS
+===================================================== */
+#theme-btn {
+  position: fixed;
+  top: 10px; right: 52px;
+  z-index: 200;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-2);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  cursor: pointer;
+  transition: border-color var(--trans), color var(--trans);
+}
+#theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+#theme-btn:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+
+#status-bar {
+  position: fixed;
+  bottom: 24px; right: 52px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  cursor: default;
+  user-select: none;
+}
+#status-bar .pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #22AA44;
+  animation: green-pulse 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+@keyframes green-pulse {
+  0%,100% { opacity:1; box-shadow: 0 0 5px #22AA44; }
+  50%     { opacity:0.25; box-shadow: none; }
+}
+
+/* =====================================================
+   6. PAGE LAYOUT
+===================================================== */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 58px 48px 80px;
+}
+
+section { margin-bottom: 56px; }
+
+.section-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* =====================================================
+   7. COMPONENTS
+===================================================== */
+
+/* HEADER */
+.site-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 60px;
+}
+.header-agency   { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
+.header-facility { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2); }
+.header-right    { text-align: right; display: flex; flex-direction: column; gap: 3px; }
+.header-pos      { font-size: 9px; letter-spacing: 0.13em; color: var(--text-3); }
+.header-pos em   { font-style: normal; color: var(--accent); }
+
+/* HERO */
+.hero { margin-bottom: 64px; }
+.hero-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(68px, 11.5vw, 148px);
+  line-height: 0.9;
+  letter-spacing: 0.025em;
+  color: var(--text-1);
+  margin-bottom: 22px;
+}
+.hero-title .hl {
+  background: linear-gradient(100deg, var(--accent) 0%, #4FD8C0 45%, #6E9CFF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-sub {
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  color: var(--text-2);
+  text-transform: uppercase;
+  max-width: 580px;
+  line-height: 1.9;
+}
+
+/* CLOCK CLUSTER — UTC + L1 transit */
+.met-cluster {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: center;
+  padding: 22px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 60px;
+}
+.met-block      { display: flex; flex-direction: column; gap: 4px; }
+.met-label      { font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-3); }
+.met-digits     { font-family: 'Bebas Neue', sans-serif; font-size: 54px; letter-spacing: 0.04em; color: var(--accent); line-height: 1; }
+.met-digits .sep{ color: var(--border-strong); font-size: 38px; }
+.met-center     { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.met-mission    { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 0.09em; color: var(--text-1); }
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #22CC55;
+  border: 1px solid #22CC55;
+  padding: 3px 11px;
+}
+.status-pill .sdot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #22CC55;
+  animation: green-pulse 2.5s ease-in-out infinite;
+}
+.get-digits      { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 0.04em; color: var(--solar); line-height: 1; }
+.get-digits .sep { color: var(--border-strong); font-size: 24px; }
+
+/* TWO-COL */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+/* CRT PANEL — amber phosphor upstream monitor */
+.crt-panel {
+  background: var(--crt-bg);
+  border: 2px solid var(--border-strong);
+  overflow: hidden;
+  position: relative;
+}
+.crt-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
+  pointer-events: none;
+  z-index: 2;
+}
+.crt-header { background: var(--crt-bg); border-bottom: 1px solid var(--crt-dim); padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; }
+.crt-title  { font-size: 10px; letter-spacing: 0.13em; color: var(--crt-bright); text-transform: uppercase; }
+.crt-ref    { font-size: 10px; color: var(--crt-dim); letter-spacing: 0.1em; }
+.crt-body   { height: 268px; overflow: hidden; position: relative; padding: 0; }
+.crt-scroll {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 14px;
+  font-size: 10.5px;
+  line-height: 1.72;
+  color: var(--crt-text);
+  font-family: 'Space Mono', monospace;
+  white-space: pre;
+  text-shadow: 0 0 6px currentColor;
+}
+.crt-cursor {
+  display: inline-block;
+  width: 7px; height: 12px;
+  background: var(--crt-text);
+  animation: crt-blink 1.1s steps(1) infinite;
+  vertical-align: text-bottom;
+  margin-left: 1px;
+}
+@keyframes crt-blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
+/* SCALE BOARD — R / S / G condition wall + station indicators */
+.ind-grid { display: flex; flex-direction: column; gap: 2px; }
+.ind-row  { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+.ind-row.scale-row { grid-template-columns: auto repeat(5, 1fr); }
+.ind-btn  {
+  padding: 5px 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 6.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.3;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-3);
+  user-select: none;
+}
+.ind-btn.scale-tag {
+  min-width: 54px;
+  color: var(--text-2);
+  border-color: var(--border-strong);
+  letter-spacing: 0.12em;
+}
+.ind-btn.lit-a { background:var(--solar-dim); border-color:rgba(255,176,0,0.48); color:var(--solar); }
+.ind-btn.lit-g { background:rgba(34,170,68,0.14); border-color:rgba(34,170,68,0.48); color:#44CC66; }
+.ind-btn.lit-r { background:rgba(200,20,0,0.16); border-color:rgba(200,20,0,0.48); color:#FF4422; }
+.ind-btn.pa { animation: pa 2s ease-in-out infinite; }
+.ind-btn.pg { animation: pg 3s ease-in-out infinite; }
+@keyframes pa {
+  0%,100%{ background:rgba(255,176,0,0.20); border-color:rgba(255,176,0,0.55); color:var(--solar); }
+  50%    { background:rgba(255,176,0,0.04); border-color:rgba(255,176,0,0.15); color:var(--text-3); }
+}
+@keyframes pg {
+  0%,100%{ background:rgba(34,170,68,0.17); border-color:rgba(34,170,68,0.52); color:#44CC66; }
+  50%    { background:rgba(34,170,68,0.03); border-color:rgba(34,170,68,0.12); color:var(--text-3); }
+}
+
+/* STAT GRID — upstream solar wind parameters */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 56px;
+}
+.stat-cell { background: var(--surface); padding: 18px 14px; display: flex; flex-direction: column; gap: 5px; }
+.sc-label  { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-3); }
+.sc-val    { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; color: var(--text-1); }
+.sc-val.a  { color: var(--accent); }
+.sc-val.p  { color: var(--solar); }
+.sc-unit   { font-size: 8px; letter-spacing: 0.11em; color: var(--text-3); }
+
+/* =====================================================
+   8. BODY CONTENT (<h1 id="aegis-handbuch">AEGIS — Handbuch</h1>
 <p><strong>A</strong>ctive <strong>E</strong>arth <strong>G</strong>eomagnetic <strong>I</strong>maging <strong>S</strong>ystem</p>
 <p>Eine Echtzeit-3D-Visualisierung der Erdmagnetosphäre im Browser, gespeist mit Live-Daten des amerikanischen Weltraumwetterdienstes NOAA.</p>
 <hr />
@@ -115,7 +455,7 @@ footer{
 <td><strong>Bugstoßwelle und Magnetosheath</strong> — der Überschall-Sonnenwind schockt, erhitzt und legt sich um das magnetische Hindernis der Erde</td>
 </tr>
 <tr>
-<td>Bogenförmige Stränge in &bdquo;Quallen&ldquo;-Form</td>
+<td>Bogenförmige Stränge in „Quallen&rdquo;-Form</td>
 <td>Geomagnetische <strong>Feldlinienschalen</strong> (McIlwain L = 2…6) — geschlossene Feldlinien, sonnenseitig zu einer Glocke komprimiert und in nachlaufende Schweiffilamente ausgezogen (die echte Tropfenform der Magnetosphäre). Sie <strong>reagieren auf den Sturm</strong>: Der Staudruck presst die Tagseiten-Glocke nach innen, der Ringstrom (sinkendes Dst) bläht die inneren Schalen nach außen, und südwärtiges Bz zieht die Schweiffilamente aus — die schnelle Kompression und die langsame Aufblähung zeitlich sichtbar getrennt</td>
 </tr>
 <tr>
@@ -162,7 +502,7 @@ footer{
 <li><strong>Bz nach Süden (−)</strong> → Feldlinien reconnektieren → Sonnenwind pumpt Energie und Teilchen ins System → Geomagnetischer Sturm, Auroren, Störungen</li>
 </ul>
 <hr />
-<h2 id="physikalische-zeit">Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft</h2>
+<h2 id="physikalische-zeit-warum-die-szene-l1-um-3060-minuten-nachlauft">Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft</h2>
 <p>DSCOVR steht am <strong>Lagrangepunkt L1</strong>, rund 1,5 Millionen Kilometer sonnenwärts der Erde. Das Plasma, das DSCOVR jetzt misst, hat die Erde noch nicht erreicht — es muss erst mit der eigenen Sonnenwindgeschwindigkeit stromabwärts driften.</p>
 <p>Diese Advektionszeit ist genau das, was du in der Szene siehst:</p>
 <p><code>t_lag ≈ 1,5 × 10⁶ km ÷ v_sw</code></p>
@@ -253,7 +593,7 @@ footer{
 <li><strong>Kp → Größe der Auroren-Ovale</strong>: Ein höherer Kp-Wert dehnt die leuchtenden Ringe in Richtung niedrigerer Breitengrade aus.</li>
 <li><strong>Flare → Lichtimpuls</strong>: Ein M- oder X-Flare erzeugt einen sichtbaren Lichtblitz aus Sonnenrichtung.</li>
 <li><strong>Geschwindigkeit + Dichte → Helligkeit des inneren Plasmascheins</strong>: Erhöhter Sonnenwind komprimiert und erhitzt die innere Magnetosphäre.</li>
-<li><strong>Dst → Ringstrom-Anzeige</strong>: Die Dst-Anzeige integriert bei jeder Abfrage die Burton- (1975) / O&rsquo;Brien-&amp;-McPherron-Gleichung (2000) <em>dDst*/dt = Q − Dst*/τ</em> — eine explizite Rückkopplung aus Injektion und Zerfall, druckkorrigiert. Sie fällt während der Sturm-Hauptphase und erholt sich über Stunden.</li>
+<li><strong>Dst → Ringstrom-Anzeige</strong>: Die Dst-Anzeige integriert bei jeder Abfrage die Burton- (1975) / O&rsquo;Brien-&amp;-McPherron-Gleichung (2000) <code>dDst*/dt = Q − Dst*/τ</code> — eine explizite Rückkopplung aus Injektion und Zerfall, druckkorrigiert. Sie fällt während der Sturm-Hauptphase und erholt sich über Stunden.</li>
 </ul>
 <hr />
 <h2 id="solarereignisse-flares-cmes-filamente-protuberanzen">Solarereignisse: Flares, CMEs, Filamente, Protuberanzen</h2>
@@ -355,11 +695,15 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 </tbody>
 </table>
 <hr />
-<h2 id="darstellungsmodi">Darstellungsmodi (F3)</h2>
+<h2 id="darstellungsmodi-f3">Darstellungsmodi (F3)</h2>
 <p>AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit <code>F3</code> (oder Klick auf <strong>Mode: …</strong> oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.</p>
 <table>
 <thead>
-<tr><th>Modus</th><th>Was zu sehen ist</th><th>Wozu er gut ist</th></tr>
+<tr>
+<th>Modus</th>
+<th>Was zu sehen ist</th>
+<th>Wozu er gut ist</th>
+</tr>
 </thead>
 <tbody>
 <tr>
@@ -370,38 +714,929 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 <tr>
 <td><strong>Data</strong></td>
 <td>Visual darunter, <strong>plus</strong> eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung <code>lag</code> = <code>1,5 × 10⁶ km ÷ v_sw</code>.</td>
-<td>Fragen: <em>&bdquo;Welche Zahlen stecken hinter diesem Bild?&ldquo;</em> Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen.</td>
+<td>Fragen: <em>„Welche Zahlen stecken hinter diesem Bild?&rdquo;</em> Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen.</td>
 </tr>
 <tr>
 <td><strong>Physics</strong></td>
 <td>Die unsichtbaren <strong>Flächen</strong> als dünne cyan-weiße SDF-Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28% — Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6, live verformt mit <code>r₀</code>, <code>α</code> und der sturmabhängigen Schalenverzerrung — <strong>plus</strong> ein kamerasynchrones 2D-Overlay des <em>Mechanismus</em>: schematische Feldrichtungs-Glyphen, farbcodiert nach <strong>offen vs. geschlossen</strong> (geschlossen = blau, kehrt zur Erde zurück; offen = bernstein, mit dem IMF verbunden), die angeströmten IMF-Pfeile und die <strong>zwei Rekonnexions-X-Linien</strong>.</td>
-<td>Fragen: <em>&bdquo;Wie kommt die Energie eigentlich herein?&ldquo;</em> Offener Fluss ist die Tür: bei südlichem Bz öffnet sich die Tagseite, die <strong>Tagseiten-X-Linie</strong> rutscht zum Äquator (bei nördlichem Bz wandert sie zur hochbreitigen Lobe-Rekonnexion), und — Minuten später, über den verzögerten Schweif-Treiber — leuchtet die <strong>erdnahe neutrale Linie</strong> im Schweif auf. Diese Verzögerung zwischen den beiden X-Linien <em>ist</em> der Substurm. Jeder Marker ist auf dem Bild beschriftet; zum Anfahren erscheint die jeweilige Gleichung. Das Feld ist ein ehrliches <strong>Schema</strong> (analytischer Dipol + angeströmtes IMF), keine MHD-Lösung.</td>
+<td>Fragen: <em>„Wie kommt die Energie eigentlich herein?&rdquo;</em> Offener Fluss ist die Tür: bei südlichem Bz öffnet sich die Tagseite, die <strong>Tagseiten-X-Linie</strong> rutscht zum Äquator (bei nördlichem Bz wandert sie zur hochbreitigen Lobe-Rekonnexion), und — Minuten später, über den verzögerten Schweif-Treiber — leuchtet die <strong>erdnahe neutrale Linie</strong> im Schweif auf. Diese Verzögerung zwischen den beiden X-Linien <em>ist</em> der Substurm. Jeder Marker ist auf dem Bild beschriftet; zum Anfahren erscheint die jeweilige Gleichung. Das Feld ist ein ehrliches <strong>Schema</strong> (analytischer Dipol + angeströmtes IMF), keine MHD-Lösung.</td>
 </tr>
 </tbody>
 </table>
 <p><code>F2</code> blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.</p>
-<h3 id="kamera-free-look">Kamera &amp; Free-Look (C)</h3>
-<p>Standardmäßig fliegt die Kamera einen langsamen Kinobogen über die <strong>Flanke</strong> — den seitlichen 3/4-Blickwinkel, in dem die Sturmverformung am besten lesbar ist — und schwenkt bewusst nie den Magnetschweif hinab (was sie im Schweif-Inneren vergraben würde). Mit <code>C</code> (oder Klick auf <strong>Cam: …</strong> oben rechts) aktivierst du <strong>Free-Look</strong>: <strong>Ziehen zum Umkreisen</strong> der Erde, <strong>Scrollen zum Zoomen</strong> (4–45 R<sub>E</sub>). Die Ansicht bleibt in beiden Modi auf die Erde zentriert — du kannst also genau den Winkel wählen, der die Tagseiten-Kompression und den aufgeblähten Ringstrom einfängt, und dann zurückschalten, damit sie von selbst weiterkreist.</p>
+<h3 id="kamera-free-look-c">Kamera &amp; Free-Look (C)</h3>
+<p>Standardmäßig fliegt die Kamera einen langsamen Kinobogen über die <strong>Flanke</strong> — den seitlichen 3/4-Blickwinkel, in dem die Sturmverformung am besten lesbar ist — und schwenkt bewusst nie den Magnetschweif hinab (was sie im Schweif-Inneren vergraben würde). Mit <code>C</code> (oder Klick auf <strong>Cam: …</strong> oben rechts) aktivierst du <strong>Free-Look</strong>: <strong>Ziehen zum Umkreisen</strong> der Erde, <strong>Scrollen zum Zoomen</strong> (4–45 Rₑ). Die Ansicht bleibt in beiden Modi auf die Erde zentriert — du kannst also genau den Winkel wählen, der die Tagseiten-Kompression und den aufgeblähten Ringstrom einfängt, und dann zurückschalten, damit sie von selbst weiterkreist.</p>
 <hr />
-<h2 id="kausal-hud">Kausal-HUD &amp; Sturm-Wiedergabe (F4)</h2>
+<h2 id="kausal-hud-sturm-wiedergabe-f4">Kausal-HUD &amp; Sturm-Wiedergabe (F4)</h2>
 <p>Die Darstellungsmodi beantworten, <em>was</em> du siehst. Das <strong>Kausal-HUD</strong> (<code>F4</code>) beantwortet, <em>warum es sich geändert hat</em>. Es zeichnet die Antriebskette der Magnetosphäre als <strong>zwei getrennte Stränge</strong>, denn es sind tatsächlich unabhängige Mechanismen mit verschiedenen Zeitskalen:</p>
 <ul>
-<li><strong>Kompressions-Strang (schnell):</strong> <code>Pdyn = ρv² → r₀ Standoff</code>. Der Staudruck des Sonnenwinds drückt die Tagseiten-Grenze nach innen — in Minuten und fast unabhängig von der Feldrichtung.</li>
-<li><strong>Sturm-Strang (langsam):</strong> <code>Bz → Rekonnexion (VBs) → Ringstrom-Injektion (Q) → Dst</code>. Nur <em>südwärts</em> gerichtetes IMF öffnet die Tagseite, lädt den Schweif und speist den Ringstrom — der sich dann über <em>Stunden</em> auf- und abbaut.</li>
+<li><strong>Kompressions-Strang (schnell):</strong> <code>Pdyn = ρv²  →  r₀ Standoff</code>. Der Staudruck des Sonnenwinds drückt die Tagseiten-Grenze nach innen. Das geschieht in Minuten und hängt kaum von der Feldrichtung ab.</li>
+<li><strong>Sturm-Strang (langsam):</strong> <code>Bz → Rekonnexion (VBs) → Ringstrom-Injektion (Q) → Dst</code>. Nur <em>südwärts</em> gerichtetes IMF öffnet die Tagseite, lädt den Schweif und speist den Ringstrom — der sich dann über <em>Stunden</em> auf- und wieder abbaut.</li>
 </ul>
-<p>Die Knoten leuchten nach den Live-Werten; die Kanten tragen die <strong>echten Laufzeit-Verzögerungen</strong> — die L1-Advektionsuhr (<code>⏱ ~30–60 min</code>) auf dem Hinweg, die Ringstrom-Abklingzeit (<code>τ</code>, mehrere Stunden) auf dem Rückweg. <strong>Fahre über einen Knoten</strong>, um seine Gleichung, den aktuellen Wert und die Quelle zu sehen. Das ist der Unterschied zwischen <em>Aquarium betrachten</em> und <em>Weltraumwetter verstehen</em>.</p>
+<p>Die Knoten leuchten nach den Live-Werten; die Kanten tragen die <strong>echten Laufzeit-Verzögerungen</strong> — die L1-Advektionsuhr (<code>⏱ ~30–60 min</code>) auf dem Hinweg, die Ringstrom-Abklingzeit (<code>τ</code>, mehrere Stunden) auf dem Rückweg. <strong>Fahre über einen Knoten</strong>, um seine Gleichung, den aktuellen Wert und die Quelle zu sehen. Genau das ist der Unterschied zwischen <em>Aquarium betrachten</em> und <em>Weltraumwetter verstehen</em>: dieselbe schöne Szene, aber mit explizit gemachter und korrekt verzögerter Ursache-Wirkung.</p>
 <p>Die <strong>Transportleiste</strong> am unteren Rand spielt echte, aufgezeichnete Stürme ab, statt auf den Live-Himmel zu warten:</p>
 <table>
 <thead>
-<tr><th>Szenario</th><th>Was es lehrt</th></tr>
+<tr>
+<th>Szenario</th>
+<th>Was es lehrt</th>
+</tr>
 </thead>
 <tbody>
-<tr><td><strong>Live (NOAA)</strong></td><td>Der echte Himmel, jetzt gerade.</td></tr>
-<tr><td><strong>High-Speed Stream</strong> (Mai 2007)</td><td><em>Kompression ≠ Sturm.</em> Ein korotierender Strom drückt r₀ fast so stark hinein wie ein Supersturm, doch Dst bleibt ein Zehntel so tief — der obere Strang leuchtet, der untere kaum. Der sauberste Beleg, dass die Stränge unabhängig sind.</td></tr>
-<tr><td><strong>St. Patrick&rsquo;s 2015</strong></td><td>Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten <em>nacheinander</em>.</td></tr>
-<tr><td><strong>November 2004</strong></td><td>Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen.</td></tr>
-<tr><td><strong>Gannon 2024</strong></td><td>Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge.</td></tr>
-<tr><td><strong>Januar 2026</strong></td><td>Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen.</td></tr>
+<tr>
+<td><strong>Live (NOAA)</strong></td>
+<td>Der echte Himmel, jetzt gerade.</td>
+</tr>
+<tr>
+<td><strong>High-Speed Stream</strong> (Mai 2007)</td>
+<td><em>Kompression ≠ Sturm.</em> Ein korotierender Strom drückt r₀ fast so stark hinein wie ein Supersturm, doch Dst bleibt ein Zehntel so tief — der obere Strang leuchtet, der untere kaum. Der sauberste Beleg, dass die beiden Stränge unabhängig sind.</td>
+</tr>
+<tr>
+<td><strong>St. Patrick&rsquo;s 2015</strong></td>
+<td>Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten <em>nacheinander</em>.</td>
+</tr>
+<tr>
+<td><strong>November 2004</strong></td>
+<td>Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen.</td>
+</tr>
+<tr>
+<td><strong>Gannon 2024</strong></td>
+<td>Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge.</td>
+</tr>
+<tr>
+<td><strong>Januar 2026</strong></td>
+<td>Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen.</td>
+</tr>
+</tbody>
+</table>
+<p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch. Für den freien Blick klickst du den <strong>TIMELINE</strong>-Griff an der Oberkante der Leiste — sie gleitet zu einem schmalen Streifen herunter (der Pfeil dreht sich um und lädt sie zurück); der eingeklappte Zustand bleibt über Reloads erhalten.</p>
+<p>Während ein Sturm läuft, zeigt die Statusanzeige das <strong>gemessene SYM-H</strong> (der echte Ringstrom-Index aus dem OMNI-Datensatz) direkt neben dem modellierten Dst — so kann man verfolgen, wie die Burton/O&rsquo;Brien-Schätzung dem echten Sturm folgt und wo sie abweicht. Ehrliche Validierung, kein verstecktes Schönen.</p>
+<p>Der Dst-Knoten im Kausal-HUD trägt zusätzlich einen zweiten Beobachtungs-Geist: <strong>Hp30 vom GFZ Potsdam</strong> — ein planetarer Kp-verwandter Index in 30-Minuten-Auflösung, aber <em>nach oben offen</em> statt bei 9 gedeckelt, sodass Supersturm-Intensitäten realistisch dargestellt werden. Beim Hover über den Dst-Knoten erscheint der aktuelle Hp30-Wert; der Rahmen des Knotens färbt sich bernsteinfarben, sobald Hp30 die Sturmschwelle (≥ 5) überschreitet. In der Wiedergabe sieht man bei november-2004, gannon-2024 und jan-2026 deutliche Werte jenseits 9 — Details, die die 0–9-Skala von Kp verschluckt.</p>
+<blockquote>
+<p><strong>Hinweis zu Halloween 2003.</strong> Der berühmte Supersturm von 2003 fehlt bewusst: Seine vorgelagerten Sonnenwind-Monitore (ACE/Wind) waren während des Ereignisses gesättigt, OMNI hat also keine brauchbaren <em>Antriebsdaten</em> — eine Wiedergabe wäre flach. November 2004, vergleichbar tief und vollständig erfasst, springt ein. (Dasselbe Prinzip schließt Carrington 1859 aus: keine Messdaten, keine ehrliche Wiedergabe.)</p>
+</blockquote>
+<p>Die Sturmdaten sind echte NASA-<strong>OMNI</strong>-Daten (Instrumentenära, 5-Minuten-Takt), offline gebündelt. Der modellierte Dst ist die Burton/O&rsquo;Brien-Schätzung — nahe am gemessenen Index, aber nicht identisch.</p>
+<hr />
+<p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · GFZ Potsdam Hp30 (Yamazaki et al. 2024, DOI 10.5880/Hpo.0003, CC BY 4.0) · Erdbilder: NASA Blue Marble / Black Marble</em></p> injection zone)
+===================================================== */
+.body-content {
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text-2);
+  margin-bottom: 56px;
+}
+
+/* Headings */
+.body-content h1,
+.body-content h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--text-1);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin: 48px 0 18px;
+}
+.body-content h1 { font-size: 58px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; }
+.body-content h2 { font-size: 36px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.body-content h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 32px 0 10px;
+}
+.body-content h4 {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 24px 0 8px;
+}
+.body-content > *:first-child { margin-top: 0; }
+
+/* Paragraphs & inline */
+.body-content p       { margin-bottom: 18px; }
+.body-content strong  { color: var(--text-1); font-weight: 700; }
+.body-content em      { color: var(--text-1); font-style: italic; }
+
+/* Links */
+.body-content a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(46,229,138,0.25);
+  transition: border-color var(--trans);
+}
+.body-content a:hover { border-bottom-color: var(--accent); }
+
+/* Code */
+.body-content code {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  background: var(--crt-bg);
+  border: 1px solid var(--border-strong);
+  padding: 2px 7px;
+  color: var(--crt-text);
+  text-shadow: 0 0 5px var(--crt-text);
+  letter-spacing: 0.02em;
+}
+.body-content pre {
+  background: var(--crt-bg);
+  border: 2px solid var(--border-strong);
+  border-left: 4px solid var(--accent);
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 24px 0;
+  position: relative;
+}
+.body-content pre::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+  pointer-events: none;
+}
+.body-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  color: var(--crt-text);
+  text-shadow: 0 0 4px var(--crt-text);
+}
+
+/* Blockquote */
+.body-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 12px 20px;
+  background: var(--surface);
+  margin: 24px 0;
+  color: var(--text-2);
+  font-style: italic;
+}
+
+/* Lists */
+.body-content ul,
+.body-content ol  { margin: 0 0 18px 0; padding-left: 22px; }
+.body-content li  { margin-bottom: 5px; padding-left: 4px; }
+.body-content li::marker { color: var(--accent); }
+
+/* Tables */
+.body-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 11px;
+}
+.body-content th {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 8px 14px;
+  text-align: left;
+  background: var(--surface);
+}
+.body-content td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  color: var(--text-2);
+}
+.body-content tr:hover td { background: var(--surface); }
+
+/* HR */
+.body-content hr {
+  border: none;
+  border-top: 3px solid var(--accent);
+  margin: 48px 0;
+}
+
+/* Images */
+.body-content img {
+  max-width: 100%;
+  display: block;
+  margin: 24px 0;
+  border: 1px solid var(--border);
+}
+
+/* Definition lists */
+.body-content dl   { margin: 0 0 18px 0; }
+.body-content dt   { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-top: 14px; }
+.body-content dd   { padding-left: 18px; color: var(--text-2); margin-bottom: 4px; }
+
+/* Footnotes */
+.body-content .footnotes {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-3);
+}
+.body-content .footnotes ol { padding-left: 18px; }
+
+/* TOC */
+.toc-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin-bottom: 36px;
+}
+.toc-wrapper::before {
+  content: 'TABLE OF CONTENTS';
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.toc-wrapper ul,
+.toc-wrapper #TOC ul  { list-style: none !important; padding-left: 0; margin: 0; }
+.toc-wrapper li,
+.toc-wrapper #TOC li  { padding: 3px 0; }
+.toc-wrapper li li,
+.toc-wrapper #TOC li li { padding-left: 14px; }
+.toc-wrapper #TOC > h2 { display: none; }
+.toc-wrapper a,
+.toc-wrapper #TOC a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  color: var(--text-2) !important;
+  text-decoration: none !important;
+  transition: color var(--trans);
+}
+.toc-wrapper a:hover,
+.toc-wrapper #TOC a:hover { color: var(--accent) !important; }
+
+/* =====================================================
+   9. FOOTER
+===================================================== */
+.site-footer {
+  border-top: 3px solid var(--accent);
+  padding-top: 22px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.footer-meta   { display: flex; flex-direction: column; gap: 4px; }
+.footer-meta p { font-size: 9px; color: var(--text-3); letter-spacing: 0.12em; }
+.footer-meta em { font-style: normal; color: var(--text-2); }
+.footer-wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.14em; color: var(--text-2); text-align: center; }
+.footer-right   { text-align: right; }
+.footer-right p { font-size: 9px; color: var(--text-3); letter-spacing: 0.12em; }
+
+/* =====================================================
+   10. EASTER EGG — X-FLARE ALERT (type "FLARE" anywhere)
+===================================================== */
+#flare-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0A0400;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#flare-overlay.active {
+  display: flex;
+  animation: flare-flicker 0.35s steps(1) forwards;
+}
+#flare-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(255,120,0,0.05) 3px, rgba(255,120,0,0.05) 6px);
+  pointer-events: none;
+}
+#flare-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: flare-beat 1.3s ease-in-out infinite;
+}
+@keyframes flare-flicker {
+  0%  { opacity:0 }
+  18% { opacity:1 }
+  28% { opacity:0 }
+  48% { opacity:1 }
+  58% { opacity:0 }
+  78% { opacity:1 }
+  100%{ opacity:1 }
+}
+@keyframes flare-beat {
+  0%,100%{ box-shadow: inset 0 0 0 4px rgba(255,120,0,0.55); }
+  50%    { box-shadow: inset 0 0 0 9px rgba(255,120,0,0.95); }
+}
+.flare-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.flare-eyebrow { font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255,140,0,0.65); }
+.flare-word {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(88px, 18vw, 190px);
+  line-height: 0.86;
+  letter-spacing: 0.04em;
+  color: #FF7800;
+  text-shadow: 0 0 50px rgba(255,120,0,0.55);
+  animation: flare-glow 1.3s ease-in-out infinite;
+}
+@keyframes flare-glow {
+  0%,100%{ text-shadow: 0 0 50px rgba(255,120,0,0.55); }
+  50%    { text-shadow: 0 0 90px rgba(255,120,0,1), 0 0 20px rgba(255,120,0,0.7); }
+}
+.flare-rule { width: 220px; height: 1px; background: rgba(255,120,0,0.3); }
+.flare-code { font-size: 10px; color: rgba(255,140,0,0.5); letter-spacing: 0.14em; font-family: 'Space Mono', monospace; }
+#flare-dismiss {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid rgba(255,120,0,0.16);
+  color: rgba(255,140,0,0.2);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 6px 22px;
+  cursor: pointer;
+  transition: border-color 0.5s ease, color 0.5s ease;
+}
+#flare-dismiss:hover,
+#flare-dismiss:focus-visible { border-color: rgba(255,140,0,0.7); color: rgba(255,140,0,0.7); outline: none; }
+
+/* =====================================================
+   11. RESPONSIVE
+===================================================== */
+@media (max-width: 900px) {
+  .page         { padding: 44px 28px 60px; }
+  .stat-grid    { grid-template-columns: repeat(3, 1fr); }
+  .two-col      { grid-template-columns: 1fr; }
+  .met-cluster  { grid-template-columns: 1fr 1fr; }
+  .met-center   { grid-column: 1 / -1; order: -1; }
+  .site-footer  { grid-template-columns: 1fr 1fr; }
+  .footer-wordmark { grid-column: 1 / -1; order: -1; }
+}
+@media (max-width: 640px) {
+  .page         { padding: 30px 16px 48px; }
+  .stat-grid    { grid-template-columns: repeat(2, 1fr); }
+  .met-cluster  { grid-template-columns: 1fr; }
+  .met-digits   { font-size: 40px; }
+  .site-footer  { grid-template-columns: 1fr; }
+  .footer-right { text-align: left; }
+  .ind-row      { grid-template-columns: repeat(4, 1fr); }
+  .ind-row.scale-row { grid-template-columns: auto repeat(3, 1fr); }
+  .ind-row .ind-btn:nth-child(n+5) { display: none; }
+}
+
+
+/* red pulse for R/S/G >= 3 (live condition board) */
+.ind-btn.pr { animation: pr 1.6s ease-in-out infinite; }
+@keyframes pr {
+  0%,100%{ background:rgba(200,20,0,0.22); border-color:rgba(200,20,0,0.60); color:#FF4422; }
+  50%    { background:rgba(200,20,0,0.05); border-color:rgba(200,20,0,0.18); color:var(--text-3); }
+}
+
+  </style>
+</head>
+<body>
+
+<!-- Corner markers -->
+<div class="corner-mark tl" aria-hidden="true"><div class="cdot"></div></div>
+<div class="corner-mark tr" aria-hidden="true"><div class="cdot"></div></div>
+<div class="corner-mark bl" aria-hidden="true"><div class="cdot"></div></div>
+<div class="corner-mark br" aria-hidden="true"><div class="cdot"></div></div>
+
+<!-- Theme toggle -->
+<button id="theme-btn" aria-label="Toggle display mode">MODE: DARK</button>
+
+<!-- Status indicator (easter egg: type "FLARE" anywhere on keyboard) -->
+<div id="status-bar" role="status" aria-live="polite">
+  <div class="pulse-dot" id="egg-trigger" tabindex="-1"></div>
+  <span id="status-text">GEOMAG QUIET</span>
+</div>
+
+<!-- X-FLARE overlay -->
+<div id="flare-overlay" role="alertdialog" aria-modal="true" aria-label="X-class flare alert active">
+  <div class="flare-inner">
+    <div class="flare-eyebrow">XRS LONG-CHANNEL SATURATED — CARRINGTON-CLASS EVENT</div>
+    <div class="flare-word">X45</div>
+    <div class="flare-rule"></div>
+    <div class="flare-code">HF RADIO BLACKOUT R5 · PROTON EVENT S5 IN PROGRESS</div>
+    <div class="flare-code">CME ARRIVAL EST +34 H — EXPECT G5 · AURORA TO LOW LATITUDES</div>
+    <div class="flare-rule"></div>
+    <button id="flare-dismiss">[ ACKNOWLEDGE ALERT ]</button>
+  </div>
+</div>
+
+<main class="page">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div>
+      <div class="header-agency">Solar-Terrestrial Watch — Heliospheric Monitoring</div>
+      <div class="header-facility">Space Weather Operations · Forecast Watch Floor</div>
+    </div>
+    <div class="header-right">
+      <div class="header-pos">POSITION <em>SWO / SPACE WEATHER OFFICER</em></div>
+      
+      <div class="header-pos">CONSOLE ROW <em id="hdr-row"></em> · POS <em id="hdr-pos"></em></div>
+      
+      <div class="header-pos">DATE <em id="hdr-date">--.--.----</em></div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Solar-Terrestrial Operations — Watch Floor</div>
+    <div class="hero-title">
+      AEGIS — Handbuch<br>
+      <span class="hl">OPERATIONS</span>
+    </div>
+    
+    <div class="hero-sub">
+      SOLAR WIND · IMF BZ · GEOMAGNETIC INDICES · AURORAL OVAL<br>
+      X-RAY FLUX · RADIO BLACKOUTS · PROTON EVENTS · FORECAST DESK
+    </div>
+    
+  </section>
+
+  <!-- CLOCK CLUSTER -->
+  <div class="met-cluster" role="region" aria-label="Watch clocks">
+    <div class="met-block">
+      <div class="met-label">Coordinated Universal Time</div>
+      <div class="met-digits">
+        <span id="utc-h">00</span><span class="sep">:</span><span id="utc-m">00</span><span class="sep">:</span><span id="utc-s">00</span>
+      </div>
+    </div>
+    <div class="met-center">
+      <div class="met-mission">WATCH 27 — CARRINGTON ROTATION</div>
+      <div class="status-pill"><span class="sdot"></span>ALL SCALES GREEN</div>
+    </div>
+    <div class="met-block" style="text-align:right">
+      <div class="met-label" id="l1-label">L1 Plasma Transit — 450 km/s</div>
+      <div class="get-digits">
+        <span id="l1-m">54</span><span class="sep">:</span><span id="l1-s">30</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRT + SCALE BOARD -->
+  <div class="two-col">
+    <div>
+      <div class="section-label">L1 Upstream Monitor · IMF + Plasma — Live Feed</div>
+      <div class="crt-panel">
+        <div class="crt-header">
+          <span class="crt-title">SOLAR WIND DIGITALS / 1-MIN CADENCE</span>
+          <span class="crt-ref">1859 2026</span>
+        </div>
+        <div class="crt-body">
+          <div id="crt-scroll" class="crt-scroll"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Condition Board — Scales + Stations</div>
+      <div class="ind-grid" role="list" aria-label="Space weather condition indicators">
+        <div class="ind-row scale-row">
+          <div class="ind-btn scale-tag" role="listitem">R RADIO</div>
+          <div id="scale-R1" class="ind-btn lit-g" role="listitem">R1</div>
+          <div id="scale-R2" class="ind-btn" role="listitem">R2</div>
+          <div id="scale-R3" class="ind-btn" role="listitem">R3</div>
+          <div id="scale-R4" class="ind-btn" role="listitem">R4</div>
+          <div id="scale-R5" class="ind-btn" role="listitem">R5</div>
+        </div>
+        <div class="ind-row scale-row">
+          <div class="ind-btn scale-tag" role="listitem">S PROTON</div>
+          <div id="scale-S1" class="ind-btn lit-g" role="listitem">S1</div>
+          <div id="scale-S2" class="ind-btn" role="listitem">S2</div>
+          <div id="scale-S3" class="ind-btn" role="listitem">S3</div>
+          <div id="scale-S4" class="ind-btn" role="listitem">S4</div>
+          <div id="scale-S5" class="ind-btn" role="listitem">S5</div>
+        </div>
+        <div class="ind-row scale-row">
+          <div class="ind-btn scale-tag" role="listitem">G GEOMAG</div>
+          <div id="scale-G1" class="ind-btn lit-a pa" role="listitem">G1</div>
+          <div id="scale-G2" class="ind-btn" role="listitem">G2</div>
+          <div id="scale-G3" class="ind-btn" role="listitem">G3</div>
+          <div id="scale-G4" class="ind-btn" role="listitem">G4</div>
+          <div id="scale-G5" class="ind-btn" role="listitem">G5</div>
+        </div>
+        <div class="ind-row">
+          <div class="ind-btn lit-g pg" role="listitem">L1 MAG</div>
+          <div class="ind-btn lit-g" role="listitem">L1 PLASMA</div>
+          <div class="ind-btn" role="listitem">CORONA-GRAPH</div>
+          <div class="ind-btn lit-g" role="listitem">XRS</div>
+          <div class="ind-btn" role="listitem">EUV</div>
+          <div class="ind-btn lit-a" role="listitem">PROTON DET</div>
+        </div>
+        <div class="ind-row">
+          <div class="ind-btn" role="listitem">MAG-NET N</div>
+          <div class="ind-btn lit-g" role="listitem">MAG-NET S</div>
+          <div class="ind-btn lit-g pg" role="listitem">OVAL MODEL</div>
+          <div class="ind-btn" role="listitem">IONO-SONDE</div>
+          <div class="ind-btn lit-a pa" role="listitem">HF PROP</div>
+          <div class="ind-btn" role="listitem">GIC GRID</div>
+        </div>
+        <div class="ind-row">
+          <div class="ind-btn" role="listitem">FORECAST</div>
+          <div class="ind-btn lit-g" role="listitem">NOWCAST</div>
+          <div class="ind-btn" role="listitem">ALERT DESK</div>
+          <div class="ind-btn" role="listitem">ARCHIVE</div>
+          <div class="ind-btn lit-g" role="listitem">UPLINK</div>
+          <div class="ind-btn" role="listitem">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="stat-grid" role="list" aria-label="Current upstream solar wind parameters">
+    <div class="stat-cell" role="listitem"><div class="sc-label">IMF Bz</div><div class="sc-val a" id="sw-bz">-2.0</div><div class="sc-unit">NT · GSM</div></div>
+    <div class="stat-cell" role="listitem"><div class="sc-label">Wind Speed</div><div class="sc-val" id="sw-speed">450</div><div class="sc-unit">KM/S · BULK</div></div>
+    <div class="stat-cell" role="listitem"><div class="sc-label">Density</div><div class="sc-val" id="sw-dens">5.0</div><div class="sc-unit">P/CM³</div></div>
+    <div class="stat-cell" role="listitem"><div class="sc-label">Kp Index</div><div class="sc-val p" id="sw-kp">2.0</div><div class="sc-unit">3-H PLANETARY</div></div>
+    <div class="stat-cell" role="listitem"><div class="sc-label">X-Ray</div><div class="sc-val p" id="sw-xray">C4.7</div><div class="sc-unit">0.1–0.8 NM</div></div>
+    <div class="stat-cell" role="listitem"><div class="sc-label">Dst</div><div class="sc-val a" id="sw-dst">-26</div><div class="sc-unit">NT · RING CURRENT</div></div>
+  </div>
+
+  <!-- TOC -->
+  
+  <div class="section-label">Contents</div>
+  <div class="toc-wrapper"><div class="toc">
+<ul>
+<li><a href="#aegis-handbuch">AEGIS — Handbuch</a><ul>
+<li><a href="#was-du-siehst">Was du siehst</a></li>
+<li><a href="#die-verbindung-sonne-sonnenwind-magnetosphare">Die Verbindung: Sonne → Sonnenwind → Magnetosphäre</a></li>
+<li><a href="#physikalische-zeit-warum-die-szene-l1-um-3060-minuten-nachlauft">Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft</a></li>
+<li><a href="#datenquellen">Datenquellen</a><ul>
+<li><a href="#wie-die-daten-die-darstellung-beeinflussen">Wie die Daten die Darstellung beeinflussen</a></li>
+</ul>
+</li>
+<li><a href="#solarereignisse-flares-cmes-filamente-protuberanzen">Solarereignisse: Flares, CMEs, Filamente, Protuberanzen</a></li>
+<li><a href="#weltraumwetter-im-alltag">Weltraumwetter im Alltag</a></li>
+<li><a href="#kp-g-sturm-skala-auf-einen-blick">Kp / G-Sturm-Skala auf einen Blick</a></li>
+<li><a href="#darstellungsmodi-f3">Darstellungsmodi (F3)</a><ul>
+<li><a href="#kamera-free-look-c">Kamera &amp; Free-Look (C)</a></li>
+</ul>
+</li>
+<li><a href="#kausal-hud-sturm-wiedergabe-f4">Kausal-HUD &amp; Sturm-Wiedergabe (F4)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+  
+
+  <!-- BODY CONTENT -->
+  <section>
+    <div class="section-label">AEGIS — Handbuch</div>
+    <article class="body-content">
+      <h1 id="aegis-handbuch">AEGIS — Handbuch</h1>
+<p><strong>A</strong>ctive <strong>E</strong>arth <strong>G</strong>eomagnetic <strong>I</strong>maging <strong>S</strong>ystem</p>
+<p>Eine Echtzeit-3D-Visualisierung der Erdmagnetosphäre im Browser, gespeist mit Live-Daten des amerikanischen Weltraumwetterdienstes NOAA.</p>
+<hr />
+<h2 id="was-du-siehst">Was du siehst</h2>
+<p>Die Szene zeigt die Erde und die unsichtbare Blase aus Magnetkraft, die sie schützt — die <strong>Magnetosphäre</strong>. Jede Form, Farbe und jedes Leuchten wird aus Messwerten berechnet, die Satelliten und Bodenstationen gerade jetzt aufnehmen.</p>
+<table>
+<thead>
+<tr>
+<th>Visuelles Element</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blaue/weiße Tropfenform</td>
+<td>Die Magnetosphäre — sonnenseitig komprimiert, auf der Nachtseite zu einem langen Schweif ausgezogen</td>
+</tr>
+<tr>
+<td>Warm getönte äußere Kuppel (Tagseite)</td>
+<td><strong>Bugstoßwelle und Magnetosheath</strong> — der Überschall-Sonnenwind schockt, erhitzt und legt sich um das magnetische Hindernis der Erde</td>
+</tr>
+<tr>
+<td>Bogenförmige Stränge in „Quallen&rdquo;-Form</td>
+<td>Geomagnetische <strong>Feldlinienschalen</strong> (McIlwain L = 2…6) — geschlossene Feldlinien, sonnenseitig zu einer Glocke komprimiert und in nachlaufende Schweiffilamente ausgezogen (die echte Tropfenform der Magnetosphäre). Sie <strong>reagieren auf den Sturm</strong>: Der Staudruck presst die Tagseiten-Glocke nach innen, der Ringstrom (sinkendes Dst) bläht die inneren Schalen nach außen, und südwärtiges Bz zieht die Schweiffilamente aus — die schnelle Kompression und die langsame Aufblähung zeitlich sichtbar getrennt</td>
+</tr>
+<tr>
+<td>Innerer Plasmaschimmer</td>
+<td>Die <strong>Plasmaphäre</strong> — ein Ring aus kühlem, dichtem Plasma nahe der Erde; schrumpft bei Stürmen nach innen</td>
+</tr>
+<tr>
+<td>Karmesinrotes Leuchten dicht um die Erde (nur bei Sturm)</td>
+<td><strong>Partieller Ringstrom</strong> — westwärts driftende energiereiche Ionen auf den geschlossenen Feldlinien; asymmetrisch (eng am Mittag, ausgebeult zur Mitternacht); das magnetische Signal einer geomagnetischen Hauptphase</td>
+</tr>
+<tr>
+<td>Horizontales Band im Schweif</td>
+<td><strong>Plasmaschicht</strong> (Harris-Stromschicht) — dünne Lage dichten Plasmas in der magnetischen Äquatorebene des Schweifs, in Echtzeit flatternd</td>
+</tr>
+<tr>
+<td>Heller orangener Fleck hinter der Erde (Bz südwärts)</td>
+<td><strong>Substurm-Rekonnexionslinie</strong> — wo gestreckte Schweif-Feldlinien aufreißen und gespeicherte Energie explosiv freisetzen</td>
+</tr>
+<tr>
+<td>Leuchtende Polringe</td>
+<td><strong>Auroren-Ovale</strong> — wo energiereiche Teilchen in die Atmosphäre regnen. Live: der NOAA-OVATION-Nowcast. In Sturm-Wiedergaben: ein Modell-Oval (Gussenhoven-1983-Grenze, ~2°/Kp) als Tropfenform — breit und tief bis in mittlere Breiten auf der Nachtseite, ein schmaler Bogen auf der Tagseite — das sich ~30 min <em>nach</em> der Schweifladung ausdehnt</td>
+</tr>
+<tr>
+<td>Terminator-Linie auf der Erde</td>
+<td>Die echte Tag/Nacht-Grenze zur aktuellen UTC-Zeit</td>
+</tr>
+<tr>
+<td>Erdoberfläche</td>
+<td>NASA Blue Marble (monatlich/saisonal) für den Tag; Black Marble Stadtlichter für die Nacht</td>
+</tr>
+<tr>
+<td>Statusanzeige (oben links)</td>
+<td>Live-Messwerte vom Satelliten DSCOVR am L1-Lagrangepunkt, ~1,5 Millionen km erdwärts der Sonne</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="die-verbindung-sonne-sonnenwind-magnetosphare">Die Verbindung: Sonne → Sonnenwind → Magnetosphäre</h2>
+<p>Die Sonne verliert ständig einen Strom geladener Teilchen (Elektronen und Protonen) — den <strong>Sonnenwind</strong>. Er reist mit 300–800 km/s und trägt das Magnetfeld der Sonne mit sich — das <strong>Interplanetare Magnetfeld (IMF)</strong>.</p>
+<p>Wenn der Sonnenwind auf die Erdmagnetosphäre trifft, komprimiert er die sonnenzugewandte Seite auf etwa 10 Erdradien (~64.000 km) und zieht die Nachtseite in einen Millionen Kilometer langen Schweif. Die Form ändert sich ständig, abhängig von Geschwindigkeit und Druck des Sonnenwinds.</p>
+<p>Die entscheidende Größe ist <strong>Bz</strong> — die Nord-Süd-Komponente des IMF:</p>
+<ul>
+<li><strong>Bz nach Norden (+)</strong> → IMF und Erdfeld zeigen in dieselbe Richtung → Magnetosphäre geschlossen, ruhig</li>
+<li><strong>Bz nach Süden (−)</strong> → Feldlinien reconnektieren → Sonnenwind pumpt Energie und Teilchen ins System → Geomagnetischer Sturm, Auroren, Störungen</li>
+</ul>
+<hr />
+<h2 id="physikalische-zeit-warum-die-szene-l1-um-3060-minuten-nachlauft">Physikalische Zeit: Warum die Szene L1 um ~30–60 Minuten nachläuft</h2>
+<p>DSCOVR steht am <strong>Lagrangepunkt L1</strong>, rund 1,5 Millionen Kilometer sonnenwärts der Erde. Das Plasma, das DSCOVR jetzt misst, hat die Erde noch nicht erreicht — es muss erst mit der eigenen Sonnenwindgeschwindigkeit stromabwärts driften.</p>
+<p>Diese Advektionszeit ist genau das, was du in der Szene siehst:</p>
+<p><code>t_lag ≈ 1,5 × 10⁶ km ÷ v_sw</code></p>
+<ul>
+<li>Bei einem typischen 450 km/s → <strong>~55 Minuten</strong></li>
+<li>Bei einem schnellen 800 km/s-CME → <strong>~31 Minuten</strong></li>
+</ul>
+<p>AEGIS puffert jede L1-Messung in einen 90-Minuten-Ring und rendert den Snapshot von <code>t_lag</code> zurück. Eine Bz-Stufe an L1 bleibt für die Laufzeit unsichtbar und schwappt dann in die Szene. Der modellierte Dst integriert über das <strong>verzögerte</strong> Bz und den verzögerten Druck — der Ringstrom-Wert reagiert also in physikalischer Reihenfolge: eine Süddrehung an L1 komprimiert zuerst die Magnetopause und lädt den Schweif, <em>danach</em> erst zeichnet sich die Dst-Signatur ab.</p>
+<p>Es ist bewusst ein einfaches Advektionsmodell. Darauf aufgesetzt trägt das Auroren-Oval einen <strong>weiteren Verzug von ~30 min (Wachstumsphase)</strong>: Sein steuerndes Bz wird eine halbe Stunde weiter zurück abgetastet, sodass in einer Wiedergabe erst der Schweif lädt und die X-Linie zündet und sich das Oval erst Minuten später ausdehnt und aufhellt — die Substurm-Wachstumsphase sichtbar gemacht. Der L1-Verzug und dieser zusätzliche Aurora-Verzug werden beide live in der Statusanzeige gezeigt (<code>lag · L1→shock NN min · aurora NN min</code>).</p>
+<hr />
+<h2 id="datenquellen">Datenquellen</h2>
+<p>Alle Daten werden live vom <strong>Space Weather Prediction Center (SWPC) der NOAA</strong> abgerufen. Der wichtigste Satellit ist <strong>DSCOVR</strong>, der am Lagrangepunkt L1 zwischen Erde und Sonne stationiert ist.</p>
+<table>
+<thead>
+<tr>
+<th>Anzeige</th>
+<th>Quelle</th>
+<th>Was gemessen wird</th>
+<th>Aktualisierung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bz</strong></td>
+<td>DSCOVR/MAG — IMF-Magnetfeld</td>
+<td>Nord-Süd-Komponente des Sonnenwindfeldes [nT]. Negativ = Sturmtreiber.</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Bt</strong></td>
+<td>DSCOVR/MAG — IMF-Magnetfeld</td>
+<td>Gesamtfeldstärke des IMF [nT]</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Spd</strong></td>
+<td>DSCOVR/PLASMAN — Plasma-Instrument</td>
+<td>Sonnenwindgeschwindigkeit [km/s]</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>P</strong></td>
+<td>Berechnet aus Dichte + Geschwindigkeit</td>
+<td>Dynamischer Druck auf die Magnetopause [nPa]</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Kp</strong></td>
+<td>Globales Magnetometernetznetz</td>
+<td>Planetarischer geomagnetischer Störungsindex (0–9)</td>
+<td>3 min</td>
+</tr>
+<tr>
+<td><strong>Flare</strong></td>
+<td>GOES-Satelliten (Röntgensensoren)</td>
+<td>Solarflare-Klasse (A → B → C → M → X)</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Dst</strong></td>
+<td>Modelliert — Burton/O&rsquo;Brien-Kopplung (2000)</td>
+<td>Ringstromstärke [nT], aus dem Sonnenwind-Input integriert. Eine Schätzung, <em>nicht</em> der offizielle Kyoto-Dst.</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>Abgeleitet aus dDst/dt</td>
+<td>Sturmphase — Injektion überwiegt = Hauptphase (↓), Ringstromzerfall überwiegt = Erholung (↑)</td>
+<td>1 min</td>
+</tr>
+<tr>
+<td><strong>Auroren-Ovale</strong></td>
+<td>NOAA OVATION-Modell</td>
+<td>Vorhergesagte Auroraleistung pro Grad Breite/Länge</td>
+<td>5 min</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wie-die-daten-die-darstellung-beeinflussen">Wie die Daten die Darstellung beeinflussen</h3>
+<ul>
+<li><strong>Bz + Druck → Magnetopause-Form</strong>: Das Shue-Modell (1997) wird jeden Frame neu berechnet. Ein stark südwärts gerichtetes Bz lässt die Magnetosphäre sichtbar schrumpfen und verformen.</li>
+<li><strong>Bz südwärts → Sturm-Anatomie</strong>:</li>
+<li>Die Plasmapause schrumpft von L ≈ 4,2 auf L ≈ 2,6 (Carpenter &amp; Anderson 1992)</li>
+<li>Der Ringstrom verlagert sich von L ≈ 4 nach L ≈ 3 nach innen, verstärkt sich und wird zu einem mittag–mitternacht-asymmetrischen <em>partiellen</em> Ringstrom, der auf den geschlossenen Feldlinien sitzt — die Dst-Signatur der Sturm-Hauptphase</li>
+<li>Die Stromschicht im Magnetschweif wird dünner (Substurm-Wachstumsphase), Farbe verschiebt sich von kühlem Blau zu warmem Orange-Violett</li>
+<li>Eine erdnahe Rekonnexionslinie zündet bei ca. 17 R_E hinter der Erde und pulsiert auf Substurm-Zeitskalen</li>
+<li><strong>Sonnenwindgeschwindigkeit → Helligkeit von Bugstoßwelle und Magnetosheath</strong>: Die Aufheizung skaliert mit ρv², schnellerer Wind erzeugt eine heißere, sichtbarere Schockfront.</li>
+<li><strong>Kp → Größe der Auroren-Ovale</strong>: Ein höherer Kp-Wert dehnt die leuchtenden Ringe in Richtung niedrigerer Breitengrade aus.</li>
+<li><strong>Flare → Lichtimpuls</strong>: Ein M- oder X-Flare erzeugt einen sichtbaren Lichtblitz aus Sonnenrichtung.</li>
+<li><strong>Geschwindigkeit + Dichte → Helligkeit des inneren Plasmascheins</strong>: Erhöhter Sonnenwind komprimiert und erhitzt die innere Magnetosphäre.</li>
+<li><strong>Dst → Ringstrom-Anzeige</strong>: Die Dst-Anzeige integriert bei jeder Abfrage die Burton- (1975) / O&rsquo;Brien-&amp;-McPherron-Gleichung (2000) <code>dDst*/dt = Q − Dst*/τ</code> — eine explizite Rückkopplung aus Injektion und Zerfall, druckkorrigiert. Sie fällt während der Sturm-Hauptphase und erholt sich über Stunden.</li>
+</ul>
+<hr />
+<h2 id="solarereignisse-flares-cmes-filamente-protuberanzen">Solarereignisse: Flares, CMEs, Filamente, Protuberanzen</h2>
+<p><strong>Solarflares</strong><br />
+Plötzliche, intensive Strahlungsausbrüche (Röntgen- und UV-Strahlung) von der Sonnenoberfläche. Sie reisen mit Lichtgeschwindigkeit und erreichen die Erde in ~8 Minuten. Gemessen in Klassen: A und B sind Hintergrundrauschen, C ist gering, M ist mittel, X ist stark (X10+ ist extrem). Flares können Funkkommunikation nahezu sofort stören.</p>
+<p><strong>Koronale Massenauswürfe (CMEs)</strong><br />
+Riesige Wolken magnetisierten Plasmas, die die Sonne in den Weltraum schleudert. Im Gegensatz zu Flares (Strahlung) sind CMEs physische Materie. Sie reisen mit 500–3.000 km/s und brauchen 1–3 Tage bis zur Erde. Wenn sie mit südwärts gerichtetem Bz ankommen, verursachen sie die stärksten Magnetstürme.</p>
+<p><strong>Filamente und Protuberanzen</strong><br />
+Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche durch Magnetfeldlinien gehalten werden. Vom Rand der Sonne aus gesehen erscheinen sie als über die Oberfläche hinausragende Strukturen und werden dann als Protuberanzen bezeichnet. Wenn ein Filament ausbricht, wird es häufig zu einem CME. Sie sind in dieser Visualisierung nicht direkt dargestellt, gelten aber als wichtige Vorläufer.</p>
+<hr />
+<h2 id="weltraumwetter-im-alltag">Weltraumwetter im Alltag</h2>
+<p>Weltraumwetter ist keine rein akademische Angelegenheit. Die Auswirkungen sind messbar und manchmal schwerwiegend:</p>
+<table>
+<thead>
+<tr>
+<th>Bereich</th>
+<th>Auswirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GPS / Navigation</strong></td>
+<td>Ionosphärische Störungen beugen Radiosignale → Positionierungsfehler von Metern bis Kilometern</td>
+</tr>
+<tr>
+<td><strong>Kurzwelle / Luftfahrt</strong></td>
+<td>Röntgenflares verursachen Funkausfälle auf der Sonnenseite der Erde — für Minuten bis Stunden</td>
+</tr>
+<tr>
+<td><strong>Stromnetze</strong></td>
+<td>Geomagnetisch induzierte Ströme (GIC) fließen durch Leitungen und Pipelines → Transformatorschäden oder Blackouts (Québec 1989: 6 Millionen Haushalte ohne Strom)</td>
+</tr>
+<tr>
+<td><strong>Satelliten</strong></td>
+<td>Erhöhter atmosphärischer Luftwiderstand in niedrigen Umlaufbahnen → Orbitabfall; energiereiche Teilchen können Elektronik beschädigen</td>
+</tr>
+<tr>
+<td><strong>Astronauten</strong></td>
+<td>Erhöhtes Strahlungsrisiko — Weltraumspaziergänge werden anhand von Weltraumwettervorhersagen geplant</td>
+</tr>
+<tr>
+<td><strong>Pipelines</strong></td>
+<td>GIC korrodieren Metallpipelines langfristig</td>
+</tr>
+<tr>
+<td><strong>Aurorensichtbarkeit</strong></td>
+<td>Bei G2+ Stürmen sind Polarlichter weit außerhalb der Polarregionen sichtbar — Mitteleuropa und Nordamerika in mittleren Breiten</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="kp-g-sturm-skala-auf-einen-blick">Kp / G-Sturm-Skala auf einen Blick</h2>
+<table>
+<thead>
+<tr>
+<th>Kp</th>
+<th>NOAA G</th>
+<th>Beschreibung</th>
+<th>Aurorensichtbarkeit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–4</td>
+<td>—</td>
+<td>Ruhig bis unruhig</td>
+<td>Nur Polarregionen</td>
+</tr>
+<tr>
+<td>5</td>
+<td>G1 Gering</td>
+<td>Kleiner Sturm</td>
+<td>~60° magnetische Breite</td>
+</tr>
+<tr>
+<td>6</td>
+<td>G2 Mäßig</td>
+<td>Mäßiger Sturm</td>
+<td>~55° (südl. Skandinavien, nördl. Kanada)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>G3 Stark</td>
+<td>Starker Sturm</td>
+<td>~50° (Deutschland, nördliche USA)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>G4 Schwer</td>
+<td>Schwerer Sturm</td>
+<td>~45°</td>
+</tr>
+<tr>
+<td>9</td>
+<td>G5 Extrem</td>
+<td>Extremsturm</td>
+<td>Bis ~40° — selten, einmal pro Sonnenzyklus</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="darstellungsmodi-f3">Darstellungsmodi (F3)</h2>
+<p>AEGIS zeigt dieselbe Live-Physik in drei Abstraktionsstufen. Mit <code>F3</code> (oder Klick auf <strong>Mode: …</strong> oben rechts) wechselst du zwischen ihnen. Die Auswahl bleibt über Reloads erhalten.</p>
+<table>
+<thead>
+<tr>
+<th>Modus</th>
+<th>Was zu sehen ist</th>
+<th>Wozu er gut ist</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Visual</strong></td>
+<td>Die volle volumetrische Szene — ray-marched Magnetosheath, Plasmaschicht, Quallen-Feldlinien, Polarlicht, Ringstrom.</td>
+<td>Sehen, <em>wie der erdnahe Weltraum gerade aussieht</em>.</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Visual darunter, <strong>plus</strong> eine Tafel mit jeder Uniform der Szene — Wert, Einheit, Zitat und welcher Effekt damit gesteuert wird. Inklusive der Phase-1-Verzögerung <code>lag</code> = <code>1,5 × 10⁶ km ÷ v_sw</code>.</td>
+<td>Fragen: <em>„Welche Zahlen stecken hinter diesem Bild?&rdquo;</em> Hilft, eine Sturmphase zu deuten oder ein Feature dem zugrundeliegenden Modell zuzuordnen.</td>
+</tr>
+<tr>
+<td><strong>Physics</strong></td>
+<td>Die unsichtbaren <strong>Flächen</strong> als dünne cyan-weiße SDF-Konturlinien auf schwarzem Himmel, Erde gedimmt auf ~28% — Shue-Magnetopause, Cairns/Fairfield-Bugstoßwelle, Dipol-L-Schalen L = 2…6, live verformt mit <code>r₀</code>, <code>α</code> und der sturmabhängigen Schalenverzerrung — <strong>plus</strong> ein kamerasynchrones 2D-Overlay des <em>Mechanismus</em>: schematische Feldrichtungs-Glyphen, farbcodiert nach <strong>offen vs. geschlossen</strong> (geschlossen = blau, kehrt zur Erde zurück; offen = bernstein, mit dem IMF verbunden), die angeströmten IMF-Pfeile und die <strong>zwei Rekonnexions-X-Linien</strong>.</td>
+<td>Fragen: <em>„Wie kommt die Energie eigentlich herein?&rdquo;</em> Offener Fluss ist die Tür: bei südlichem Bz öffnet sich die Tagseite, die <strong>Tagseiten-X-Linie</strong> rutscht zum Äquator (bei nördlichem Bz wandert sie zur hochbreitigen Lobe-Rekonnexion), und — Minuten später, über den verzögerten Schweif-Treiber — leuchtet die <strong>erdnahe neutrale Linie</strong> im Schweif auf. Diese Verzögerung zwischen den beiden X-Linien <em>ist</em> der Substurm. Jeder Marker ist auf dem Bild beschriftet; zum Anfahren erscheint die jeweilige Gleichung. Das Feld ist ein ehrliches <strong>Schema</strong> (analytischer Dipol + angeströmtes IMF), keine MHD-Lösung.</td>
+</tr>
+</tbody>
+</table>
+<p><code>F2</code> blendet die Visual-Tuning-Slider ein (Kamera, Belichtung, Layer-Intensitäten). Die beiden Tafeln sind unabhängig und können gleichzeitig offen sein.</p>
+<h3 id="kamera-free-look-c">Kamera &amp; Free-Look (C)</h3>
+<p>Standardmäßig fliegt die Kamera einen langsamen Kinobogen über die <strong>Flanke</strong> — den seitlichen 3/4-Blickwinkel, in dem die Sturmverformung am besten lesbar ist — und schwenkt bewusst nie den Magnetschweif hinab (was sie im Schweif-Inneren vergraben würde). Mit <code>C</code> (oder Klick auf <strong>Cam: …</strong> oben rechts) aktivierst du <strong>Free-Look</strong>: <strong>Ziehen zum Umkreisen</strong> der Erde, <strong>Scrollen zum Zoomen</strong> (4–45 Rₑ). Die Ansicht bleibt in beiden Modi auf die Erde zentriert — du kannst also genau den Winkel wählen, der die Tagseiten-Kompression und den aufgeblähten Ringstrom einfängt, und dann zurückschalten, damit sie von selbst weiterkreist.</p>
+<hr />
+<h2 id="kausal-hud-sturm-wiedergabe-f4">Kausal-HUD &amp; Sturm-Wiedergabe (F4)</h2>
+<p>Die Darstellungsmodi beantworten, <em>was</em> du siehst. Das <strong>Kausal-HUD</strong> (<code>F4</code>) beantwortet, <em>warum es sich geändert hat</em>. Es zeichnet die Antriebskette der Magnetosphäre als <strong>zwei getrennte Stränge</strong>, denn es sind tatsächlich unabhängige Mechanismen mit verschiedenen Zeitskalen:</p>
+<ul>
+<li><strong>Kompressions-Strang (schnell):</strong> <code>Pdyn = ρv²  →  r₀ Standoff</code>. Der Staudruck des Sonnenwinds drückt die Tagseiten-Grenze nach innen. Das geschieht in Minuten und hängt kaum von der Feldrichtung ab.</li>
+<li><strong>Sturm-Strang (langsam):</strong> <code>Bz → Rekonnexion (VBs) → Ringstrom-Injektion (Q) → Dst</code>. Nur <em>südwärts</em> gerichtetes IMF öffnet die Tagseite, lädt den Schweif und speist den Ringstrom — der sich dann über <em>Stunden</em> auf- und wieder abbaut.</li>
+</ul>
+<p>Die Knoten leuchten nach den Live-Werten; die Kanten tragen die <strong>echten Laufzeit-Verzögerungen</strong> — die L1-Advektionsuhr (<code>⏱ ~30–60 min</code>) auf dem Hinweg, die Ringstrom-Abklingzeit (<code>τ</code>, mehrere Stunden) auf dem Rückweg. <strong>Fahre über einen Knoten</strong>, um seine Gleichung, den aktuellen Wert und die Quelle zu sehen. Genau das ist der Unterschied zwischen <em>Aquarium betrachten</em> und <em>Weltraumwetter verstehen</em>: dieselbe schöne Szene, aber mit explizit gemachter und korrekt verzögerter Ursache-Wirkung.</p>
+<p>Die <strong>Transportleiste</strong> am unteren Rand spielt echte, aufgezeichnete Stürme ab, statt auf den Live-Himmel zu warten:</p>
+<table>
+<thead>
+<tr>
+<th>Szenario</th>
+<th>Was es lehrt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Live (NOAA)</strong></td>
+<td>Der echte Himmel, jetzt gerade.</td>
+</tr>
+<tr>
+<td><strong>High-Speed Stream</strong> (Mai 2007)</td>
+<td><em>Kompression ≠ Sturm.</em> Ein korotierender Strom drückt r₀ fast so stark hinein wie ein Supersturm, doch Dst bleibt ein Zehntel so tief — der obere Strang leuchtet, der untere kaum. Der sauberste Beleg, dass die beiden Stränge unabhängig sind.</td>
+</tr>
+<tr>
+<td><strong>St. Patrick&rsquo;s 2015</strong></td>
+<td>Der klassische zweistufige Sturm: erst komprimiert eine CME-Sheath, dann treibt das südwärtige Bz des Ejektas Minuten später die Hauptphase — die Stränge leuchten <em>nacheinander</em>.</td>
+</tr>
+<tr>
+<td><strong>November 2004</strong></td>
+<td>Ein tiefer Supersturm aus Sonnenzyklus 23 — beide Stränge hart getroffen, in zwei getrennten Schlägen.</td>
+</tr>
+<tr>
+<td><strong>Gannon 2024</strong></td>
+<td>Der stärkste Sturm seit zwei Jahrzehnten (Polarlicht bis in die Tropen) — das Extrem beider Stränge.</td>
+</tr>
+<tr>
+<td><strong>Januar 2026</strong></td>
+<td>Der schnelle CME eines X1.9-Flares (Sonnenwind über 1200 km/s) erzeugte die härteste Tagseiten-Kompression im Satz — r₀ unter 6 Rₑ gedrückt — samt S4-Strahlungssturm. Beide Stränge gleichzeitig hart getroffen.</td>
+</tr>
 </tbody>
 </table>
 <p>Wähle einen Sturm, dann <strong>Play / Pause / Scrubben</strong> und eine <strong>Zeitraffer-Stufe</strong> (ein mehrtägiger Sturm wird auf wenige Minuten gerafft). Da alles durch <em>dasselbe</em> Physikmodell wie der Live-Modus läuft, ticken die Verzögerungsuhren ehrlich: ein gescrubbter Sturm lässt die Tagseiten-Kompression <em>vor</em> der Ringstrom-Reaktion aufleuchten, nie im selben Frame. Bei Auswahl eines Sturms erscheint das Kausal-HUD automatisch. Für den freien Blick klickst du den <strong>TIMELINE</strong>-Griff an der Oberkante der Leiste — sie gleitet zu einem schmalen Streifen herunter (der Pfeil dreht sich um und lädt sie zurück); der eingeklappte Zustand bleibt über Reloads erhalten.</p>
@@ -413,12 +1648,318 @@ Filamente sind dichte, kühle Plasmastränge, die über der Sonnenoberfläche du
 <p>Die Sturmdaten sind echte NASA-<strong>OMNI</strong>-Daten (Instrumentenära, 5-Minuten-Takt), offline gebündelt. Der modellierte Dst ist die Burton/O&rsquo;Brien-Schätzung — nahe am gemessenen Index, aber nicht identisch.</p>
 <hr />
 <p><em>Daten: NOAA SWPC · DSCOVR am L1 · GOES-16/18 · NASA OMNI (Wiedergabe) · GFZ Potsdam Hp30 (Yamazaki et al. 2024, DOI 10.5880/Hpo.0003, CC BY 4.0) · Erdbilder: NASA Blue Marble / Black Marble</em></p>
+    </article>
+  </section>
 
-<footer>
-  <span>AEGIS — Active Earth Geomagnetic Imaging System</span>
-  <span>Handbuch · DE</span>
-</footer>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-meta">
+      
+      <p>POSITION <em id="ftr-position"></em></p>
+      <p>CONSOLE ROW <span id="ftr-row"></span> · <em>POS <span id="ftr-pos"></span></em></p>
+      
+      <p>CADENCE <em>1-MIN L1 / 30-MIN INDEX</em></p>
+      <p>ALL SCALES — <em>GREEN</em></p>
+    </div>
+    <div class="footer-wordmark">SWOC</div>
+    <div class="footer-right">
+      <p>SOLAR-TERRESTRIAL WATCH</p>
+      <p>L1 UPSTREAM MONITOR · 1.5M KM SUNWARD · <em id="footer-year">2026</em></p>
+      <p>SOLAR-TERRESTRIAL FORECAST DESK</p>
+      <p style="margin-top:8px;color:var(--text-3)">NOWCAST / FORECAST · <span id="footer-date"></span></p>
+    </div>
+  </footer>
 
 </main>
+
+<script>
+'use strict';
+
+const html         = document.documentElement;
+const themeBtn     = document.getElementById('theme-btn');
+const statusText   = document.getElementById('status-text');
+const flareOverlay = document.getElementById('flare-overlay');
+const flareDismiss = document.getElementById('flare-dismiss');
+
+/* ---- Theme ---- */
+if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+  html.setAttribute('data-theme', 'light');
+  themeBtn.textContent = 'MODE: LIGHT';
+}
+
+function toggleTheme() {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  themeBtn.textContent = `MODE: ${next.toUpperCase()}`;
+}
+themeBtn.addEventListener('click', toggleTheme);
+
+/* ---- Dates (only inject if not set via frontmatter) ---- */
+const today   = new Date();
+const dateStr = today.toLocaleDateString('de-DE');
+const hdrDate = document.getElementById('hdr-date');
+if (hdrDate && hdrDate.textContent.trim() === '--.--.----') {
+  hdrDate.textContent = dateStr;
+}
+document.getElementById('footer-date').textContent = dateStr;
+document.getElementById('footer-year').textContent = today.getFullYear();
+
+/* ---- Frontmatter fallbacks (convert.py's  parser can't nest, so
+   optional console vars render empty and get their defaults here) ---- */
+[['hdr-row','2'],['hdr-pos','1859'],['ftr-row','2'],['ftr-pos','1859'],
+ ['ftr-position','SWO / SPACE WEATHER']].forEach(([id, def]) => {
+  const el = document.getElementById(id);
+  if (el && !el.textContent.trim()) el.textContent = def;
+});
+
+/* ---- Clocks ----
+   Left: real UTC (space weather runs on UTC, always).
+   Right: L1 plasma transit countdown — time a parcel sampled at L1 now
+   needs to reach the magnetopause at 450 km/s (~55 min), counting down. */
+let L1_TRANSIT_S = 55 * 60;
+const PAGE_LOAD    = Date.now();
+
+function pad(n, w) { return String(n).padStart(w, '0'); }
+
+function updateClocks() {
+  const now = new Date();
+  document.getElementById('utc-h').textContent = pad(now.getUTCHours(), 2);
+  document.getElementById('utc-m').textContent = pad(now.getUTCMinutes(), 2);
+  document.getElementById('utc-s').textContent = pad(now.getUTCSeconds(), 2);
+
+  const elapsed = Math.floor((Date.now() - PAGE_LOAD) / 1000);
+  const remain  = L1_TRANSIT_S - (elapsed % L1_TRANSIT_S) - 1;
+  document.getElementById('l1-m').textContent = pad(Math.floor(remain / 60), 2);
+  document.getElementById('l1-s').textContent = pad(remain % 60, 2);
+}
+setInterval(updateClocks, 1000);
+updateClocks();
+
+/* ---- Live upstream values — same public SWPC feeds AEGIS itself uses
+   (CORS open). The static defaults above stay in place if any fetch
+   fails, so the page is offline-safe. Refreshes every 5 minutes. ---- */
+const SWPC = 'https://services.swpc.noaa.gov';
+
+function setVal(id, txt) {
+  const el = document.getElementById(id);
+  if (el && txt != null) el.textContent = txt;
+}
+
+function newestActive(rows, need) {
+  for (const r of rows) if (r && r.active && need.every(f => Number.isFinite(r[f]))) return r;
+  for (const r of rows) if (r && need.every(f => Number.isFinite(r[f]))) return r;
+  return null;
+}
+
+function flareClass(f) {
+  if (!(f > 0)) return null;
+  const bands = [['X',1e-4],['M',1e-5],['C',1e-6],['B',1e-7],['A',1e-8]];
+  for (const [L, base] of bands) if (f >= base) return L + (f / base).toFixed(1);
+  return 'A' + (f / 1e-8).toFixed(1);
+}
+
+function liveSolarWind() {
+  const grab = url => fetch(url).then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)));
+
+  grab(`${SWPC}/json/rtsw/rtsw_mag_1m.json`).then(rows => {
+    const m = newestActive(rows, ['bz_gsm']);
+    if (m) setVal('sw-bz', m.bz_gsm.toFixed(1));
+  }).catch(() => {});
+
+  grab(`${SWPC}/json/rtsw/rtsw_wind_1m.json`).then(rows => {
+    const p = newestActive(rows, ['proton_speed', 'proton_density']);
+    if (!p) return;
+    const v = Math.round(p.proton_speed);
+    setVal('sw-speed', v);
+    setVal('sw-dens', p.proton_density.toFixed(1));
+    const label = document.getElementById('l1-label');
+    if (label) label.textContent = label.textContent.replace(/\d+ km\/s/, v + ' km/s');
+    L1_TRANSIT_S = Math.round(1500000 / v);   // real bulk-speed transit time
+  }).catch(() => {});
+
+  grab(`${SWPC}/products/noaa-planetary-k-index.json`).then(rows => {
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r  = rows[i];
+      const kp = Array.isArray(r) ? parseFloat(r[1]) : parseFloat(r.Kp ?? r.kp);
+      if (isFinite(kp)) { setVal('sw-kp', kp.toFixed(1)); return; }
+    }
+  }).catch(() => {});
+
+  grab(`${SWPC}/json/goes/primary/xrays-1-day.json`).then(rows => {
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      if (r && r.flux != null && String(r.energy ?? '').includes('0.1-0.8')) {
+        const c = flareClass(r.flux);
+        if (c) setVal('sw-xray', c);
+        return;
+      }
+    }
+  }).catch(() => {});
+
+  grab(`${SWPC}/products/kyoto-dst.json`).then(rows => {
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      const v = Array.isArray(r) ? parseFloat(r[1]) : parseFloat(r.dst);
+      if (isFinite(v)) { setVal('sw-dst', Math.round(v)); return; }
+    }
+  }).catch(() => {});
+}
+liveSolarWind();
+setInterval(liveSolarWind, 5 * 60000);
+
+/* ---- Live CRT ticker — SWPC 3-day forecast text (public domain).
+   Canned solar-wind digitals keep scrolling until (unless) this lands. ---- */
+fetch(`${SWPC}/text/3-day-forecast.txt`).then(r => r.ok ? r.text() : Promise.reject(new Error('HTTP ' + r.status)))
+.then(txt => {
+  const wrapped = [];
+  for (let raw of txt.split('\n')) {
+    let line = raw.replace(/\s+$/, '').toUpperCase();
+    if (line.startsWith('#')) continue;
+    if (!line) { wrapped.push(' '); continue; }
+    while (line.length > 58) {
+      let cut = line.lastIndexOf(' ', 58);
+      if (cut < 30) cut = 58;
+      wrapped.push(line.slice(0, cut));
+      line = '  ' + line.slice(cut).trimStart();
+    }
+    wrapped.push(line);
+  }
+  if (wrapped.length > 5) {
+    CRT_LINES.length = 0;
+    CRT_LINES.push(...wrapped, ' ', '- - - - - - - - - - - - - - - - - - - - -', ' ');
+    const t = document.querySelector('.crt-title');
+    if (t) t.textContent = '3-DAY FORECAST / GEOMAG · RADIATION · RADIO';
+  }
+}).catch(() => {});
+
+/* ---- Live NOAA scales — condition board + status pill.
+   Static lit buttons stay as decoration if the fetch fails. ---- */
+function liveScales() {
+  fetch(`${SWPC}/products/noaa-scales.json`).then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+  .then(d => {
+    const cur = d['0'];
+    if (!cur) return;
+    const levels = { R: +cur.R.Scale || 0, S: +cur.S.Scale || 0, G: +cur.G.Scale || 0 };
+    for (const [sc, lv] of Object.entries(levels)) {
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`scale-${sc}${i}`);
+        if (!btn) continue;
+        btn.classList.remove('lit-a', 'lit-g', 'lit-r', 'pa', 'pg', 'pr');
+        if (i > lv) continue;
+        if (i === lv) btn.classList.add(lv >= 3 ? 'lit-r' : 'lit-a', lv >= 3 ? 'pr' : 'pa');
+        else          btn.classList.add(lv >= 3 ? 'lit-r' : 'lit-a');
+      }
+    }
+    const worst  = Math.max(levels.R, levels.S, levels.G);
+    const col    = worst >= 3 ? '#FF4422' : worst > 0 ? '#FFB000' : '#22CC55';
+    const active = Object.entries(levels).filter(([, v]) => v > 0)
+                         .map(([k, v]) => k + v).join(' · ');
+    const pill = document.querySelector('.status-pill');
+    if (pill) {
+      pill.style.color = col;
+      pill.style.borderColor = col;
+      const dot = pill.querySelector('.sdot');
+      if (dot) dot.style.background = col;
+      [...pill.childNodes].forEach(n => { if (n.nodeType === 3) n.remove(); });
+      pill.append(worst > 0 ? `${active} IN PROGRESS` : 'ALL SCALES GREEN');
+    }
+    if (!eggActive) {
+      statusText.textContent = levels.G > 0 ? `G${levels.G} STORM` : 'GEOMAG QUIET';
+      document.querySelector('#status-bar .pulse-dot').style.background =
+        worst >= 3 ? '#FF4422' : worst > 0 ? '#FFB000' : '#22AA44';
+    }
+  }).catch(() => {});
+}
+liveScales();
+setInterval(liveScales, 5 * 60000);
+
+/* ---- CRT Telemetry scroll — upstream solar wind digitals ---- */
+const CRT_LINES = [
+  'L1 UPSTREAM  IMF+PLASMA  1-MIN  SRC ACTIVE  Q 0',
+  '        BX_GSM  BY_GSM  BZ_GSM      BT',
+  'NT       -4.91   -2.03   -1.22    5.46',
+  'THETA  -12.92   PHI  202.40   CONE  27.4',
+  'SPEED    485.8 KM/S    DENSITY   1.55 P/CC',
+  'TEMP    27846 K        PDYN      0.63 NPA',
+  'MACH A    9.1          BETA      0.44',
+  '- - - - - - - - - - - - - - - - - - - - -',
+  'XRS  LONG 4.2E-6  C4.7 DECAY   SHORT 2.1E-7',
+  'PROTON >10MEV  0.31 PFU        QUIET',
+  'ELECTRON >2MEV 1.2E3 PFU       NOMINAL',
+  '- - - - - - - - - - - - - - - - - - - - -',
+  'KP 2.33   HP30 2.00   AP 9     QUIET',
+  'DST  -26 NT   SYM-H  -21 NT    RECOVERY',
+  'AURORAL OVAL  53.1 GW  HEMISPHERIC POWER',
+  'EQ BOUNDARY 66.2 MLAT  MIDNIGHT SECTOR',
+  '- - - - - - - - - - - - - - - - - - - - -',
+  'MAGNETOPAUSE STANDOFF  10.4 RE  SHUE98',
+  'BOW SHOCK  13.6 RE   ADVECTION LAG 54:30',
+  'RECONNECTION  DAYSIDE LOW  NIGHTSIDE QUIET',
+  'FORECAST  KP 2-3  NEXT 24H  NO WATCHES',
+  'CME  NONE EARTH-DIRECTED    CH HSS  DAY+3',
+  '- - - - - - - - - - - - - - - - - - - - -',
+];
+
+const crtEl  = document.getElementById('crt-scroll');
+let crtIdx   = 0;
+const crtBuf = [];
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addCrtLine() {
+  crtBuf.push(CRT_LINES[crtIdx % CRT_LINES.length]);
+  crtIdx++;
+  if (crtBuf.length > 13) crtBuf.shift();
+  crtEl.innerHTML = crtBuf.map((l, i) => {
+    const isCurrent = i === crtBuf.length - 1;
+    const op = (0.35 + 0.65 * (i / (crtBuf.length - 1))).toFixed(2);
+    return `<div style="opacity:${op}">${esc(l)}${isCurrent ? '<span class="crt-cursor"></span>' : ''}</div>`;
+  }).join('');
+}
+for (let i = 0; i < 11; i++) addCrtLine();
+setInterval(addCrtLine, 2400);
+
+/* ---- Stagger indicator pulse animations ---- */
+document.querySelectorAll('.pa, .pg').forEach(el => {
+  el.style.animationDelay = `${(Math.random() * 2.8).toFixed(2)}s`;
+});
+
+/* ---- Easter egg — type "FLARE" anywhere (no input focused) ---- */
+let eggActive  = false;
+let eggSeq     = '';
+const EGG_WORD = 'FLARE';
+
+function activateFlare() {
+  eggActive = true;
+  flareOverlay.classList.add('active');
+  statusText.textContent = 'X-FLARE ALERT';
+  document.querySelector('#status-bar .pulse-dot').style.background = '#FF7800';
+  setTimeout(() => flareDismiss.focus(), 450);
+  document.addEventListener('keydown', onEsc);
+}
+
+function dismissFlare() {
+  eggActive = false;
+  flareOverlay.classList.remove('active');
+  statusText.textContent = 'GEOMAG QUIET';
+  document.querySelector('#status-bar .pulse-dot').style.background = '#22AA44';
+  document.removeEventListener('keydown', onEsc);
+}
+
+function onEsc(e) { if (e.key === 'Escape') dismissFlare(); }
+
+document.addEventListener('keydown', e => {
+  if (eggActive) return;
+  if (document.activeElement.tagName === 'INPUT') return;
+  if (document.activeElement.tagName === 'TEXTAREA') return;
+  eggSeq += e.key.toUpperCase();
+  if (eggSeq.length > EGG_WORD.length) eggSeq = eggSeq.slice(-EGG_WORD.length);
+  if (eggSeq === EGG_WORD) { eggSeq = ''; activateFlare(); }
+});
+
+flareDismiss.addEventListener('click', dismissFlare);
+</script>
 </body>
 </html>
