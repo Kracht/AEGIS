@@ -688,11 +688,13 @@ vec3 shadeEarth(vec3 pos, vec3 rd) {
     // Subtle warm tint near subsolar point
     dayCol  = mix(dayCol, dayCol * vec3(1.14, 1.05, 0.84), sunI * 0.45);
 
-    // Ocean specular: bright spot where land texture is mostly blue
+    // Ocean specular: broad sun-glint where land texture is mostly blue.
+    // Kept soft (low exponent, modest gain) so it reads as a reflection
+    // smear, not a second sun tracking the camera.
     float water = clamp(1.0 - 1.5 * max(dayTex.r, dayTex.g) / max(dayTex.b, 0.05), 0.0, 1.0);
     vec3  hv  = normalize(SUN - rd);
-    float sp  = pow(max(dot(n, hv), 0.0), 110.0) * water * max(diff, 0.0);
-    dayCol += sp * vec3(0.45, 0.60, 0.92) * 2.0;
+    float sp  = pow(max(dot(n, hv), 0.0), 50.0) * water * pow(max(diff, 0.0), 1.4);
+    dayCol += sp * vec3(0.45, 0.60, 0.92) * 1.0;
 
     // ---- Night side ----
     // Multiply night-light intensity by a base ambient so shape is faintly visible
