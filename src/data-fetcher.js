@@ -149,6 +149,17 @@ export class DataFetcher {
             key === 'plasma' ? parseRtsw(raw, ['proton_speed', 'proton_density']) :
                                parseAoA(raw);
 
+        // The L1-lagged fields (bz/bt/density/speed/pressure/r0/alpha) seed
+        // the model's history ring from the very first ingest() call. Plasma
+        // resolves measurably slower than mag/kp/xray, so without this gate
+        // that seed is usually pushed before plasma has landed — missing
+        // fields fall back to DEFAULTS, and when the wind is slow enough
+        // that l1LagMs(speed) approaches the 90 min history cap, that
+        // defaults-contaminated seed never ages out of the lag window and
+        // the display freezes near-permanently. Wait for both L1 endpoints
+        // before recording anything.
+        if (!this._raw.mag || !this._raw.plasma) return;
+
         // Assemble one raw L1 sample from whatever endpoints have reported so
         // far; missing fields fall back to the model's DEFAULTS.
         const m = this._raw.mag    || {};
@@ -162,7 +173,7 @@ export class DataFetcher {
             by:      m.by_gsm,
             density: p.proton_density,
             speed:   p.proton_speed,
-            kp:      k.kp,
+            kp:      k.Kp,
             flux:    x.flux,
         };
 

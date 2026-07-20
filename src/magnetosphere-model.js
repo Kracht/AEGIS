@@ -155,7 +155,6 @@ export class MagnetosphereModel {
         const by      = safeNum(sample.by,      DEFAULTS.by);
         const density = safeNum(sample.density, DEFAULTS.density);
         const speed   = safeNum(sample.speed,   DEFAULTS.speed);
-        const kpRaw   = safeNum(sample.kp,      DEFAULTS.kp);
         const flux    = safeNum(sample.flux,    1e-8); // default: B-class
 
         const pressure = computePressure(density, speed);
@@ -164,17 +163,25 @@ export class MagnetosphereModel {
         const flare    = computeFlare(flux);
 
         // Kp low-pass: 3-hourly bin index can jump by 1–2 between samples; ease
-        // the transition so the aurora doesn't snap. τ≈5 min.
-        let kp;
-        if (this._kpFiltered === null) {
-            kp = kpRaw;
-        } else {
-            const dt = Math.max(nowMs - this._kpFilterTime, 0);
-            const a  = 1 - Math.exp(-dt / KP_FILTER_TAU_MS);
-            kp = this._kpFiltered + a * (kpRaw - this._kpFiltered);
+        // the transition so the aurora doesn't snap. τ≈5 min. Only cold-start
+        // or advance the filter on an ingest that actually carries a kp
+        // reading — every endpoint's arrival calls ingest() independently, so
+        // without this guard whichever endpoint resolves first (often not kp
+        // itself) would anchor the filter to DEFAULTS.kp before the real
+        // value ever arrives, and the near-zero dt between that anchor and
+        // the real kp landing moments later leaves it stuck near the default.
+        let kp = this._kpFiltered ?? DEFAULTS.kp;
+        if (Number.isFinite(sample.kp)) {
+            if (this._kpFiltered === null) {
+                kp = sample.kp;
+            } else {
+                const dt = Math.max(nowMs - this._kpFilterTime, 0);
+                const a  = 1 - Math.exp(-dt / KP_FILTER_TAU_MS);
+                kp = this._kpFiltered + a * (sample.kp - this._kpFiltered);
+            }
+            this._kpFiltered   = kp;
+            this._kpFilterTime = nowMs;
         }
-        this._kpFiltered   = kp;
-        this._kpFilterTime = nowMs;
 
         // Ring-current Dst — drive Burton/O'Brien with the magnetosphere-frame
         // (i.e. L1-lagged) Bz/speed/pressure so the ring-current response lags
