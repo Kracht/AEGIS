@@ -105,6 +105,7 @@ function parseXray(rows) {
 export class DataFetcher {
     constructor() {
         this._raw     = {};
+        this._lastOk  = {};   // key -> Date.now() of last successful fetch+parse
         this._model   = new MagnetosphereModel();
         this._hp30    = new Hp30Source();
         this._active  = false;
@@ -133,7 +134,13 @@ export class DataFetcher {
             try {
                 const r = await fetch(url);
                 if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                this._ingest(key, await r.json());
+                // NOAA's RTSW feeds sometimes emit bare `NaN` literals (invalid
+                // JSON — JSON.parse rejects it outright). Sanitize to `null`
+                // before parsing; downstream Number.isFinite() checks already
+                // treat null as missing, same as they did for NaN.
+                const text = await r.text();
+                this._ingest(key, JSON.parse(text.replace(/\bNaN\b/g, 'null')));
+                this._lastOk[key] = Date.now();
             } catch (e) {
                 console.warn(`[DataFetcher] ${key}: ${e.message}`);
             }
@@ -189,6 +196,17 @@ export class DataFetcher {
         return this._model.hasData ? Date.now() - this._model.updateTime : Infinity;
     }
 
+    // A field reads "stale" once its backing endpoint hasn't landed a fresh
+    // fetch in a while — either it's still on its very first attempt, or it's
+    // missed a couple of poll cycles (transient NOAA outage/schema hiccup).
+    // Feeds this._ui's per-field markers so a first-time visitor sees "known
+    // gap, not a broken site" instead of a plausible-looking frozen number.
+    _isEndpointStale(key) {
+        const last = this._lastOk[key];
+        if (!last) return true;
+        return Date.now() - last > POLL_MS[key] * 2.5;
+    }
+
     get isStale() {
         return this.getAge() > STALE_MS;
     }
@@ -201,6 +219,12 @@ export class DataFetcher {
             dataAge: isFinite(age) ? age / 1000 : 0,
             isStale: this.isStale,
             hp30:    this._hp30.valueAt(Date.now()),
+            endpointStale: {
+                mag:    this._isEndpointStale('mag'),
+                plasma: this._isEndpointStale('plasma'),
+                kp:     this._isEndpointStale('kp'),
+                xray:   this._isEndpointStale('xray'),
+            },
         };
     }
 }

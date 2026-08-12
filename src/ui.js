@@ -75,6 +75,9 @@ const STYLE = `
     margin-top: 0.1rem;
     min-height: 1em;
 }
+/* A field whose backing NOAA endpoint hasn't reported fresh data recently —
+   dimmed + italic so it reads as "known gap", not a broken/frozen number. */
+.ss-fallback { opacity: 0.55; font-style: italic; cursor: help; }
 
 /* Data-mode overlay (Phase 3) — bottom-right; shown when renderMode == 'data' */
 #data-panel {
@@ -300,16 +303,23 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
         }
     }
 
-    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dstTau, density, r0, alpha, lagSeconds, auroraLagSeconds, dataAge, isStale, timeline }) {
+    update({ bz, bt, speed, pressure, kp, flare, dst, dstInject, dstDecay, dstTau, density, r0, alpha, lagSeconds, auroraLagSeconds, dataAge, isStale, timeline, endpointStale }) {
         if (!this._el) return;
 
-        this._s('ss-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)} nT`, bzColor(bz));
-        this._s('ss-speed',    `${speed.toFixed(0)} km/s`);
-        this._s('ss-bt',       `${bt.toFixed(1)} nT`);
-        this._s('ss-kp',       kp.toFixed(1),           kpColor(kp));
+        // endpointStale is only present on the live NOAA source — replay never
+        // has a "feed unavailable" case, so these all default to false there.
+        const magStale    = !!endpointStale?.mag;
+        const plasmaStale = !!endpointStale?.plasma;
+        const kpStale      = !!endpointStale?.kp;
+        const xrayStale    = !!endpointStale?.xray;
+
+        this._s('ss-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)} nT`, bzColor(bz), magStale);
+        this._s('ss-speed',    `${speed.toFixed(0)} km/s`, undefined, plasmaStale);
+        this._s('ss-bt',       `${bt.toFixed(1)} nT`, undefined, magStale);
+        this._s('ss-kp',       kp.toFixed(1),           kpColor(kp), kpStale);
         this._s('ss-kpbar',    kpBar(kp));
-        this._s('ss-pressure', `${pressure.toFixed(1)} nPa`);
-        this._s('ss-flare',    formatFlare(flare),       flareColor(flare));
+        this._s('ss-pressure', `${pressure.toFixed(1)} nPa`, undefined, plasmaStale);
+        this._s('ss-flare',    formatFlare(flare),       flareColor(flare), xrayStale);
 
         // Dst is modeled, not measured — the leading "~" marks it as an estimate
         this._s('ss-dst', `~${dst >= 0 ? '+' : ''}${dst.toFixed(0)} nT`, dstColor(dst));
@@ -364,15 +374,15 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
         // skipping them when hidden keeps the work proportional to visibility.
         if (this._dataPanel?.classList.contains('dp-show')) {
             const lagMin = lagSeconds ? lagSeconds / 60 : 0;
-            this._s('dp-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)}`);
-            this._s('dp-bt',       bt.toFixed(1));
-            this._s('dp-speed',    speed.toFixed(0));
-            this._s('dp-density',  (density ?? 0).toFixed(1));
-            this._s('dp-pressure', pressure.toFixed(2));
+            this._s('dp-bz',       `${bz >= 0 ? '+' : ''}${bz.toFixed(1)}`, undefined, magStale);
+            this._s('dp-bt',       bt.toFixed(1), undefined, magStale);
+            this._s('dp-speed',    speed.toFixed(0), undefined, plasmaStale);
+            this._s('dp-density',  (density ?? 0).toFixed(1), undefined, plasmaStale);
+            this._s('dp-pressure', pressure.toFixed(2), undefined, plasmaStale);
             this._s('dp-r0',       (r0 ?? 0).toFixed(2));
             this._s('dp-alpha',    (alpha ?? 0).toFixed(3));
-            this._s('dp-kp',       kp.toFixed(1));
-            this._s('dp-flare',    formatFlare(flare));
+            this._s('dp-kp',       kp.toFixed(1), undefined, kpStale);
+            this._s('dp-flare',    formatFlare(flare), undefined, xrayStale);
             this._s('dp-dst',      `${dst >= 0 ? '+' : ''}${dst.toFixed(0)}`);
             this._s('dp-dsttau',   (dstTau ?? 0).toFixed(2));
             this._s('dp-dstinj',   (dstInject ?? 0).toFixed(1));
@@ -381,10 +391,12 @@ ${row('Dst', 'ss-dst', 'Phase', 'ss-dstphase')}
         }
     }
 
-    _s(id, text, color) {
+    _s(id, text, color, stale) {
         const el = document.getElementById(id);
         if (!el) return;
         el.textContent = text;
         if (color !== undefined) el.style.color = color;
+        el.classList.toggle('ss-fallback', !!stale);
+        el.title = stale ? 'feed unavailable — showing last known reading' : '';
     }
 }
