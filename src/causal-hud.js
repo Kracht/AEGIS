@@ -174,6 +174,30 @@ export class CausalHUD {
         window.addEventListener('keydown', (e) => {
             if (e.key === 'F4') { e.preventDefault(); this.toggle(); }
         });
+        this._addPerfChip();
+    }
+
+    // Mirrors camera.js's own chip-append: nobody finds F4 on their own, so
+    // advertise it in the top-right perf bar next to Mode [F3] / Settings [F2].
+    _addPerfChip() {
+        const perf = document.getElementById('perf');
+        if (!perf) return;
+
+        const sep = document.createElement('span');
+        sep.className = 'perf-sep';
+        sep.textContent = '·';
+
+        const chip = document.createElement('span');
+        chip.className = 'perf-settings';
+        chip.title = 'Toggle the causal-chain HUD (compression + storm branches)';
+        chip.addEventListener('click', () => this.toggle());
+        perf.append(sep, chip);
+        this._chip = chip;
+        this._syncChip();
+    }
+
+    _syncChip() {
+        if (this._chip) this._chip.textContent = `Causal: ${this._visible ? 'ON' : 'OFF'} [F4]`;
     }
 
     _injectStyle() {
@@ -264,8 +288,8 @@ export class CausalHUD {
     }
     _hideTip() { this._tip.style.display = 'none'; }
 
-    show()   { this._visible = true;  this._root.classList.add('ch-show'); }
-    hide()   { this._visible = false; this._root.classList.remove('ch-show'); this._hideTip(); }
+    show()   { this._visible = true;  this._root.classList.add('ch-show'); this._syncChip(); }
+    hide()   { this._visible = false; this._root.classList.remove('ch-show'); this._hideTip(); this._syncChip(); }
     toggle() { this._visible ? this.hide() : this.show(); }
     get visible() { return this._visible; }
 
